@@ -1,0 +1,15 @@
+
+/*******************************************************************************
+	SearchItem represents a value associated with a SearchNode.
+*******************************************************************************/
+class SearchItem
+{
+void		*value;
+SearchItem	next;
+
+SearchItem( void *entry )
+{
+        value	= entry;
+        next	= null;
+}
+}

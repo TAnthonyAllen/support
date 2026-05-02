@@ -1,0 +1,357 @@
+include frameIncludes
+
+/*****************************************************************************
+	Buffer class provides a string buffer, and if a file is set, a print buffer
+*****************************************************************************/
+class Buffer
+{
+String      bufferName;
+int			fd,
+			size;
+String		file,
+			current,
+			end,
+			mark,
+			start;
+overload
+		+=	append
+		;
+
+/*****************************************************************************
+	append methods are provided for the basic types
+*****************************************************************************/
+void appendChar(char c,String format,int width)
+{
+	if !c return;
+	extend(10);
+    if !format
+        {
+        *current++ = c;
+        *current = '\0';
+        }
+    else {
+        if width extend(width);
+        width = sprintf(current,format,c);
+        current += width;
+        }
+}
+
+void appendDouble(double d,String format,int width)
+{
+    if !format  format  = "%f";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,d);
+    current += width;
+}
+
+void appendFloat(float f,String format,int width)
+{
+    if !format  format  = "%f";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,f);
+    current += width;
+}
+
+void appendInt(int i,String format,int width)
+{
+    if !format  format  = "%d";
+    if !width   width   = 10;
+	extend(width);
+	width = sprintf(current,format,i);
+    current += width;
+}
+
+void appendItem(PLGitem item,String format,int width)
+{
+    if item
+        {
+        char    saved = save;
+        appendString(item.string(),format,width);
+        if !saved item.unString();
+        }
+}
+
+void appendLong(long l,String format,int width)
+{
+    if !format  format  = "%lld";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,l);
+    current += width;
+}
+
+void appendString(String text,String format,int width)
+{
+	if !text return;
+int length  = (int)strlen(text);
+    if !format
+        {
+        extend(length);
+        strcpy(current,text);
+        current += length;
+        }
+    else {
+        if width extend(width);
+        if width < length
+            {
+            char    saveEnd = *(text + width);
+            *(text + width) = 0;
+            length = sprintf(current,format,text);
+            *(text + width) = saveEnd;
+            }
+        else    length = sprintf(current,format,text);
+        current += length;
+        }
+}
+
+/*****************************************************************************
+        Back up the buffer to mark, if it is set.
+*****************************************************************************/
+void backupToMark()
+{
+    if mark >= start && mark < current
+        {
+        current     = mark;
+        *current    = 0;
+        }
+}
+
+/*****************************************************************************
+    Flush and then close the file associated with the buffer then clear
+    the fd and file fields.
+*****************************************************************************/
+int closeFile()
+{
+int	success;
+
+	if file
+		{
+		flush();
+		success = close( fd );
+        file  = 0;
+        fd      = 0;
+		if success < 0
+			print "Could not close file\n";
+        else return true;
+		}
+    return false;
+}
+
+/*****************************************************************************
+        Extend the buffer to be able to accomodate additional input.
+*****************************************************************************/
+void extend(int len)
+{
+String	extent;
+long    offset,
+        roomLeft = size - (current - start),
+        upto = length();
+    if len >= roomLeft
+        {
+        if mark offset = mark - start;
+        size = len + size * 2;
+        extent  = realloc(start,size);
+        current	= extent + upto;
+        mark    = extent + offset;
+        start	= extent;
+        end	= start + size;
+        offset  = current - start;
+        }
+}
+
+/*****************************************************************************
+        Flush the file associated with the buffer and reset the buffer
+*****************************************************************************/
+void flush()
+{
+long	success;
+
+    if !file return;
+	*current = 0;
+    if current > start
+        {
+        success = write( fd,start,current-start );
+        if ( success < 0 )
+            {
+            print "Problem writing buffer\n";
+            exit(1);
+            }
+        }
+    reset();
+}
+
+/*****************************************************************************
+        Like toString but the returned string starts at the last mark. If there
+		is no mark, returns the entire buffer as string.
+*****************************************************************************/
+String getMarkedString()
+{
+String	save, text;
+	save	= start;
+	if mark start	= mark;
+	text	= toString();
+	start	= save;
+	if mark current = mark;
+	*current = 0;
+	return text;
+}
+
+/*****************************************************************************
+        Returns the number of characters in the buffer. Does not take into
+		consideration any characters that have been flushed to a file.
+*****************************************************************************/
+int length()
+{
+long	length	= current - start;
+    if length > 0 return (int)length;
+    return 0;
+}
+
+/*****************************************************************************
+        Resets the buffer (note, it does not flush the file if there is one)
+*****************************************************************************/
+void reset()
+{
+	mark	    = 0;
+	current     = start;
+	*current    = 0;
+}
+
+/*****************************************************************************
+        Frees the current buffer content and rebuilds it to have size = length
+        Unlike extend, does not preserve current content.
+*****************************************************************************/
+void reSize(int length)
+{
+    if size < length
+        {
+        free(start);
+        size        = length;
+        start       = calloc(size + 100,sizeof(char));
+        end         = start + size;
+        }
+    reset();
+}
+
+/*****************************************************************************
+        Associate a file with the buffer
+*****************************************************************************/
+void setFile( String name )
+{
+	file	= name;
+	if file
+		fd = checkSys(open( name,O_WRONLY | O_CREAT | O_TRUNC, 0666 ),
+			"Buffer setFile: could not open file\n" );
+}
+
+/*****************************************************************************
+        Sets a mark in the buffer (marks are offsets from start)
+*****************************************************************************/
+void setMark()
+{
+	mark = current;
+}
+
+/*****************************************************************************
+        Returns the start of the buffer after making sure it is 0 terminated
+*****************************************************************************/
+String string()
+{
+long	length = current - start;
+	*current = 0;
+	if length > 0 return start;
+	return "";
+}
+
+/*****************************************************************************
+        Returns a pointer to the string beginning at offset from current,
+        or if buffer contains fewer characters than offset, then beginning
+        at start. If buffer is empty, returns empty string.
+*****************************************************************************/
+String tail(int offset)
+{
+long	length = current - start;
+	if length > offset return current - offset;
+	or length > 0 return start;
+	return "";
+}
+
+/*****************************************************************************
+        Returns a string copy of the buffer
+*****************************************************************************/
+String toString()
+{
+long	length = current - start;
+String	text;
+	if length > 0
+		{
+		text = (String)malloc(length + 1);
+		strncpy(text,start,length);
+		*(text+length) = 0;
+		return text;
+		}
+	return "";
+}
+
+/*****************************************************************************
+        Turn off the mark
+*****************************************************************************/
+void unMark()
+{
+    if mark && mark != start
+        {
+        current     = mark;
+        *current    = 0;
+        mark        = 0;
+        }
+}
+}
+
+/*****************************************************************************
+        Buffer factories aliased to new
+*****************************************************************************/
+Buffer bufferFactory1()
+{
+Buffer  buffer = calloc(1,sizeof(Buffer));
+    bufferName  = "No name buffer";
+    size        = 500;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+    return buffer;
+}
+
+Buffer bufferFactory2(String name)
+{
+Buffer  buffer = calloc(1,sizeof(Buffer));
+    bufferName  = name;
+    size        = 500;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+    return buffer;
+}
+
+Buffer bufferFactory3(String name,int buffersize)
+{
+Buffer  buffer = calloc(1,sizeof(Buffer));
+    bufferName  = name;
+    size        = buffersize;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+    return buffer;
+}
+
+Buffer bufferFactory4(int buffersize)
+{
+Buffer  buffer = calloc(1,sizeof(Buffer));
+    bufferName  = "No name buffer";
+    size        = buffersize;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+    return buffer;
+}

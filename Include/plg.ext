@@ -1,0 +1,463 @@
+
+external regex.h
+{
+	typedef regex_t;
+	typedef reqmatch_t;
+	int         REG_EXTENDED,
+                REG_ICASE,
+                REG_NOSUB;
+	int		regcomp(regex_t* m,String s,int f);
+	int		regexec(regex_t* m,String s,size_t m,reqmatch_t p,int f);
+	size_t	regerror(int e,regex_t* m,String s,size_t b);
+}
+
+external PLGitem
+external PLGparse
+external PLGrule
+external PLGset
+external PLGtester
+
+external PLGitem
+{
+String		itemStart;
+int			itemLength;
+PLGtester	test;
+PLGitem		firstComponent,
+            next,
+			nextTestResult;
+char		save;
+union
+	double		amount;
+	void		*value;
+    PLGitem     valueItem;
+	;
+boolean
+            noRelease
+			exists
+			flag1
+			flag2
+			flag3
+			flag4
+			isSetPLG
+			isEndTag
+			isRegex
+			noPrint
+			released
+			;
+static Tape itemTape;
+static int  plgItemDebug;
+
+	PLGitem(String s);
+	PLGitem(String s,int i);
+	PLGitem(PLGitem item);
+    void            append(PLGitem item);
+    String          buildString();
+    String          chop(int length);
+    int				compare(PLGitem i);
+    int				compare(String s);
+	void			copyTo(String target);
+	void			copyTo(Buffer buffer);
+	void			dump();
+    PLGitem			find(String s);
+    void            free();
+    PLGitem			get();
+    PLGitem			get(String s);
+	PLGitem			removeEnd();
+    void			runDeferred();
+    static void		setItemStack();
+	void			setString(String text);
+    String			string();
+    void			toBuffer(Buffer b);
+    String			toString();
+    void			unString();
+    overload
+        +=  append
+        []    get
+        %   get
+        /   find
+        ;
+    alias
+        floating    flag1
+        length      itemLength
+        run         runDeferred
+        start       itemStart
+        new         plgItemFactory
+        ;
+}
+
+external PLGlabel
+{
+String		name;
+PLGtester	test;
+
+	PLGlabel(String n,PLGtester t);
+}
+
+external PLGparse
+{
+String			eof,
+				parserName,
+				plgInput,
+				plgStart;
+int				inputLength,
+				itemCount;
+PLGset			currentSet,
+				defaultSkip,
+				skipSet;
+boolean
+				debugRulePLG
+                debugGuardPLG
+                diverted
+                doNotGuard
+				setsInitialized
+				skipping
+				;
+BaseHash		failMethods,
+                rules,
+				setTable;
+PLGrule			currentRule;
+PLGtester		saveTest,
+                currentTest;
+Tape			itemTape;
+Stak            inputStack;
+void            *mainParser;
+static PLGitem	nullItem;
+struct InputSource
+{
+	String			begin
+	String			current
+	String			end
+    int             carryon
+};
+
+	PLGparse();
+	void			addTest(int t,void *d,String label,int min,int max,String skip);
+    void			divertInput(String s);
+	PLGitem			divertInput(String s,PLGrule rule);
+    PLGitem         divertInput(String s,String ruleName);
+	void			generateRules(Buffer output);
+	PLGitem			get(PLGitem i);
+    PLGrule			getRule(String s);
+	PLGset			getSet(String t);
+	PLGset			getSet(String s,String t);
+	void			initialize();
+	PLGitem			plgItemFactory(String s);
+    PLGitem			plgItemFactory(String s,int l);
+    PLGitem			plgItemFactory(PLGitem i);
+    PLGitem         parse(PLGrule rule);
+    PLGitem			parse(String s);
+    void			revertInput();
+	void			setInput(String s);
+	void			setInput(PLGitem i);
+	void			setSkip();
+    void			summary(int i);
+    String			upcomingString(int i);
+    String			upcomingString(String s,int i);
+}
+
+external PLGrgx
+{
+regex_t		*model;
+String		expression;
+boolean
+            caseSensitive
+            compiled
+            status
+            ;
+	PLGrgx(String s);
+	void		compile();
+	int			matches(String s);
+}
+
+external PLGrule
+{
+String      name,
+            debugText;
+PLGrule     next,
+            end;
+PLGtester   tests;
+PLGset      guardSet;
+PLGitem     deferAction,
+            failMethod,
+            immediateAction;
+boolean
+            balanceRule
+            balanceAny
+            balanceBody
+            balanceBail
+            doNotGuard
+            ;
+int         balance,
+            debug
+            succeed,
+            tested,
+            testCount,
+            warded;
+void        &defer(PLGitem i);
+int         &immediate(PLGitem i);
+void        &fail(PLGtester t);
+PLGparse    parentParser;
+
+	PLGrule(String s);
+    void		addTest(PLGtester t);
+    void		append(PLGrule r);
+	void		declareActions(Buffer b);
+	void		dumpGuard();
+	int			dumpSummary();
+	void		generate(Buffer b);
+	PLGset		setGuard();
+    void		setLabels();
+	void		writeActions(String s,Buffer b);
+}
+
+external PLGrule.h
+{
+	int         balancEbody(void *p,PLGitem **items);
+	int         balancE(void *p,PLGitem **items);
+    int         balancEbail(void *p,PLGitem **items);
+}
+
+external PLGset
+{
+unsigned long	*map;
+String			name;
+Buffer          setBuffer;
+boolean
+            deferUpdate
+			hidden
+			negated
+			parsed
+            setUpdated
+			;
+static unsigned long    *mapper;
+	PLGset();
+	PLGset(String s);
+    int         addTest(PLGtester test);
+	void		clear();
+    int			contains(char c);
+    int         contains(String s);
+	int			foundIn(String s);
+	int			foundIn(PLGitem i);
+	void		generate(Buffer b);
+	int			isEmpty();
+	int			length();
+    void		reset(int i);
+    void		reset(int b, int e);
+	void		reset(PLGset s);
+    void		set(int i);
+    void		set(int b, int e);
+	void		set(PLGset s);
+	void		set(String text);
+    void        setSimple(String text);
+	String      skip(String plgStart);
+    String		toString();
+    String      toText();
+    void        updateBuffer();
+	static void printText(String text,Buffer output);
+	overload
+		+=		set
+		;
+}
+
+external PLGtester
+{
+PLGlabel    label;
+PLGrule	    parentRule;
+PLGparse    testParser;
+void	    *data;
+String	    current,
+            errorMessage;
+PLGitem		&getResult(PLGtester t);
+int			count,
+			maximum,
+			minimum;
+boolean
+            aVariable
+            banged
+			isAlternate
+			isIgnored
+			leftBalance
+            optionsSet
+			processUpTo
+			rightBalance
+			skipOverMatch
+            type:4[isAnyTestPLG isCharTestPLG isEOFtestPLG isKeyTestPLG isRuleTestPLG isSetTestPLG isStringTestPLG isConditionTestPLG]
+			;
+PLGtester   alternate,
+            end,
+			next,
+            option,
+			prior;
+PLGset	    guardSet,
+			skipSet;
+
+	PLGtester();
+	PLGtester(PLGtester t);
+	PLGtester(void *d,int t);
+    void		append(PLGtester t);
+    void        appendOptions();
+    String      checkSkip();
+    void        debugAfter(PLGitem result);
+    void        debugBefore();
+	void		generate(Buffer b);
+    PLGrule     getRule();
+    int         getRuleDebug(PLGrule rule);
+    PLGitem     hitIt(PLGrule rule);
+    int         passesGuard(String input);
+    void        printErrorMessage();
+    void        resetSkip();
+	void		setAlternate(PLGtester test);
+    void        setGetResult();
+    void		setLabel(String s);
+	void		setMultiple(int min,int max);
+}
+
+external plg
+{
+BaseHash		plgSetTable,
+				plgRuleTable;
+KeyTable		conditionTable,
+                keyWordTable,
+                variableTable;
+PLGitem			tail,
+				ruleActionName;
+int				alternateFlag,
+				blockCount,
+				optionCount,
+				regexCount,
+				testFlag;
+Buffer			buffer,
+				headerBuffer,
+				includeBuffer,
+				output,
+				parseBuffer;
+Stak			ruleStack,
+				testStack;
+String          parentParser;
+boolean         hasActions,
+                hasConditions,
+                hasKeys,
+                hasSets,
+                hasVariables;
+    plg();
+    void        declareActions();
+    void        declareSets();
+    void        initializeKeyWords(Buffer *output);
+    void        process(String name);
+    PLGitem     run(String name);
+    void        test(String name,String text);
+    void        writeActions();
+}
+
+external GroupItem
+external ParseXML extends PLGparse
+{
+GroupItem       ancestor,
+                block,
+                currentBlock,
+                field,
+                fieldRegistry,
+                fileList,
+                foundItems,
+                jitInclude,
+                lastSelect,
+                list,
+                monthRegistry,
+				outerBlock,
+                record,
+                yearRegistry;
+PLGitem			jitHeader,
+                testItem;
+Buffer			scratch;
+String			skip,
+                setName;
+char			delimiter,
+				endRecord,
+				outputDelimit,
+				outputEnd;
+int				groupItems,
+				openTags
+                recordNumber;
+PLGset			notSpace,
+				spaces;
+Stak			blockStack,
+                endTags;
+ParseXML		pathParser;
+boolean
+                jsonType:3[isBlock isJSONtext isRepeat]
+                complexPath
+				doneWithHeading
+                droppedAnchor
+				firstTag
+				hasHeading
+				ignoreSkip
+				isThreaded
+                commanding
+                noComments
+                noLineByLine
+				numberValues
+                settingPath
+				targetSet
+				trimLeadingSpace
+                useStash
+				;
+PLGset    alphaSet;
+PLGset    anchorSet;
+PLGset    bodySet;
+PLGset    commentSet;
+PLGset    dateSet;
+PLGset    delimitSet;
+PLGset    fieldSet;
+PLGset    nameSet;
+PLGset    notSpace;
+PLGset    singleQuote;
+PLGset    spaces;
+PLGset    tagSet;
+PLGset    textSet;
+KeyTable Registering;
+KeyTable Flag;
+KeyTable CommandAction;
+
+                    ParseXML();
+                    ParseXML(ParseXML p);
+    void            convertItem(PLGitem item);
+    String          convertSetInput(PLGitem item);
+	String          despace(String s);
+    void            filterBy(GroupItem group,GroupItem filter);
+    GroupItem       getFieldBlock(PLGitem item);
+    int             hasTarget(GroupItem path);
+    void            includeFile(String filename);
+	void            indentText(String s,Buffer b);
+    void            initializeKeyWords();
+    void            initializeSetTable();
+    PLGitem         isURL(String text);
+    void            listRegistries();
+	GroupItem       loadDelimited(GroupItem specs);
+    void            loadFieldSpecs(GroupItem specs);
+    GroupItem       loadJSON(GroupItem specs);
+    GroupItem       loadRule(GroupItem specs);
+    GroupItem       locate(PLGitem item);
+	void            makeShell();
+    GroupItem       parseFile(String s);
+    void            parseMacro(GroupItem macro,String text);
+    String          parseStatements(String code);
+    GroupItem       parseString(String path,String tag);
+    void            popState();
+    void            printAttributes(GroupItem group,Stak list);
+    void            processDelimitField(PLGitem item);
+    void            processPath(GroupItem item);
+    void            processSourceByPath(GroupItem path,GroupItem item);
+	GroupItem       processTag(PLGitem o);
+    void            pushState();
+    void            reset();
+    void            resetItemTape();
+	PLGitem         run(String s);
+	PLGitem         run(String rule,String text);
+    void            searchListAdd(GroupItem registry);
+    void            setAncestry();
+    GroupItem       simplePath(GroupItem item);
+	PLGitem         trimEnd(PLGitem item);
+    alias
+        parseString     parseString(tag="StartXML")
+        ;
+}

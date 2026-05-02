@@ -1,0 +1,180 @@
+external ctype.h local
+{
+	void*	tolower(int i);
+	void*	toupper(int i);
+}
+
+external curses.h local
+{
+    int     beep();
+}
+
+external struct dirent
+{
+    int     d_ino;
+    String  d_name;
+    alias
+        Directory       dirent
+        iNode           d_ino
+        dirFileName     d_name
+        ;
+}
+
+external dirent.h local
+{
+    typedef     DIR;
+    int         errno;      // defined in errno.h but that included in dirent.h
+    DIR         *opendir(String name);
+    int         closedir(DIR* direct);
+    Directory   *readdir(DIR* direct);
+}
+
+external dlfcn.h local
+{
+    void    *RTLD_SELF;
+    void    *RTLD_DEFAULT;
+    void    *dlopen(String path,int mode);
+    void    *dlsym(void* handle,String name);
+}
+
+external math.h local
+{
+    double  ceil(double x);
+    int     lround(double x);
+    double  round(double x);
+}
+
+external string.h local
+{
+	void	*memcpy(void *l,void *r,int n);
+	void	*memset(void *l,int c,int n);
+	int		strcat(String s1,String s2);
+	int		strcmp(String s1,String s2);
+	String	strcpy(String s1,String s2);
+	long    strlen(String s);
+	int		strncmp(String s1,String s2,int i);
+	String	strncpy(String s1,String s2,int i);
+    String  strtok(String s1,String s2);
+}
+
+external    stdio.h local
+{
+    typedef FILE;
+    FILE    *stdin;
+    FILE    *stderr;
+    FILE    *stdout;
+    FILE    *fopen(String name,String mode);
+    void    perror(char *s);
+    int     printf(char *format, ...);
+    int     asprintf(char **result, char *format, ...);
+    int     fprintf(FILE *file, char *format, ...);
+    int     sscanf(char *str, char *format, ...);
+    int     sprintf(char *result, char *format, ...);
+}
+
+external	stdlib.h local
+{
+    typedef size_t;
+    int     abs(int i);
+	void	*alloca(int i);
+	int		atoi(String s);
+	double	atof(String s);
+    long    atoll(String s);
+	void	*calloc(int i,int s);
+	void	exit( int i );
+    double  fabs(double d);
+	void	free(void *v);
+	void	*malloc(int i);
+	void	*realloc(void *v,int i);
+	void	*reallocf(void *v,int i);
+    long    strtol(String s, char **endptr, int base);
+    int     system(String s);
+}
+
+external dispatch/dispatch.h local
+{
+	typedef			dispatch_block_t;
+	typedef			dispatch_queue_t;
+	typedef			dispatch_group_t;
+	typedef			dispatch_time_t;
+	int				DISPATCH_QUEUE_PRIORITY_HIGH,
+					DISPATCH_QUEUE_PRIORITY_LOW,
+					DISPATCH_QUEUE_PRIORITY_DEFAULT;
+	unsigned int	DISPATCH_TIME_NOW,
+					DISPATCH_TIME_FOREVER;
+	alias
+		DQ			dispatch_queue_t
+		Dgroup		dispatch_group_t
+		Dblock		dispatch_block_t
+		Dtime		dispatch_time_t
+		forever		DISPATCH_TIME_FOREVER
+		now			DISPATCH_TIME_NOW
+		;
+	void		dispatch_after(unsigned int w,DQ q,void ^b());
+	void		dispatch_after_f(unsigned int w,DQ q,void *d,void &m(void*));
+	void		dispatch_apply(int i,DQ q,void ^b(size_t));
+	void		dispatch_apply_f(int i,DQ q,void *d,void &m(void*,size_t));
+	void		dispatch_async(DQ q,void ^b());
+	void		dispatch_async_f(DQ q,void *d,void &m(void*));
+    int         dispatch_block_wait(Dblock block,Dtime timeOut);
+	DQ			dispatch_get_global_queue(int p,int f);
+	void		dispatch_group_async(Dgroup g,DQ q,void ^b());
+	void		dispatch_group_async_f(Dgroup g,DQ q,void *d,void &m(void*));
+	Dgroup		dispatch_group_create();
+	DQ			dispatch_queue_create(String s,int i);
+	void		dispatch_group_notify(Dgroup g,DQ q,void ^b());
+	void		dispatch_group_notify_f(Dgroup g,DQ q,void *d,void &m(void*));
+	int			dispatch_group_wait(Dgroup g,Dtime);
+	void		dispatch_release(Dgroup g);
+	unsigned int	dispatch_time(unsigned int w,int d);
+	alias
+		delay		dispatch_time
+		getQ		dispatch_get_global_queue
+		makeGroup	dispatch_group_create
+		makeQ		dispatch_queue_create
+		letGo		dispatch_release
+		waitOn		dispatch_group_wait
+		;
+}
+
+external	fcntl.h local
+{
+	int		O_RDONLY,
+            O_RDWR,
+			O_WRONLY,
+			O_CREAT,
+			O_TRUNC,
+			SEEK_END,
+            SEEK_SET;
+	int		open(String s,int i,int m);
+}
+
+external	stdarg.h local
+{
+	typedef		va_list;
+	void		va_start(va_list a,String last);
+	void		va_arg(va_list a,String type);
+	void		va_copy(va_list dest,va_list source);
+	void		va_end(va_list a);
+}
+
+external	sys/mman.h local
+{
+	int		MAP_PRIVATE,
+            MAP_FILE,
+            MAP_SHARED,
+			PROT_READ,
+			PROT_WRITE;
+	void	*mmap(int j,int k,int l,int m,int i,int n);
+}
+
+external	unistd.h local
+{
+	int		close(int i);
+	int		open( String s,int i );
+	int		lseek( int f,int b,int e);
+	int		sleep(int i);
+    int     write(int fd,String s,int count);
+}
+
+external	StackItem no.h

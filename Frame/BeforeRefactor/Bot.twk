@@ -1,0 +1,33 @@
+include frameIncludes
+
+/*****************************************************************************
+	Bot class implements a remote object using NSConnection.
+*****************************************************************************/
+class Bot
+{
+Connector   contact;
+
+/*****************************************************************************
+	Construct this Bot to handle the object passed in. Note the current run
+    loop has to be running before the bot will do anything.
+*****************************************************************************/
+Bot(Object object)
+{
+    contact = new;
+    setRootObject(object);
+}
+
+/*****************************************************************************
+	Register this Bot using the name passed in.
+*****************************************************************************/
+int registerAs(String name)
+{
+    if !registerName(name)
+        {
+        cerr "Bot registration failed for: " name:;
+        return false;
+        }
+    cout "Bot registration of " name " successful":;
+    return true;
+}
+}

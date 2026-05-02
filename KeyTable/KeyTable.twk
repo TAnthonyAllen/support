@@ -1,0 +1,240 @@
+include frameIncludes
+
+/*******************************************************************************
+	A class that contains a trinary tree for indexing key fields
+	Note that the 0th entry in a table is always the missing value
+	in other words if the table does not contain an entry any lookup
+	using find will return a pointer to the first entry which should
+	be entered as missing
+*******************************************************************************/
+class KeyTable
+{
+String			name;
+DoubleLinkList	letterMaps;
+int				debug,
+				max,
+				size;
+KeyTableItem	current, first, last;
+void            **keyValueList;
+PLGset          keySet;
+
+KeyTable()
+{
+	name        = null;
+	letterMaps  = new();
+    keySet      = new;
+}
+
+KeyTable(String n)
+{
+    name        = n;
+	letterMaps  = new();
+    keySet      = new;
+    keySet.name = n;
+}
+
+/*******************************************************************************
+	Add something to the table, indexed by key. If the key is already in the
+	table, nothing happens.
+*******************************************************************************/
+int add( String key )
+{
+    return add(key,(void*)key);
+}
+
+int add( String key,void *pointer )
+{
+String			atLetter;
+KeyTableItem	item	= new(key,pointer);
+DoubleLink		link	= letterMaps.first;
+KeyMap			**atMap,
+				map = null;
+int				offset,
+				depth;
+
+    if keyValueList
+        {
+        free((void*)keyValueList);
+        keyValueList = null;
+        }
+	for ( atLetter = key, depth = 1; *atLetter; atLetter++,depth++ )
+		{
+		if atLetter > key
+			map.follow.set((int)*atLetter);
+		if !link link = newLink();
+		atMap = link.value;
+		offset = (int)*atLetter;
+		atMap += offset;
+		if !*atMap
+			{
+            //cout "KeyTable: new map":;
+			map = new(*atLetter);
+			map.length = depth;
+			*atMap = map;
+			}
+		else map = *atMap;
+        //cout `"map letter:",map.letter:;
+		link = link.next;
+		if !*(atLetter + 1)
+			{
+			if map.find(key) return false;
+			map.entries.add((void*)item);
+			position    = ++size;
+			if map.entries.length > max
+				max = map.entries.length;
+			if last
+				last.next = item;
+			last = item;
+			if !first first = item;
+			break;
+			}
+		}
+    keySet.set(*key);
+    return true;
+}
+
+/*******************************************************************************
+	List out the contents of the table. If the flag is set, assumes that the
+	table contents are strings and prints them out
+*******************************************************************************/
+void dump(int flag)
+{
+KeyTableItem item;
+    item = getNext();
+    while item
+		{
+		if flag print item.key,(String)item.value "\n";
+		else print item.key "\n";
+		item = getNext();
+		}
+}
+
+/*******************************************************************************
+	Return the key item indexed by key
+*******************************************************************************/
+KeyTableItem findKeyItem( String key )
+{
+String			atLetter;
+KeyTableItem	item	= null;
+DoubleLink		link	= letterMaps.first;
+KeyMap			**atMap,
+				map = null;
+int				offset;
+	for ( atLetter = key; *atLetter; atLetter++ )
+		{
+		if atLetter > key && !map.follow.contains((int)*atLetter)
+			break;
+		if !link break;
+		atMap = link.value;
+		offset = (int)*atLetter;
+		atMap += offset;
+		map = *atMap;
+		if !map break;
+		link = link.next;
+		if !*(atLetter + 1)
+			{
+			item = map.find(key);
+			break;
+			}
+		}
+	if item return item;
+	return (KeyTableItem)0;
+}
+
+/*******************************************************************************
+	Return whatever is in the table indexed by key
+*******************************************************************************/
+void* find( String key )
+{
+KeyTableItem	item;
+	if item = findKeyItem(key)
+        return value;
+	return (void*)0;
+}
+
+/*******************************************************************************
+    Iterator that returns the next item. Definitely not re-entrant
+*******************************************************************************/
+KeyTableItem getNext()
+{
+	if !current current = first;
+	else current = current.next;
+	return current;
+}
+
+/*******************************************************************************
+    Accesses the key table as if it is an array returning the value at the
+    indexed element. Note that the index passed in starts at 1
+*******************************************************************************/
+void* itemAt(int index)
+{
+void    *itemValue,**atList;
+    if index > 0 && index <= size
+        {
+        if !keyValueList
+            {
+            current = null;
+            atList  =
+            keyValueList = calloc(size + 1,sizeof(void*));
+            while itemValue = next()
+                { *atList++ = itemValue; }
+            }
+        return *(keyValueList + --index);
+        }
+    return null;
+}
+
+/*******************************************************************************
+	Return the longest entry in the table that matches the beginning of key
+*******************************************************************************/
+KeyTableItem matches( String key )
+{
+String			atLetter;
+KeyTableItem	item	= null, match;
+DoubleLink		link	= letterMaps.first;
+KeyMap			**atMap,
+				map = null;
+int				offset;
+	for ( atLetter = key; *atLetter; atLetter++ )
+		{
+		if atLetter > key && !map.follow.contains((int)*atLetter)
+			break;
+		if !link break;
+		atMap = link.value;
+		offset = (int)*atLetter;
+		atMap += offset;
+		map = *atMap;
+		if !map break;
+		link = link.next;
+		if !*(atLetter + 1) || (map && map.entries.length)
+			{
+			match = map.find(key);
+			if match item = match;
+			}
+		}
+	if item return item;
+	return null;
+}
+
+/*******************************************************************************
+	Get a new DoubleLink item of pointers to KeyMaps
+*******************************************************************************/
+DoubleLink newLink()
+{
+KeyMap	**maps = (KeyMap**)calloc(256,sizeof(KeyMap*));
+DoubleLink  link = letterMaps.add((void*)maps);
+    //cout ``"newLink":;
+    return link;
+}
+
+/*******************************************************************************
+    Iterator that returns the next item value. Definitely not re-entrant
+*******************************************************************************/
+void* next()
+{
+	if !current current = first;
+	else current = current.next;
+	if current return current.value;
+	return null;
+}
+}

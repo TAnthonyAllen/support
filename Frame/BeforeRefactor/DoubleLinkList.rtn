@@ -1,0 +1,427 @@
+/*****************************************************************************
+	Add to the list
+*****************************************************************************/
+DoubleLink add(Avoid item)
+{
+    //if hasKeys cerr "DoubleLinkList add: no key supplied to hasKey list":;
+    if !first
+    	{
+		first	=
+		last	= getLink(item);
+		last.list = this;
+		length++;
+		}
+    else last = last.append(item);
+    last.linkOrder  = length;
+    return last;
+}
+
+DoubleLink add(DoubleLink link)
+{
+    //if hasKeys cerr "DoubleLinkList add link: no key supplied to hasKey list":;
+    if !first
+        {
+        first   =
+        last    = link;
+        }
+    else {
+        last.next   = link;
+        link.prior  = last;
+        link.next   = null;
+        last        = link;
+        }
+    link.list       = this;
+    link.linkOrder  = ++length;
+    return link;
+}
+
+/*****************************************************************************
+	Add to the keyed list. If list is not sorted it just appends. In any
+    case the link key is set.
+*****************************************************************************/
+DoubleLink add(String n,Avoid i)
+{
+DoubleLink  link;
+    hasKeys = true;
+    if isSorted
+        {
+        int flip = sortDescending ? -1 : 1;
+        entry = null;
+        while link = nextLink()
+            {
+            int comparison = flip * compare(n,key);
+            if comparison > 0
+                if link.next continue;
+                else goto appendLink;
+            or comparison == 0
+                goto appendLink;
+            else goto insertLink;
+            }
+        }
+    if !link
+        {
+        add(i);
+        link = last;
+        goto finishAdd;
+        }
+appendLink:
+    link        = link.append(i);
+    goto finishAdd;
+insertLink:
+    link        = link.insert(i);
+finishAdd:
+    key         = n;
+    return link;
+}
+
+/*****************************************************************************
+	Add to a keyed list in link order (default is in ascending order if the
+    list is not sorted).
+*****************************************************************************/
+void addInLinkOrder(DoubleLink inputLink)
+{
+DoubleLink  link;
+int flip = sortDescending ? -1 : 1;
+    entry = null;
+    while link = nextLink()
+        {
+        int ordered = flip * (inputLink.linkOrder - linkOrder);
+        if ordered > 0
+            if link.next continue;
+            else goto appendLink;
+        or ordered == 0
+            goto appendLink;
+        else goto insertLink;
+        }
+    if !link
+        {
+        add(inputLink.value);
+        link = last;
+        goto finishAdd;
+        }
+appendLink:
+    link        = link.append(inputLink.value);
+    goto finishAdd;
+insertLink:
+    link        = link.insert(inputLink.value);
+finishAdd:
+    key         = inputLink.key;
+    linkOrder   = inputLink.linkOrder;
+}
+
+/*****************************************************************************
+	Clear the list and release its resources (for reuse if globalLinkTape is set)
+*****************************************************************************/
+void clear()
+{
+    for entry = first
+        if globalLinkTape globalLinkTape.free((Avoid)entry);
+        else delete entry;
+    first   =
+	entry	=
+    last    = null;
+    length  = 0;
+}
+
+/***************************************************************************
+	Like pop treats the list as stack but pops off first item, not last.
+***************************************************************************/
+Avoid dQ()
+{
+Avoid    stuff = 0;
+    if first
+        {
+        stuff = first.value;
+        first.remove();
+        }
+    return stuff;
+}
+
+/***************************************************************************
+	If it exists, return the first link with key == name. The search takes
+    advantage of sort status. If not sorted, examines sequentially. It
+    leaves current entry as is.
+***************************************************************************/
+DoubleLink find(String name)
+{
+DoubleLink  saveEntry = entry;
+DoubleLink  link;
+    if hasKeys && name
+        {
+        entry = null;
+        if sortAscending
+            {
+            while link = nextLink()
+                if key lt name continue;
+                or key eq name goto endFind;
+                else break;
+            link = null;
+            }
+        or sortDescending
+            {
+            while link = priorLink()
+                if key lt name continue;
+                or key eq name goto endFind;
+                else break;
+            link = null;
+            }
+        else
+        while link = nextLink()
+            if key eq name goto endFind;
+        }
+endFind:
+    entry = saveEntry;
+    return link;
+}
+
+/***************************************************************************
+	If it exists, return the first value in the table with key == name
+***************************************************************************/
+Avoid get(String name)
+{
+DoubleLink link = find(name);
+    if link return value;
+    return null;
+}
+
+/***************************************************************************
+	Factory to return a new link
+***************************************************************************/
+DoubleLink getLink(Avoid item)
+{
+DoubleLink    link;
+    link    = globalLinkTape.getStrip();
+    memset(link,0,sizeof(DoubleLink));
+    value   = item;
+    list    = this;
+    return link;
+}
+
+/***************************************************************************
+	Factory to return a new link with key set
+***************************************************************************/
+DoubleLink getLink(String n,Avoid item)
+{
+DoubleLink    link = getLink(item);
+    key = n;
+    return link;
+}
+
+/*****************************************************************************
+	Insert an item at the beginning of the list.
+*****************************************************************************/
+DoubleLink insert(Avoid item)
+{
+    if !first
+    	{
+		first	=
+		last	= getLink(item);
+		first.list = this;
+		length++;
+		}
+    else first = first.insert(item);
+    return first;
+}
+
+/*****************************************************************************
+	Insert a keyed item at the beginning of the list. This pays no attention
+    to list order.
+*****************************************************************************/
+DoubleLink insert(String name,Avoid item)
+{
+    if !first
+    	{
+		first	=
+		last	= getLink(item);
+		first.list = this;
+		length++;
+		}
+    else first = first.insert(item);
+    first.key = name;
+    hasKeys = true;
+    return first;
+}
+
+/***************************************************************************
+	Iterator that goes thru the list in FIFO order. Uses the default
+    entry.
+***************************************************************************/
+Avoid next()
+{
+	if !entry
+		entry = first;
+	else entry = entry.next;
+	if entry return entry.value;
+	return null;
+}
+
+/***************************************************************************
+    A safer version of the iterator not subject to external interference.
+***************************************************************************/
+Avoid next(DoubleLink *&link)
+{
+    if !link
+        link = first;
+    else link = link.next;
+    if link return link.value;
+    return null;
+}
+
+/***************************************************************************
+    Iterator that goes thru the list in FIFO order and returns the next
+    link in the chain. Iterates using the default entry.
+***************************************************************************/
+DoubleLink nextLink()
+{
+    if !entry
+        entry = first;
+    else entry = entry.next;
+    return entry;
+}
+
+/***************************************************************************
+    Pop treats the list as a stack and pops off the last item.
+***************************************************************************/
+Avoid pop()
+{
+Avoid   stuff = 0;
+    if last
+        {
+        stuff = last.value;
+        last.remove();
+        }
+    return stuff;
+}
+
+/***************************************************************************
+	Iterator that goes thru the list in LIFO order.
+***************************************************************************/
+Avoid prior()
+{
+	if !entry
+		entry = last;
+	else entry = entry.prior;
+	if entry return entry.value;
+	return null;
+}
+
+/***************************************************************************
+    A safer version of the iterator not subject to external interference.
+***************************************************************************/
+Avoid prior(DoubleLink *&link)
+{
+    if !link
+        link = last;
+    else link = link.prior;
+    if link return link.value;
+    return null;
+}
+
+/***************************************************************************
+    Iterator that goes thru the list back to front and returns the next
+    link in the chain. Iterates using the default entry.
+***************************************************************************/
+DoubleLink priorLink()
+{
+    if !entry
+        entry = last;
+    else entry = entry.prior;
+    return entry;
+}
+
+/***************************************************************************
+	Adds an entry or overwrites if already exists. No duplicates
+***************************************************************************/
+DoubleLink put(String n,Avoid i)
+{
+DoubleLink link = find(n);
+    if link value = i;
+    else return add(n,i);
+    return link;
+}
+
+DoubleLink put(String n)
+{
+    return put(n,(Avoid)n);
+}
+
+/*****************************************************************************
+	Remove an item from the list. This is a brute force implementation that
+    loops thru the list until it finds the item then removes it. The DoubleLink
+    remove method cleans up the list as needed. Returns false if the removal
+    empties the list.
+*****************************************************************************/
+int remove(Avoid item)
+{
+    for entry = first
+        if entry.value == item
+            {
+            entry.remove();
+            entry	= null;
+            break;
+            }
+    return length;
+}
+
+/***************************************************************************
+    Just nulls out the entry.
+***************************************************************************/
+void resetIterator()
+{
+    entry = null;
+}
+
+/***************************************************************************
+    Sorts list using the compare method. The basic idea is to walk the list
+    forward, and keep the already traversed part of the list in order.
+    At the end of the list we done. If order is not null, sort is descending
+***************************************************************************/
+void sort(int &comparisor(DoubleLink,DoubleLink))
+{
+    if isSorted
+        {
+        int order = sortDescending ? -1 : 1;
+        entry = null;
+        while nextLink()
+            {
+moveForward:
+            DoubleLink followLink = entry.next;
+            if followLink
+                if order * comparisor(entry,followLink) <= 0 continue;
+                else {
+                    DoubleLink  link = entry;
+                    followLink.extract();
+                    while prior(link)
+                        {
+                        if order * comparisor(followLink,link) < 0 continue;
+                        else {
+                            link.append(followLink);
+                            goto moveForward;
+                            }
+                        }
+                    if !link && first
+                        {
+                        first.insert(followLink);
+                        goto moveForward;
+                        }
+                    }
+            }
+        return;
+        }
+     cerr "DoubleLinkList sort: must set isSorted first":;
+}
+
+/*****************************************************************************
+	Returns a double indirection array of contents of this list
+*****************************************************************************/
+void **toArray()
+{
+void	**atList,**list,*atData;
+	if !length return null;
+	atList	=
+	list	= (void**)malloc((length + 1) * sizeof(void*));
+	while atData = next()
+		{ *atList++ = atData; }
+    *atList = null;
+	return list;
+}

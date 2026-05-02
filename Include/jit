@@ -1,0 +1,293 @@
+external    Instance
+external    APFloat
+            APInt
+            ArrayRef
+            BasicBlock
+            Constant
+            ConstantFP
+            ConstantInt
+            EngineBuilder
+            ExecutionEngine
+            Function
+            FunctionPassManager
+            FunctionType
+            Instruction
+            IntegerType
+            IRBuilder<>
+            LLVMContext
+            Module
+            PHINode
+            PointerType
+            StringRef
+            SwitchInst
+            Twine
+            Type
+            Value
+            llvm.h noClassForward namespace llvm
+external
+{
+    void                emit(Instance i);
+    void                emitCall(Instance instance);
+    void                emitDeclare(Instance instance);
+    void                emitQualify(Instance instance);
+    int                 InitializeNativeTarget();
+    int                 verifyFunction(Function f);
+    alias
+        Context     LLVMContext
+        ;
+}
+external APFloat type
+{
+    APFloat(double d);
+    APFloat(float f);
+}
+external APInt type
+{
+    APInt(int size,long value,int isSigned);
+}
+external vector llvm.h  type
+external vector<Value*> llvm.h  extends vector type
+external vector<Type*> llvm.h  extends vector type
+external vector llvm.h  type
+{
+    void                    *begin();
+    void                    *end();
+    void                    push_back(Value v);
+    void                    push_back(Type v);
+    void                    push_back(BasicBlock b);
+    alias
+        ValueList       vector<Value*>
+        TypeList        vector<Type*>
+        add             push_back
+        ;
+}
+external ArrayRef<Value*> llvm.h  type
+{
+    alias
+        ValueArray      ArrayRef<Value*>
+        ;
+}
+external ArrayRef<Type*> llvm.h  type
+{
+    alias
+        TypeArray      ArrayRef<Type*>
+        ;
+}
+external Context type
+external BasicBlock
+{
+    static BasicBlock       Create(Context c,String name,Function f);
+    static BasicBlock       Create(Context c,String name);
+    alias
+        makeBlock   Create
+        ;
+}
+external ConstantInt extends Constant
+{
+    static Value			get(Type t,long i,int signed);
+    static Value			get(Context c,APInt i);
+    alias
+        getInt          get
+        ;
+}
+external ConstantFP extends Constant
+{
+    static Value			get(Type t,double d);
+    static Value			get(Context c,APFloat d);
+    alias
+        getDouble       get
+        ;
+}
+external SwitchInst extends Value
+{
+    void                    addCase(ConstantInt i,BasicBlock b);
+}
+// IRBuilder is a dummy type because tok would consider IRBuilder<> invalid otherwise
+external IRBuilder
+external IRBuilder<>
+{
+    Value                   CreateAdd(Value l,Value r,String s);
+    Value                   CreateFAdd(Value l,Value r,String s);
+    Value                   CreateAnd(Value l,Value r,String s);
+    Value                   CreateAlloca(Type t,Value l,String s);
+    Value                   CreateBitCast(Value l,Type t,String s);
+    Value                   CreateBr(BasicBlock b);
+    Value                   CreateCall(Value l);
+    Value                   CreateCall(Value l,Value arg,String s);
+    Value                   CreateCall(Value l,void* b,void* e,String s);
+    Value                   CreateCondBr(Value l,BasicBlock a,BasicBlock b);
+    Value                   CreateICmpEQ(Value l,Value r,String s);
+    Value                   CreateICmpNE(Value l,Value r,String s);
+    Value                   CreateICmpUGT(Value l,Value r,String s);
+    Value                   CreateICmpUGE(Value l,Value r,String s);
+    Value                   CreateICmpULT(Value l,Value r,String s);
+    Value                   CreateICmpULE(Value l,Value r,String s);
+    Value                   CreateICmpSGT(Value l,Value r,String s);
+    Value                   CreateICmpSGE(Value l,Value r,String s);
+    Value                   CreateICmpSLT(Value l,Value r,String s);
+    Value                   CreateICmpSLE(Value l,Value r,String s);
+    Value                   CreateFCmpUEQ(Value l,Value r,String s);
+    Value                   CreateFCmpUNE(Value l,Value r,String s);
+    Value                   CreateFCmpUGT(Value l,Value r,String s);
+    Value                   CreateFCmpUGE(Value l,Value r,String s);
+    Value                   CreateFCmpULT(Value l,Value r,String s);
+    Value                   CreateFCmpULE(Value l,Value r,String s);
+    Value                   CreateFCmpSGT(Value l,Value r,String s);
+    Value                   CreateFCmpSGE(Value l,Value r,String s);
+    Value                   CreateFCmpSLT(Value l,Value r,String s);
+    Value                   CreateFCmpSLE(Value l,Value r,String s);
+    Value                   CreateSDiv(Value l,Value r,String s);
+    Value                   CreateFDiv(Value l,Value r,String s);
+    Value                   CreateFMul(Value l,Value r,String s);
+    Value                   CreateFPExt(Value l,Type t,String s);
+    Value                   CreateFPToSI(Value l,Type t,String s);
+    Value                   CreateFPToUI(Value l,Type t,String s);
+    Value                   CreateFPTrunc(Value l,Type t,String s);
+    Value                   CreateFRem(Value l,Value r,String s);
+    Value                   CreateIntToPtr(Value l,Type t,String s);
+    Value                   CreateIsNull(Value l,String s);
+    Value                   CreateIsNotNull(Value l,String s);
+    Value                   CreateLoad(Value l,String s);
+    Value                   CreateMul(Value l,Value r,String s);
+    Value                   CreateNeg(Value l,String s);
+    Value                   CreateNot(Value l,String s);
+    Value                   CreateOr(Value l,Value r,String s);
+    PHINode                 CreatePHI(Type t,unsigned int i,String s);
+    Value                   CreatePtrToInt(Value l,Type t,String s);
+    Instruction             CreateRet(Value v);
+    Instruction             CreateRetVoid();
+    Value                   CreateSelect(Value s,Value t,Value f,String s);
+    Value                   CreateShl(Value l,Value r,String s);
+    Value                   CreateLShr(Value l,Value r,String s);
+    Value                   CreateSIToFP(Value l,Type t,String s);
+    Value                   CreateSRem(Value l,Value r,String s);
+    Instruction             CreateStore(Value l,Value p);
+    Value                   CreateSub(Value l,Value r,String s);
+    Value                   CreateFSub(Value l,Value r,String s);
+    SwitchInst              CreateSwitch(Value l,BasicBlock d,int i);
+    Value                   CreateTrunc(Value l,Type t,String s);
+    Value                   CreateUIToFP(Value l,Type t,String s);
+    Value                   CreateXor(Value l,Value r,String s);
+    Value                   CreateZExt(Value l,Type t,String s);
+    BasicBlock              GetInsertBlock();
+    void                    SetInsertPoint(BasicBlock b);
+    alias
+        Builder     IRBuilder<>
+        branch      CreateCondBr
+        branch      CreateBr
+        setInsert   SetInsertPoint
+        ;
+}
+external    ExecutionEngine 
+{
+    void*                   getPointerToFunction(Function f);
+    Function                FindFunctionNamed(String s);
+    alias
+        find        FindFunctionNamed
+        ;
+}
+external    EngineBuilder
+{
+    EngineBuilder(Module m);
+    ExecutionEngine         create();
+}
+external Function extends Value
+{
+    static int              ExternalLinkage;
+    static int              InternalLinkage;
+    static Function         Create(FunctionType f,int l,String name,Module m);
+    static Function         Create(FunctionType f,int l,String name);
+    vector                  getBasicBlockList();
+    void                    dump();
+    void                    eraseFromParent();
+    alias
+        erase           eraseFromParent
+        makeFunction    Create
+        ;
+}
+external FunctionPassManager
+{
+    FunctionPassManager(Module m);
+    int                     run(Function f);
+}
+external FunctionType
+{
+    static FunctionType     get(Type t,int isVariable);
+    static FunctionType     get(Type t,TypeList args,int isVariable);
+}
+external Module
+{
+    Module(String s,Context c);
+    void                    dump();
+    Function                getFunction(StringRef name);
+}
+external PHINode
+{
+    void                    addIncoming(Value v,BasicBlock b);
+    alias
+        Phi     PHINode
+        add     addIncoming
+        ;
+}
+external StringRef
+{
+    StringRef(String s);
+}
+external Twine type
+{
+    Twine(String s);
+}
+external Type
+{
+    Type                    getPointerTo();
+    static Type             getDoubleTy(Context c);
+    static Type             getDoublePtrTy(Context c);
+    static Type             getFloatTy(Context c);
+    static Type             getFloatPtrTy(Context c);
+    static Type             getInt8Ty(Context c);
+    static Type             getInt8PtrTy(Context c);
+    static Type             getInt16Ty(Context c);
+    static Type             getInt16PtrTy(Context c);
+    static Type             getInt32Ty(Context c);
+    static Type             getInt32PtrTy(Context c);
+    static Type             getInt64Ty(Context c);
+    static Type             getInt64PtrTy(Context c);
+    static Type             getLabelTy(Context c);
+    static Type             getVoidTy(Context c);
+    alias
+        pointerTo       getPointerTo
+        ;
+}
+external TypeArray llvm.h  type
+{
+    TypeArray(TypeList);
+}
+external Value
+{
+    void                    dump();
+    Type                    getType();
+    String                  getNameStr();
+    void                    setName(String s);
+    alias
+        getName             getNameStr
+        ;
+}
+external ValueArray llvm.h  type
+{
+    ValueArray(ValueList);
+}
+
+external    JitData
+{
+#autoGetSet
+Type            jitType;
+FunctionType    jitFtype;
+Value           jitter;
+Value           pointer;
+Phi             jitPhi;
+boolean
+    ignorePhi
+    ;
+    Value       getJitter();
+    void        setJitter(Value v);
+}

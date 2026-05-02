@@ -1,0 +1,84 @@
+
+include frameIncludes
+
+/*****************************************************************************
+	A simple list that will resize if it runs out of room. Default size is
+	10 and will double each time it resizes
+*****************************************************************************/
+class SimpleList
+{
+void	**start;
+int		length,
+		size;
+
+/*****************************************************************************
+	Constructors
+*****************************************************************************/
+SimpleList()
+{
+	size	= 10;
+	start	= (void**)calloc(size,sizeof(void*));
+}
+
+SimpleList(int s)
+{
+	size	= s;
+	start	= (void**)calloc(size,sizeof(void*));
+}
+
+/*****************************************************************************
+	clear the list
+*****************************************************************************/
+void clear()
+{
+	length	= 0;
+    free((void*)start)
+	start	= (void**)calloc(size,sizeof(void*));
+}
+
+/*****************************************************************************
+	Get the entry on the list referenced by the index passed in. Note: the
+    index starts with 0 not 1.
+*****************************************************************************/
+void *get(int index)
+{
+    if index >= 0 && index < length
+        return *(start + index);
+    return 0;
+}
+
+/*****************************************************************************
+	Push and pop methods just move the top pointer and set length, resizing
+	when length reaches size
+*****************************************************************************/
+void push(void *v)
+{
+void    **end = start + length;
+	if length == size
+		resize();
+	*end++	= v;
+	length++;
+}
+
+void *pop()
+{
+void	*top;
+	if length
+        {
+        length--;
+        void    **end = start + length;
+        top = *end;
+        *end = 0;
+        }
+	return top;
+}
+
+/*****************************************************************************
+	Resize doubles the size and does a realloc
+*****************************************************************************/
+void resize()
+{
+	size	= size * 2;
+	start	= (void**)reallocf((void*)start,size * sizeof(void*));
+}
+}

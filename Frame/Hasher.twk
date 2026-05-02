@@ -1,0 +1,132 @@
+include frameIncludes
+
+/******************************************************************************
+	Hasher provides a hashed collection. To add a Hasher to GroupItem, will have
+    to modify every add,insert,extract,push,pop, and remove method in GroupItem.
+    Will also have to modify any find or get method that returns a GroupItem
+******************************************************************************/
+class Hasher
+{
+int             hashSize;
+HashLink      **hashStack;
+
+/******************************************************************************
+	Constructors
+******************************************************************************/
+Hasher()
+{
+    hashSize    = 255;
+    hashStack   = (HashLink**)calloc(hashSize,sizeof(HashLink*));
+}
+
+Hasher(int tableSize)
+{
+	hashSize	= tableSize;
+	hashStack	= (HashLink**)calloc(hashSize,sizeof(HashLink*));
+}
+
+/******************************************************************************
+	Add entry, duplicates allowed.
+******************************************************************************/
+void addHash(HashLink newLink)
+{
+    if newLink
+        {
+        String      name        = newLink.key;
+        linkHash    = getHashIndex(name);
+        HashLink    atHash      = hashStack[linkHash];
+
+        if atHash
+            {
+            HashLink lastEntry = atHash;
+            // the hash may match multiple names so we have to check
+            while (atHash && atHash.key lt name)
+                {
+                lastEntry = atHash;
+                atHash = atHash.nextHash;
+                }
+            // duplicates allowed so we scan for the last match entered
+            if atHash
+                {
+                while atHash.nextHash && name eq atHash.nextHash.key
+                    atHash = atHash.nextHash;
+                atHash.appendToHash(newLink);
+                }
+            else lastEntry.appendToHash(newLink);
+            }
+        else hashStack[newLink.linkHash] = newLink;
+        }
+    else cerr "Hasher add: got null argument passed in";
+}
+
+/***************************************************************************
+    clear all entries from the table
+***************************************************************************/
+void clear()
+{
+HashLink    last,
+            link;
+int         i;
+    while i < hashSize
+        {
+        last = hashStack[i];
+        hashStack[i] = 0;
+        while last
+            {
+            link = last.nextHash;
+            delete last;
+            last = link;
+            }
+        i++;
+        }
+}
+
+/***************************************************************************
+	If it exists, return the first link with key == name
+***************************************************************************/
+HashLink find(String name)
+{
+    if name
+        {
+        int         hashed = getHashIndex(name);
+        HashLink	atHash = hashStack[hashed];
+        while (atHash && atHash.linkHash == hashed && atHash.key ne name)
+            atHash = atHash.nextHash;
+        if atHash && atHash.key eq name return atHash;
+        }
+    return null;
+}
+
+/***************************************************************************
+	Hash the name passed in and return the hash index
+***************************************************************************/
+int getHashIndex(String name)
+{
+unsigned int	h;
+char			*p	= name ;
+    while *p
+		{ h <<= 5; h += *p++; }
+	return h % hashSize;
+}
+
+/*****************************************************************************
+	Remove an item from the hash list.
+*****************************************************************************/
+void remove(HashLink link)
+{
+HashLink	last,
+            atHash = hashStack[link.linkHash];
+    do
+    if link == atHash
+        {
+        if last
+            {
+            last.nextHash = atHash.nextHash;
+            delete atHash;
+            break;
+            }
+        last = atHash;
+        }
+    while atHash = atHash.nextHash;
+}
+}

@@ -1,0 +1,154 @@
+include frameIncludes
+
+/*****************************************************************************
+	A simple stack that will resize if it runs out of room. Default size is
+	100 and will double each time it resizes
+*****************************************************************************/
+class Stak
+{
+void	**start,
+		**end,
+        **entry,
+		**fifo;
+int		length,
+		size;
+
+/*****************************************************************************
+	Constructors
+*****************************************************************************/
+Stak()
+{
+	length	= 0;
+	size	= 100;
+	fifo	=
+	start	= (void**)calloc(size,sizeof(void*));
+	end		= start;
+}
+
+Stak(int s)
+{
+	length	= 0;
+	size	= s;
+	fifo	=
+	start	= (void**)calloc(size,sizeof(void*));
+	end		= start;
+}
+
+/*****************************************************************************
+	clear the stack
+*****************************************************************************/
+void clear()
+{
+	length	= 0;
+	fifo	=
+	end		= start;
+	*end	= 0;
+}
+
+/*****************************************************************************
+	dQ is like pop but in fifo order. Note, if you switch back and forth
+	between pop and dQ (don't come crying if it fucks up).
+*****************************************************************************/
+void *dQ()
+{
+void	*top;
+	if length
+		{
+		length--;
+		top = *fifo;
+		*fifo++ = 0;
+		}
+    if !length entry = null;
+	return top;
+}
+
+/*****************************************************************************
+	Iterates thru the stack in fifo order returning the next entry.
+*****************************************************************************/
+void *next()
+{
+	if !length      return entry = null;
+	if !entry || entry < start  entry = start;
+	else entry++;
+    if entry >= end return entry = null;
+	return *entry;
+}
+
+/*****************************************************************************
+	Iterates thru the stack in lifo order returning the next entry.
+*****************************************************************************/
+void *prior()
+{
+	if !length          return entry = null;
+	if !entry || entry >= end   entry = end - 1;
+    else entry--;
+    if entry < start    return entry = null;
+	return *entry;
+}
+
+/*****************************************************************************
+	Push and pop methods just move the top pointer and set length, resizing
+	when length reaches size
+*****************************************************************************/
+void push(void *v)
+{
+	if length == size
+		resize();
+	*end++	= v;
+	length++;
+}
+
+void *pop()
+{
+void	*top;
+	if !length return null;
+	length--;
+	end--;
+	top = *end;
+	*end = 0;
+    if !length entry = null;
+	return top;
+}
+
+/*****************************************************************************
+	popOff clears multiple entries off of the stack. It does not complain if
+    you try to clear off more entries than the stack contains.
+*****************************************************************************/
+void popOff(int i)
+{
+	if length < i
+		{
+		end		= start;
+		length	= 0;
+		}
+	else {
+		length -= i;
+		end -= i;
+		}
+	*end	= 0;
+    if !length entry = null;
+}
+
+/*****************************************************************************
+	Resize doubles the size and does a realloc
+*****************************************************************************/
+void resize()
+{
+long offset = fifo - start;
+	size	= size * 2;
+	start	= (void**)reallocf((void*)start,size * sizeof(void*));
+	fifo	= start + offset;
+	end		= start + length;
+	*end	= 0;
+    entry   = null;
+}
+
+/*****************************************************************************
+	return whatever is on the top of the stack without popping
+*****************************************************************************/
+void *top()
+{
+	if !length return null;
+	return *(end-1);
+}
+}

@@ -1,0 +1,121 @@
+
+/*******************************************************************************
+	A class that contains a double link item
+*******************************************************************************/
+class DoubleLink
+{
+String          key;
+int             linkHash,
+                linkOrder;
+Avoid           value;
+DoubleLinkList  list;
+DoubleLink      next,
+                prior;
+
+DoubleLink(Avoid item)
+{
+    value = item;
+}
+
+/*****************************************************************************
+	Append a new link to this one
+*****************************************************************************/
+void append(DoubleLink link)
+{
+DoubleLink	save	= next;
+	next		= link;
+	next.prior	= this;
+	next.next	= save;
+	next.list	= list;
+	if save	
+		save.prior	= link;
+	if list
+        {
+        link.linkOrder = ++list.length;
+		if !save list.last = link;
+        }
+}
+
+/*****************************************************************************
+    Create a new link and append it to this one
+*****************************************************************************/
+DoubleLink append(Avoid item)
+{
+DoubleLink link = list ? getLink(item) : new(item);
+    append(link);
+    return link;
+}
+
+/*****************************************************************************
+    Extract this link from the chain it is in. It leaves list current entry
+    pointing to the entry that preceeds this extracted link so that you can
+    next thru the list extracting or removing as you go.
+*****************************************************************************/
+void extract()
+{
+    if !list return;
+    if entry = prior
+        prior.next  = next;
+    else first = next;
+    if next
+        next.prior  = prior;
+    else last       = prior;
+    list.length--;
+    if !list.length
+        first   =
+        entry   =
+        last    = null;
+    list = null;
+}
+
+/*****************************************************************************
+	Insert the link passed in before this one.
+*****************************************************************************/
+void insert(DoubleLink toBeInserted)
+{
+DoubleLink	save	= prior;
+	toBeInserted.prior	= save;
+	toBeInserted.next	= this;
+    prior               = toBeInserted;
+	if save
+		save.next	    = toBeInserted;
+	if list
+		{
+        toBeInserted.list = list;
+        toBeInserted.linkOrder = ++list.length;
+		if !save list.first = toBeInserted;
+		}
+}
+
+/*****************************************************************************
+    Create a new link and insert it before this one. This does not change
+    the current item on the parent list of this item.
+*****************************************************************************/
+DoubleLink insert(Avoid item)
+{
+DoubleLink  newEntry = list ? getLink(item) : new(item);
+    insert(newEntry);
+    return newEntry;
+}
+
+/*****************************************************************************
+    Create a new keyed link and insert it before this one. This does not change
+    the current item on the parent list of this item.
+*****************************************************************************/
+DoubleLink insert(String name,Avoid item)
+{
+DoubleLink  newEntry = list ? getLink(item) : new(item);
+    newEntry.key = name;
+    insert(newEntry);
+    return newEntry;
+}
+
+/*****************************************************************************
+	Remove this link from the chain it is in and return to the reuse list
+*****************************************************************************/
+void remove()
+{
+	extract();
+    globalLinkTape.free(this);
+}
+}

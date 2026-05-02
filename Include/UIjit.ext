@@ -1,0 +1,639 @@
+import /Users/anthony/Dropbox/data/Tawk/Include/OCframe
+/*******************************************************************************
+	This provides the external environment visible to the jit. Only selected
+    global methods and GroupItem methods are visible. We shall see if that is
+    sufficient.
+*******************************************************************************/
+external Actions
+external BitMAP
+external Buffer
+external Control
+external Details
+external DoubleLinkList
+external Filler
+external GroupItem
+external GroupList
+external GroupRegistry
+external Groups
+external Layout
+external ParseXML
+external PLGitem
+external PLGparse
+external PLGrgx
+external PLGrule
+external PLGset
+external PLGsetParse
+external PLGtester
+external KeyTable
+external Shadow
+external Source
+external Stak
+external Stylish
+external Tape
+external Tawk
+
+external
+{
+	void			add(BitMAP map,GroupItem item);
+    int             adjustHeight(GroupItem item,double rowHeight);
+	void			append(Buffer buffer,GroupItem item);
+	String			bitString(long source);
+    int             booleanIsSet(unsigned char *item,int wordOffset,int bitOffset);
+    int             buttonIsSet(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    void            buildMatrix(GroupItem item);
+    void            collapseTREE(GroupItem item);
+    GroupItem       columnAt(GroupItem row,int i);
+    int             columnIndex(GroupItem item);
+    int             columnCount(GroupItem item);
+    void            combine(GroupItem group,String name);
+	GroupItem		checkPad(GroupItem item);
+    GroupRegistry   expand(GroupItem item);
+    void            expand(GroupItem item,GroupItem attribute,GroupItem map);
+	void            eXPAND(GroupItem item,Event event);
+    GroupItem       expandOnTrait(GroupItem source,String type);
+    GroupItem       getBlock(GroupItem item,String text);
+	Details			getDetail(GroupItem item);
+    GroupItem       getExpandRecord(GroupItem block,GroupItem item,String type);
+    GroupItem       getMapped(GroupItem item);
+	int				isURL(GroupItem item);
+	Frame			indent(Frame f,double b);
+	Frame			indent(Frame f,double v,double h);
+    int             keyCode(GroupItem item);
+    void            removeBodyColumns(GroupItem block,int column);
+    void            setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);
+    void            setButton(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    void            setModified(GroupItem block);
+	String			toString(Frame f);
+    Date            timeEnd(Date d);
+	void            tRAIT(GroupItem item);
+}
+
+external BaseEntry
+{
+	String		key;
+	void		*value;
+	BaseEntry	next,
+				nextHash,
+				prior,
+				priorHash;
+}
+
+external BaseHash
+{
+	int
+				hashSize,
+				length;
+	BaseEntry 
+				**hashStack,
+				end,
+				entry,
+				start;
+}
+
+external	Buffer
+{
+	int			fd,
+				size;
+	String		atFile,
+				current,
+				end,
+				mark,
+				start;
+}
+external Bwana
+{
+	Actions			actions;
+	Control			controller;
+	FontManager		fontManager;
+	Window			window;
+	Groups			extendParser;
+	GroupRegistry	descriptions,
+                    properties,
+					types;
+    KeyTable        windows;
+    GroupItem       actionBlock,
+                    lastSelect,
+                    rowItem;
+    Source          expandables,
+                    selectedMembers,
+                    selectedAttributes;
+}
+external Control
+{
+    ParseXML		parser;
+    GroupItem       loadedItem,
+                    root;
+    DoubleLinkList	flexList;
+    Tape			detailTape;
+    Stak            expandStack;
+    Details			attributeDetail;
+    Date            timer;
+    int             reInitializing;
+    static Bwana    bwana;
+}
+external Details
+{
+    GroupItem		wig;
+    id				object;
+    SEL				draw;
+    Frame			saveFrame,
+                    frame;
+    Stylish			style;
+    Layout			view;
+    Event           event;
+    double			high,
+                    indent,
+                    length,
+                    mark,
+                    remaining;
+    int				level,
+                    offset,
+                    stretched;
+    boolean
+            attributed
+            collapsed
+            deferDraw
+            drawPath
+            editable
+            editing
+            expanded
+            fitted
+            fixHeight
+            fixWidth
+            fixX
+            fixY
+            hasBox
+            hasReactions
+            hidden
+            isMenu
+            isNext
+            isView
+            keyField
+            noData
+            orient:3[down across cards layers toggles]
+            panel
+            scrollableX
+            scrollableY
+            selectable
+            showBlank
+            showOnlyOne
+            sizeToFit:3[fitAcross fitDown fitBoth fitText]
+            sourced
+            subbed
+            trait
+            wasReset
+            window
+            ;
+}
+
+external	DoubleLink
+{
+	DoubleLinkList	list;
+	void			*value;
+	DoubleLink		next,
+					prior;
+}
+
+external	DoubleLinkList
+{
+	void		*owner;
+	DoubleLink	current,
+				entry,
+				first,
+				last;
+	int			length;
+	Tape		linkTape;
+}
+
+external Layout extends View
+{
+    GroupItem       activeMenu,
+                    base,
+                    selection;
+    TextCell        cell;
+    TextField       field;
+    Details         detail;
+    Font            lastFont;
+    BOOL            debug,
+                    drawn,
+                    laidout,
+                    noSelectSource,
+                    notSelectable;  
+    Stak            layerStack,
+                    strokeStack;
+    Path            path;
+
+    void        deselect();
+    int         select(GroupItem block);
+}
+
+external GroupItem C
+{
+#autoGetSet
+String			tag;
+GroupItem		parent;
+BitMAP			attributes,
+                members;
+void            *other;
+GroupRegistry	registry;
+unsigned long	itemIndex;
+ParseXML		parser;
+String          gText;
+int				index;
+int             offset;
+union
+    int			gCount;
+    GroupItem   gGroup;
+    PLGitem		gItem;
+    BitMAP		gMap;
+    double		gNumber;
+    void		*gPointer;
+    PLGrgx      gRegex;
+    ;
+union
+    void        &method(GroupItem);
+    GroupItem   &methodRG(GroupItem);
+    ;
+boolean
+        fLAG
+        cdata
+        compareTags
+        copied
+        copyOnAdd
+        data:4[isCount isGroup isItem hasMap isNumber isString isDate isPointer isRegex]
+        deferred
+        deleted
+        descending
+        doNotChangeParent
+        doNotIndex
+        dotdot
+        expanded
+        hasList
+        hasListener
+        hasMacro
+        hasRegex
+        indented
+        indexed
+        isAny
+        isAlternate
+        isAttribute
+        isClosed
+        isComment
+        isMacro
+        isMapped
+        isOption:3[star plus question bang]
+        isPercent
+        isRegistry
+        isShell
+        isSingleton
+        isStored
+        isTarget
+        keyAction
+        loaded
+        methodType:3[returnsVoid returnsGroupItem]
+        modified
+        mustIndent
+        needsMerge
+        noAnchor
+        noDuplicates
+        noMerge
+        noPrint
+        noTag
+        reacts
+        released
+        rightClick
+        track
+        ;
+static int	deferMaps;
+static Tawk tawkParser;
+	alias
+			count				gCount
+            group               gGroup
+            hasMaximum          expanded
+            hasMinimum          indented
+			item				gItem
+			map					gMap
+			number				gNumber
+			pointer				gPointer
+            regex               gRegex
+            text                gText
+			value				data
+			;
+    void            addAsAttribute(GroupItem item);
+	GroupItem		addAttrDouble(String n,double v);
+    GroupItem       addAttrGroup( String n,GroupItem v );
+	GroupItem		addAttrInt(String n,int v);
+	GroupItem		addAttrItem(String n,PLGitem v);
+    void            addAttrMap(BitMAP map);
+	GroupItem		addAttrString(String n,String v);
+	GroupItem		addAttrValue(String n,void *v);
+    void            addAttributesOf(GroupItem group);
+	void			addBody(PLGitem i);
+	GroupItem		addGroup(GroupItem g);
+	void			addMap(BitMAP map);
+	void			addMembersOf(GroupItem group);
+	GroupItem		addString(String n);
+    void            and(GroupItem item);
+	BitMAP			buildMap(int flag);
+    int				checkPath(GroupItem path,GroupItem block,GroupItem groupParent);
+    void            clear();
+	int				compareMask(GroupItem item,GroupItem mask);
+	int				compare(GroupItem item);
+    GroupItem       copyAttributes(int attributeFlag);
+    GroupItem		copy();
+    void            dumpAttribute(int indent);
+	void			dumpDetail(int indent,int level);
+	GroupItem		find(String name);
+    GroupItem       findAttribute(String name);
+    GroupItem       first(String name);
+	GroupItem		get(String name);
+	GroupItem		getAttribute(String name);
+	GroupItem		getFromPath(GroupItem path);
+	GroupItem		getFromList(GroupItem list,GroupItem path);
+	void			getMacro();
+	GroupItem		getMember(String name);
+	String			getTagXML();
+	char			getChar();
+	int				getCount();
+    GroupItem       getGroup();
+	PLGitem			getItem();
+    DoubleLinkList  getList();
+	BitMAP			getMap();
+	double			getNumber();
+	void			*getPointer();
+    PLGrgx          getRegex();
+	String			getText();
+    void            groupBy(GroupItem mask);
+	void			indent(Buffer b);
+    int             indexInParent();
+	int				indexMatches(GroupItem group);
+	GroupItem		itemAt(int index);
+	void			listenTo(GroupItem group);
+    void            loadDirectory();
+    void            mapAttributes();
+    GroupItem       mapContents(String name);
+    void            mapGroupWRT(GroupItem field);
+    GroupItem       mapWRT(String name);
+	int				matchAttribute(GroupItem target,int notMember);
+	GroupItem       matches(GroupItem path);
+	int				maximum();
+	void			merge(GroupItem group);
+    void            mergeAttributes(GroupItem group);
+    void            mergeIfFound(String name);
+	int				minimum();
+	GroupItem		nextAttribute(GroupItem *&group);
+	GroupItem		nextBlock();
+	GroupItem		nextMember(GroupItem *&group);
+    void            printData(String name);
+	GroupItem		priorBlock();
+	GroupItem		priorMember(GroupItem *&group);
+	void			registerIn(GroupRegistry type);
+    void            release();
+	void			removeAttribute(GroupItem group);
+	void			removeMember(GroupItem group);
+    void            replaceWith(GroupItem item);
+	unsigned long	setBitIndex();
+	void			setCount(int i);
+    void            setGroup(GroupItem g);
+	void			setItem(PLGitem i);
+	void			setMap(BitMAP i);
+	void			setMethod(void &m(GroupItem));
+	void			setNumber(double d);
+    void            setParent(GroupItem item);
+	void			setPointer(void *v);
+    void            setRegex(PLGrgx v);
+	void			setText(String s);
+	void			setGroupContent(GroupItem item);
+	DoubleLinkList	sortByAttribute(String mask);
+	DoubleLinkList	sortByMask(GroupItem mask);
+	GroupItem		**toArray();
+	GroupItem		**toArrayFromMap(BitMAP map);
+	void			toBuffer(Buffer b);
+	DoubleLinkList	toList();
+	String			toString();
+	void			updateListeners();
+    GroupItem       walk(GroupItem *item);
+	String			wrap(String text);
+	String			wrapItem(PLGitem item);
+    String          wrapValue(String text);
+	void			writeBody(Buffer b);
+	void			writeTagXML(Buffer b);
+	alias
+            Group               GroupItem
+            add                 addGroup
+            add                 addString
+            add                 addMap
+            addAttribute        addAttrDouble
+            addAttribute        addAttrGroup
+            addAttribute        addAttrInt
+            addAttribute        addAttrItem
+            addAttribute        addAttrString
+            addAttribute        addAttrValue
+            compare             compareMask
+            copy                copyAttributes
+            dump                dumpDetail(0,1)
+            get                 itemAt
+            getDate             getItem
+            getFrom             getFromPath
+            getFrom             getFromList
+            /*****************************************************************
+                next (and nextTrait):
+                Iterator over members of the calling group. Uses the GroupItem
+                group field as the iterator variable, so this method should
+                only be used with groups that do not have a value. Basically,
+                it is a wrapper for nextMember but supplying its own group as
+                the referenced parameter. To initialize the iterator set the
+                group field to null before calling this method.
+            *****************************************************************/
+            next                nextMember(gGroup)
+            nextTrait           nextAttribute(gGroup)
+			new					itemFactory
+            sort                sortByAttribute
+            sort                sortByMask
+            toArray             toArrayFromMap
+            wrap                wrapItem
+            ;
+    overload
+            []      getAttribute
+            []=     addAttribute
+            +=      add
+            &=      and
+            -=      removeMember
+            %-=     removeAttribute
+            /       getMember
+            %       getAttribute
+            %=      addAsAttribute
+            ;
+}
+
+external GroupRegistry extends BaseHash
+{
+	String				type;
+	GroupItem			**list;
+	ParseXML			registryParser;
+    BitMAP              registryMap;
+	boolean
+				dataLoaded
+				grouped
+                loadAsAttributes
+				loadByValue
+                loadComponents
+				loadFromData
+				loadLazy
+                mapped
+				noAttributes
+				noMerge
+                resetList
+                tagged
+				;
+	static BaseHash		registries;
+	static PLGset		mustQuoteSet;
+}
+
+external ParseXML extends PLGparse
+{
+GroupRegistry	fieldRegistry,
+                currentRegistry;
+GroupItem		ancestor,
+                block,
+                currentBlock,
+                field,
+                list,
+                outerBlock,
+                record;
+PLGitem			testItem;
+Buffer			scratch;
+boolean
+                complexPath
+                doneWithHeading
+                doNotExpandMacros
+                droppedAnchor
+                firstTag
+                hasHeading
+                ignoreNoPrint
+                ignoreSkip
+                isRigorous
+                isThreaded
+                locating
+                matchTag
+                noBlankAttributes
+                noCDATA
+                numberValues
+                settingPath
+                targetSet
+                trimLeadingSpace
+                ;
+String			outputFile,
+                skip,
+                setName;
+char			delimiter,
+                endRecord,
+                outputDelimit,
+                outputEnd;
+int				groupItems,
+                indentCount,
+                openTags
+                recordNumber;
+PLGset			cdataSet,
+                notSpace,
+                spaces,
+                xpathSet;
+Stak			blockStack,
+                endTags;
+BaseHash        searchList;
+ParseXML		pathParser;
+Tape			contentTape;
+GroupList		groupList;
+	GroupItem       itemFactory();
+	GroupItem       itemFactory(String s);
+    GroupItem       itemFactory(String c,GroupItem g);
+	GroupItem       itemFactory(PLGitem item);
+	GroupItem       itemFactory(String s,void *v);
+	GroupItem       itemFactory(String s,String v);
+	GroupItem       itemFactory(GroupItem g);
+	GroupItem       load(GroupItem specs);
+    GroupItem       locate(String name);
+}
+
+external ParseXML.h
+{
+    GroupItem       locateGroup(GroupItem item,String text);
+}
+
+external Source
+{
+    GroupItem       **list,
+                    nextItem,
+                    priorItem,
+                    sourceItem;
+    DoubleLinkList  listeners;
+    int             paged;
+    BitMAP          map;
+    boolean
+            exhausted
+            sorted
+            sourceAttributes
+            ;
+}
+
+external    StringRoutines.h
+{
+    int         bitCount(unsigned long bits);
+    int         booleanIsSet(unsigned char *item,int wordOffset,int bitOffset);
+    int         buttonIsSet(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    int         checkSys(int r, String s);
+    int         compare( String s1,String s2 );
+    String      concat(int count ...);
+    void        convertNewLine(String text);
+    String      copy(String input);
+    String      getStringFromFile(String inputFile);
+    String      headToChar(String input,char match);
+    String      headToString( String s,String c );
+    void        setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);
+    void        setButton(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    String      tail( String s,String c );
+    String      toStringFromChar( char c );
+    String      toStringFromInt( int i );
+    String      toStringFromLong( long l );
+    String      toStringFromFloat( float f );
+    String      toStringFromDouble( double d );
+    String      truncateString(String text,int length);
+    String      urlDecode(String in);
+    alias
+        head        headToChar
+        head        headToString
+        toString    toStringFromChar
+        toString    toStringFromInt
+        toString    toStringFromLong
+        toString    toStringFromFloat
+        toString    toStringFromDouble
+        ;
+}
+
+external Stylish
+{
+    String          styling;
+    Font			font;
+    Filler          filler,
+                    selectFill;
+    Color			selectStroke,
+                    stroker,
+                    texter;
+    Shadow          shadow;
+    double			borderWidth,
+                    radius,
+                    transparency;
+    boolean
+            align:2[center left right]
+            bottomBorder
+            filled
+            fontModified
+            imageSized
+            leftBorder
+            rightBorder
+            rounded
+            squared
+            stroked
+            topBorder
+            ;
+}

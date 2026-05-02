@@ -1,0 +1,133 @@
+include frameIncludes
+
+/*******************************************************************************
+	A class that contains a link item for a HashList. None of the methods
+    pay any attention to the HashList hash (hashing is controled by HashList).
+*******************************************************************************/
+class HashLink
+{
+String          key;
+int             linkHash;
+void*           value;
+HashList        list;
+HashLink        next,
+                prior,
+                nextHash;
+
+HashLink(void* item)
+{
+    value = item;
+}
+
+/*****************************************************************************
+	Append a new link to this one
+*****************************************************************************/
+void append(HashLink link)
+{
+HashLink	save	= next;
+	next		= link;
+	next.prior	= this;
+	next.next	= save;
+	next.list	= list;
+	if save
+		save.prior	= link;
+	if list && !save
+        list.last = link;
+    list.hashListLength++;
+}
+
+/*****************************************************************************
+    Create a new link and append it to this one
+*****************************************************************************/
+HashLink append(void* item)
+{
+HashLink link = list ? getLink(item) : new(item);
+    append(link);
+    return link;
+}
+
+/*****************************************************************************
+    Append the link passed in to this one
+*****************************************************************************/
+void appendToHash(HashLink link)
+{
+    link.nextHash       = nextHash;
+    nextHash    = link;
+    list.hashListLength++;
+}
+
+/*****************************************************************************
+    Extract this link from the chain it is in. It leaves list current entry
+    pointing to the entry that preceeds this extracted link so that you can
+    next thru the list extracting or removing as you go.
+*****************************************************************************/
+void extract()
+{
+    if !list return;
+    if entry = prior
+        prior.next  = next;
+    else first = next;
+    if next
+        next.prior  = prior;
+    else last       = prior;
+    list.hashListLength--;
+    if !list.hashListLength
+        first   =
+        entry   =
+        last    = null;
+    list = null;
+}
+
+/*****************************************************************************
+	Insert the link passed in before this one.
+*****************************************************************************/
+void insert(HashLink toBeInserted)
+{
+HashLink	save	= prior;
+	toBeInserted.prior	= save;
+	toBeInserted.next	= this;
+    prior               = toBeInserted;
+	if save
+		save.next	    = toBeInserted;
+	if list
+		{
+        toBeInserted.list = list;
+		if !save list.first = toBeInserted;
+		}
+    list.hashListLength++;
+}
+
+/*****************************************************************************
+    Create a new link and insert it before this one. This does not change
+    the current item on the parent list of this item.
+*****************************************************************************/
+HashLink insert(void* item)
+{
+HashLink  newEntry = list ? getLink(item) : new(item);
+    insert(newEntry);
+    return newEntry;
+}
+
+/*****************************************************************************
+    Create a new keyed link and insert it before this one. This does not change
+    the current item on the parent list of this item.
+*****************************************************************************/
+HashLink insert(String name,void* item)
+{
+HashLink  newEntry = list ? getLink(item) : new(item);
+    newEntry.key = name;
+    insert(newEntry);
+    if list && hasher list.addHash(newEntry);
+    return newEntry;
+}
+
+/*****************************************************************************
+	Remove this link from the chain it is in and return to the reuse list
+*****************************************************************************/
+void remove()
+{
+    if hasher hasher.remove(this);
+	extract();
+    globalLinkTape.free(this);
+}
+}

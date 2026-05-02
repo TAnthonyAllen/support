@@ -1,0 +1,42 @@
+include frameIncludes
+
+/*****************************************************************************
+	A class wrapper for Tape segments.
+*****************************************************************************/
+class TapeSegment
+{
+int         segmentLength,
+            segmentSize;
+void        **segmentStart,
+            **segmentCurrent;
+
+TapeSegment(int size,int recordLength)
+{
+    segmentStart    = (void**)calloc(size,recordLength);
+    segmentCurrent  = segmentStart;
+    segmentSize     = size;
+}
+
+/*****************************************************************************
+	Returns true if the segment contains the spot passed in on a strip boundary.
+*****************************************************************************/
+int contains(void** spot)
+{
+    return spot >= segmentStart && spot - segmentStart < segmentSize;
+}
+
+/*****************************************************************************
+	Return the next strip in the segment.
+*****************************************************************************/
+void* next(int stripSize)
+{
+void** spot;
+    if segmentSize > segmentLength
+        {
+        segmentLength++;
+        spot	= segmentCurrent;
+        segmentCurrent += stripSize;
+        }
+    return (void*)spot;
+}
+}

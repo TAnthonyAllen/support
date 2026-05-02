@@ -1,0 +1,127 @@
+
+external mysql.h
+{
+	typedef MYSQL;
+	typedef MYSQL_ROW;
+	typedef MYSQL_FIELD
+		{
+		String		name,
+					table,
+					db;
+		};
+	typedef MYSQL_RES;
+	
+	long		mysql_affected_rows(MYSQL m);
+	int			mysql_autocommit(MYSQL m,int mode);
+	void		mysql_close(MYSQL m);
+	String		mysql_error(MYSQL m);
+	MYSQL_FIELD	mysql_fetch_field(MYSQL_RES r);
+	int*		mysql_fetch_lengths(MYSQL_RES r);
+	MYSQL_ROW	mysql_fetch_row(MYSQL_RES r);
+	void		mysql_free_result(MYSQL_RES r);
+	MYSQL		mysql_init(MYSQL m);
+	int			mysql_num_fields(MYSQL_RES r);
+	long		mysql_num_rows(MYSQL_RES r);
+	int			mysql_query(MYSQL m,String s);
+	MYSQL		mysql_real_connect(MYSQL m,String host,String user,String passwd,String DB,int port,String sock,int flag);
+	MYSQL_RES	mysql_store_result(MYSQL m);
+}
+
+external sqlite.h
+{
+	typedef		sqlite3;
+	int			sqlite3_close(sqlite3 *db);
+	int			sqlite3_exec(sqlite3 *db,String s,int &cb(void*,int,char**,char**),void *v,char **e);
+	void		sqlite3_free(String s);
+	int			sqlite3_open(String s,sqlite3 **db);
+	alias
+		dbClose		sqlite3_close
+		dbExec		sqlite3_exec
+		dbFree		sqlite3_free
+		dbOpen		sqlite3_open
+		;
+}
+
+external ParseXML
+external GroupItem
+external Tawk
+
+external BotClient OC
+{
+ParseXML    parser;
+GroupItem   item;
+    String      get();
+    int         run(String text);
+}
+
+external BotServer OC
+{
+    id          botProxy;
+    void        runServer(String text,double duration);
+    void        runClient(String server,String filename);
+    alias
+        runServer       runServer(duration=60)
+        ;
+}
+
+external ConnectM
+{
+String		host,
+            user,
+            password,
+            DB,
+            socket;
+int			port;
+boolean
+            debug
+            ;
+
+	ConnectM();
+	void		close();
+	int			connect();
+	void		getData(String s,GroupItem r);
+	void		getMembers(String s,GroupItem g);
+	int			query(String s);
+}
+
+external ConnectLite
+{
+String		name;
+sqlite3		*database;
+int			&callback(void *n,int columns,char **value,char **label);
+boolean
+            debug
+            ;
+
+	ConnectLite(String s);
+	void		close();
+	int			connect();
+	int			exec(String s);
+	void		getData(String s,GroupItem r);
+	void		getMembers(String s,GroupItem g);
+	void		query(String s,void *d,int &cb(void*,int,char**,char**));
+	alias
+		Connect		ConnectLite
+		;
+}
+
+external DateParser extends PLGparse
+{
+    PLGitem         parseMDY(PLGitem item);
+    PLGitem         parseYMD(PLGitem item);
+	PLGitem         run(String s);
+}
+
+external Grope
+{
+Connect			connector;
+	Grope();
+	Grope(String s);
+	void			createTables();
+	void			expand(GroupItem source,GroupItem attribute);
+	GroupItem		find(String t,String n);
+	GroupItem       load(String name);
+	void			load(GroupItem item);
+}
+
+

@@ -1,0 +1,559 @@
+external    DoubleLink
+external	DoubleLinkList
+external    PLGitem
+external	PLGset
+external	Stack
+external	Stak
+external	Tape
+
+external gc
+external BaseHash
+{
+int             hashSize;
+DoubleLink      **hashStack;
+DoubleLinkList  hashList;
+					BaseHash();
+					BaseHash(int i);
+    DoubleLink      add(String name,void *entry);
+    DoubleLink      add(String name);
+    void            clear();
+	DoubleLink		find(String name);
+	void*			get(String name);
+    void*           get(PLGitem item);
+	int				getHashIndex(String name);
+    void            listKeys();
+    void*           next(String name);
+    DoubleLink      put(String name,void *entry);
+    DoubleLink      put(String name);
+    void*           remove(String name);
+    void            removeFromHash(DoubleLink atHash);
+    alias
+        addToHash       add
+        getHashedValue  get
+        push            add
+        ;
+    overload
+            []      get
+            []=     add
+            +=      add
+            -=      remove
+            ;
+}
+
+//external    Buffer C addClassNameToMethods
+external    Buffer
+{
+#autoGetSet
+String      bufferName;
+int			fd,
+            roomLeft,
+			size;
+String		file,
+			current,
+			end,
+			mark,
+			start;
+    void    appendChar(char c);
+    void    appendCount(int i,String format);
+    void    appendCount(int i);
+    void    appendNumber(double d,String format);
+    void    appendNumber(double d);
+    void    appendString(String text,String format);
+    void    appendString(String text);
+    void    backupToMark();
+    int     closeFile();
+    void    deleteFromBuffer(int count);
+    String  getMarkedString();
+    void    extend(int i);
+    void    flush();
+    void    insertIntoBuffer(String text,int offset);
+    int     length();
+    void    reset();
+    void    reSize(int length);
+    void    setMark();
+    void    setFile(String s);
+    String  string();
+    void    tabRight(int count);
+    String  tail(int offset);
+    String  toString();
+    void    unMark();
+    // Order of the two last append aliases is important below
+    alias
+        new             bufferFactory
+        append          appendChar
+        append          appendCount
+        append          appendString
+        append          appendChar
+        delete          deleteFromBuffer(count=1)
+        insert          insertIntoBuffer
+        ;
+    overload
+        +=  append
+        -=  deleteFromBuffer
+        ;
+}
+
+external    Buffer.h
+{
+    Buffer      bufferFactory1();
+    Buffer      bufferFactory2(String name);
+    Buffer      bufferFactory3(String name,int buffersize);
+    Buffer      bufferFactory4(int buffersize);
+    alias
+        bufferFactory   bufferFactory1
+        bufferFactory   bufferFactory2
+        bufferFactory   bufferFactory3
+        bufferFactory   bufferFactory4
+        ;
+}
+
+external    GroupItem
+external	DispatchQ
+{
+int			count,
+            interval;
+DQ			qu;
+void		*data;
+Dgroup		dispatchGroup;
+	DispatchQ(String label);
+	DispatchQ(int priority);
+	DispatchQ();
+	void			after(void ^block());
+	void			after(void &method(void*));
+	void			repeat(void ^block(int));
+	void			repeat(void &method(void*,int));
+	void			run(void ^block());
+	void			run(void &method(void*));
+	void			wait(Dtime time);
+}
+
+external    DispatchQ.h
+{
+    extern          void dispatcher(void* stuff);
+}
+
+external	DoubleLink
+{
+String          key;
+int             linkHash,
+                linkOrder;
+void*           value;
+DoubleLinkList  list;
+DoubleLink      next,
+                prior;
+	DoubleLink(void* v);
+    void                append(DoubleLink link);
+    DoubleLink          append(void* item);
+    void                extract();
+    void                insert(DoubleLink toBeInserted);
+	DoubleLink			insert(void* item);
+	DoubleLink			insert(String name,void* item);
+	void				remove();
+}
+
+external	DoubleLinkList
+{
+#autoGetSet
+static Tape globalLinkTape;
+DoubleLink	entry,
+            first,
+            last;
+int			length;
+boolean
+    hasKeys
+    isSorted:3[sortAscending sortDescending]
+    noDuplicates
+    ;
+	DoubleLinkList();
+	DoubleLink          add(void* v);
+    DoubleLink          add(DoubleLink link);
+    DoubleLink          add(String n,void* entry);
+    DoubleLink          add(String name);
+    void                addInLinkOrder(DoubleLink inputLink);
+	void				clear();
+    void*               dQ();
+    DoubleLink          find(String name);
+    void*               get(String name);
+	DoubleLink          getLink(void* item);
+    DoubleLink          getLink(String n,void* item);
+	DoubleLink          insert(void* v);
+	DoubleLink          insert(String name,void* v);
+	void*				next();
+    void*               next(DoubleLink *&link);
+    DoubleLink          nextLink();
+    void*               pop();
+	void*				prior();
+    void*               prior(DoubleLink *&link);
+    DoubleLink          priorLink();
+    DoubleLink put(String n,void* i);
+    DoubleLink put(String n);
+    int                 remove(void* item);
+    void                resetIterator();
+    void                sort(int &comparisor(DoubleLink,DoubleLink));
+	void				**toArray();
+    alias
+        push        add
+        reset       resetIterator
+        ;
+    overload
+            /       get
+            []      get
+            []=     add
+            +=      add
+            -=      remove
+            ;
+}
+
+external    HashList
+external    HashLink
+{
+String          key;
+int             linkHash;
+void*           value;
+HashList        list;
+HashLink        next,
+                prior,
+                nextHash;
+    HashLink(void* item);
+    void        append(HashLink link);
+    HashLink    append(void* item);
+    void        appendToHash(HashLink link);
+    void        extract();
+    void        insert(HashLink toBeInserted);
+    HashLink    insert(void* item);
+    HashLink    insert(String name,void* item);
+    void        remove();
+    alias
+        new     getLink
+        ;
+}
+
+external    Hasher
+{
+int             hashSize;
+HashLink      **hashStack;
+    Hasher();
+    Hasher(int tableSize);
+    void        addHash(HashLink newLink);
+    void        clear();
+    HashLink    find(String name);
+    int         getHashIndex(String name);
+    void        remove(HashLink link);
+}
+
+external	HashList
+{
+#autoGetSet
+HashLink	entry,
+            first,
+            last;
+int			hashListLength;
+Hasher      hasher;
+boolean
+    hasKeys
+    isSorted:3[sortAscending sortDescending]
+    noDuplicates
+    ;
+    HashList();
+    HashList(Hasher h);
+    HashLink        add(void* item);
+    HashLink        add(String n,void* i);
+    void            clear();
+    void*           dQ();
+    HashLink        find(String name);
+    void*           get(String name);
+    HashLink        getLink(void* item);
+    HashLink        getLink(String n,void* item);
+    HashLink        insert(void* item);
+    HashLink        insert(String name,void* item);
+    void*           next();
+    void*           next(HashLink *&link);
+    HashLink        nextLink();
+    void*           pop();
+    void*           prior();
+    void*           prior(HashLink *&link);
+    HashLink        priorLink();
+    HashLink        put(String n,void* i);
+    HashLink        put(String n);
+    int             remove(void* item);
+    void            resetIterator();
+    void            sort(int &comparisor(HashLink,HashLink));
+    void          **toArray();
+    alias
+        push        add
+        reset       resetIterator
+        ;
+    overload
+            /       get
+            []      get
+            []=     add
+            +=      add
+            -=      remove
+            ;
+}
+
+external	KeyTableItem
+{
+String			key;
+union
+    void		*value;
+    String      itemText;
+;
+int             position;
+KeyTableItem	next;
+	KeyTableItem( String a,void *c );
+}
+
+external	KeyMap
+{
+char			letter;
+PLGset			follow;
+DoubleLinkList	entries;
+int				length;
+	KeyMap(char c);
+	KeyTableItem	find(String s);
+}
+
+external	KeyTable
+{
+String			name;
+DoubleLinkList	letterMaps;
+int				debug,
+				max,
+				size;
+KeyTableItem	current, first, last;
+void            **keyValueList;
+PLGset          keySet;
+    KeyTable();
+	KeyTable(String s);
+	int             add(String s);
+	int             add(String s,void *v);
+	void			dump(int i);
+	void			*find(String s);
+    KeyTableItem    findKeyItem(String key);
+	KeyTableItem	getNext();
+    void            *itemAt(int index);
+	KeyTableItem	matches(String s);
+	DoubleLink		newLink();
+	void			*next();
+	overload
+		[]		find
+		[]=		add
+		+=		add
+		;
+    alias
+        get     find
+        length  size
+        ;
+}
+
+external	PrintBuffer
+{
+	String		atFile,
+                start,
+				current;
+	int			drain;
+	PrintBuffer(int i);
+	PrintBuffer(String s,int i);
+	String	endString( int i );
+	String	toString();
+	void	append( String s );
+	void	back( int i );
+	void	flush();
+	void	closeFile();
+	void	reset();
+ 	void	setFile( String s );
+}
+
+external	SearchItem
+{
+		SearchItem(void *v);
+        void		*value;
+        SearchItem	next;
+}
+external	SearchNode
+{
+        SearchNode	equal,
+					left,
+					right;
+        char		splitter;
+        SearchItem	start,
+					end;
+		SearchNode(String s);
+}
+external	SearchTree
+{
+		SearchNode	root;
+		SearchTree();
+		void		add( String s );
+		void		add( String s,void *v );
+		void*		find( String s );
+		SearchItem	remove( String s );
+		SearchItem	search( String s );
+		DoubleLinkList	getList();
+}
+
+external	StackItem
+{
+	void		*value;
+	StackItem
+				next,
+				prior;
+}
+
+external	Stack
+{
+	StackItem	bottom,
+				top;
+        int		size;
+	Stack();
+	int		isEmpty();
+	void	*getTop();
+	void	clear();
+	void	push( Stack s );
+	void	push( int i );
+	void	push( void* v );
+	void	*pop();
+	void	*popFront();
+}
+
+external Stak
+{
+	int			length,
+				size;
+	void		**start,
+				**end,
+                **entry,
+				**fifo;
+
+	Stak();
+	Stak(int i);
+	void		clear();
+    void        *next();
+    void        *prior();
+	void		push(void *v);
+	void		*pop();
+	void		popOff(int i);
+	void		resize();
+	void		shrink();
+	void		*top();
+overload
+	+=	push
+    --  pop
+    ;
+}
+
+external	StringBuffer
+{
+	String	current,
+			end,
+			start;
+	int		size;
+
+	StringBuffer();
+	StringBuffer(int i);
+	String	string();
+	String	toString();
+	void	append( String s );
+	void	extend();
+	void	reset();
+	int		length();
+}
+
+external StringRoutines
+{
+    static int  debugIndent;
+}
+external	StringRoutines.h
+{
+    extern String      alignLeft(String text,int length);
+    extern String      alignRight(String text,int length);
+    extern int         bitCount(unsigned long bits);
+    extern int         booleanIsSet(unsigned char *item,int wordOffset,int bitOffset);
+    extern int         buttonIsSet(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    extern int         checkSys(int r, String s);
+	extern int         compare(String left, String right);
+    extern int         compareToStream(String left, String right);
+    extern String      concat(int count ...);
+    extern int         containsCharacter(String text, char c);
+    extern int         containsString(String text,String substring);
+    extern void        convertNewLine(String text);
+    extern String      copyString(String input);
+    extern String      getStringFromFile(String inputFile);
+    extern String      headToChar(String input,char match);
+    extern String      headToCount(String text,int count);
+    extern String      headToSet(String input,PLGset matchSet);
+    extern String      headToString( String s,String c );
+    extern void        indent(int indentify,String indenter,Buffer indentBuffer);
+    extern void        setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);
+    extern void        setButton(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    extern int         stringIsNumeric(String text);
+	extern String      tail( String s,String c );
+	extern String      toStringFromChar( char c );
+	extern String      toStringFromInt( int i );
+	extern String      toStringFromLong( long l );
+	extern String      toStringFromFloat( float f );
+	extern String      toStringFromDouble( double d );
+    extern String      truncateString(String text,int length);
+    extern String      urlDecode(String in);
+    alias
+        contains    containsCharacter
+        contains    containsString
+        head        headToChar
+        head        headToCount
+        head        headToSet
+        head        headToString
+        indent      indent(indentify=debugIndent,indenter="\t",indentBuffer=0)
+        indent      indent(indentify=debugIndent,indentBuffer=0)
+        indent      indent(indenter="\t",indentBuffer=0)
+        indent      indent(indentify=debugIndent,indenter="\t")
+        indent      indent(indentify=debugIndent)
+        indent      indent(indenter="\t")
+        indent      indent(indentBuffer=0)
+        toString    toStringFromChar
+        toString    toStringFromInt
+        toString    toStringFromLong
+        toString    toStringFromFloat
+        toString    toStringFromDouble
+        ;
+}
+
+external TapeSegment
+{
+int         segmentLength,
+            segmentSize;
+void        **segmentStart,
+            **segmentCurrent;
+    TapeSegment(int size,int length);
+    int         contains(void** spot);
+    void*       next(int stripSize);
+}
+
+external Tape
+{
+String      name;
+Stak        usedList;
+int         blockLength,
+            length,
+            reused,
+            size,
+            stripSize;
+TapeSegment segment;
+DoubleLinkList  list;
+boolean
+            noRecycle,
+            zeroOut
+            ;
+	Tape(String n,int l,int s);
+	void		addSegment();
+    void        **atIndex(int n);
+	void		clear();
+    void        free(void *spot);
+	void		*getStrip();
+    void        *next(void *spot);
+    void        status();
+overload
+		[]	get
+		+=	add
+		;
+}

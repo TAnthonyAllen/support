@@ -1,0 +1,58 @@
+include frameIncludes
+
+/*******************************************************************************
+	Objective C global routines
+*******************************************************************************/
+class OCroutines
+{
+}
+
+/*******************************************************************************
+	Converts a string into a URLrequest
+*******************************************************************************/
+URLrequest getURLrequest(String url)
+{
+URL			wrap;
+URLrequest	request;
+    if url
+        {
+        wrap		= new(url);
+        if wrap		request	= new(wrap);
+        else cerr "Could not create url from: " url:;
+        if !request
+            cerr "Could not create request for: " url:;
+        }
+	else  cerr "No url provided":;
+    return request;
+}
+
+/*******************************************************************************
+	Method that fires a synchronous request. Returns true if it works, with the
+    results added to the buffer passed in.
+*******************************************************************************/
+int getURLintoBuffer(String url,Buffer buffer)
+{
+URLrequest	request = getURLrequest(url);
+URLresponse response;
+NSError     error;
+Data        data;
+    if request
+        if data = sendSynchronousRequest(request,&response,&error)
+            {
+            buffer += (String)bytes();
+            return true;
+            }
+        cerr description() "\n";
+    return false;
+}
+
+/*******************************************************************************
+	Convert an Objective C NSString to a regular String
+*******************************************************************************/
+String toString(NSString s)
+{
+int	length = (int)s.length + 1;
+String	text = malloc(length);
+	s.getCString(text,length,encoder);
+	return text;
+}

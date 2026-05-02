@@ -1,0 +1,459 @@
+external Bwana
+external Details
+external Control
+external Groups
+external Layout OC
+external Source
+external Stylish
+external Tawk
+
+/******************************************************************************
+	GroupItem aliases have to preceed in order for noRoom setter to register
+******************************************************************************/
+external GroupItem
+{
+    alias
+        contentVaries       noAnchor
+        noRoom              isTarget
+        scrollableSource    skipOverMatch
+        selected            processUpTo
+        ;
+}
+
+external Actions
+{
+	Actions();
+	void		registerActions();
+}
+external Actions.h
+{
+    GroupItem   sELECTtab(GroupItem item);
+    GroupItem   setFLEXcontent(GroupItem item);
+}
+
+external Bwana
+{
+Actions			actions;
+FontManager		fontManager;
+Window			window;
+Groups			extendParser;
+GroupItem   	descriptions,
+                types;
+BaseHash        windows;
+Source          expandables,
+                emptySource,
+                selectSource;
+DoubleLinkList  expandList;
+DoubleLinkList  sourceList;
+String          expandLabel;
+Control			controller;
+Stak            delayActions;
+Buffer          bwanaBuffer;
+double          minimumHeight,
+                minimumWidth;
+	Bwana(Control c);
+	GroupItem       mapAction(String name,GroupItem &method(GroupItem));
+	GroupItem       mapAndTrack(String name,GroupItem &method(GroupItem));
+	GroupItem       mapMethod(String name,GroupItem &method(GroupItem));
+	void            registerMethods();
+}
+
+external Bwana.h
+{
+	Frame			indent(Frame f,double b);
+	Frame			indent(Frame f,double v,double h);
+    String          keyCode(GroupItem item);
+    GroupItem       keySTROKE(GroupItem item);
+    int             keyStrokeMatch(GroupItem item);
+	GroupItem       mERGE(GroupItem item);
+    GroupItem       nEXT(GroupItem item);
+    GroupItem       resetTree(GroupItem item);
+    GroupItem       setCARD(GroupItem item);
+    GroupItem       setExpander(GroupItem item);
+    void            setModified(GroupItem block);
+    GroupItem       setSourceTo(GroupItem group,GroupItem item);
+	String			toString(Point p);
+	String			toString(Frame f);
+    Date            timeEnd(Date d);
+	GroupItem       tRAIT(GroupItem item);
+    GroupItem       wINDOW(GroupItem item);
+}
+
+external Delegate extends Object implements WbDelegate WindowDelegate
+{
+    Delegate    init();
+}
+external Control
+{
+GroupItem       baseURL,
+                classList,
+                loadedItem,
+                root;
+Layout          activeView;
+Delegate        delegator;
+BaseHash        flexLayoutStash;
+Tape            detailTape;
+Details         attributeDetail;
+Date            timer;
+Buffer          buffer;
+boolean
+    convertWindowToPanel
+    showWarnings
+    ;
+static Bwana        bwana;
+static GroupItem    fontRegistry;
+static GroupItem    colorRegistry;
+
+	Control();
+    GroupItem   addPara(GroupItem block,String s);
+	void		dump(GroupItem group);
+    void        fillFrame(GroupItem item);
+	void		fitSize();
+	void		flexLayout(GroupItem group);
+	void		layout(GroupItem base);
+	void        load(String name);
+    void        load(GroupItem item);
+    GroupItem   makeCanvas(GroupItem input);
+    PLGitem     makeCSSline(GroupItem  block);
+    PLGitem     makeDiv(GroupItem block);
+    GroupItem   makeHTML(GroupItem input);
+    void        processActionTrack(GroupItem action);
+    void        resetVariableContent(GroupItem group);
+	Details		setDetails(GroupItem item);
+	GroupItem	setFlexDetails(GroupItem group);
+    void        setLayout(GroupItem item,Layout lay);
+	void		setup();
+	void		start(Window window);
+    int         toCSS(GroupItem  group);
+}
+
+external Control.h
+{
+    void        jsDraw(GroupItem block,Buffer buffer);
+    GroupItem   walkVisible(GroupItem base,GroupItem item);
+}
+
+external Details
+{
+GroupItem		wig;
+id				object;
+SEL				draw;
+Frame			innerBox,
+                frame;
+Stylish			style;
+Layout			view;
+Event           event;
+double			high,
+				length,
+				positionAt;
+int				level,
+				offset,
+				stretched;
+boolean
+		attributed
+        collapsed
+        content:3[isButton isCell isImage isPath isText]
+		deferDraw
+        editable
+		editing
+        fitted
+		fixHeight
+		fixWidth
+		fixX
+		fixY
+		hasBox
+        hasOnLayout
+        hasReactions
+        imageSized
+        isDisplayable
+        isNext
+        isTab
+        isToggled
+        keyField
+		noData
+        noScroll
+		orient:3[down across cards layers overlay]
+        pane:3[isCards isMenu isPanel isTabs isView isWindow]
+        reacting
+        refit
+        scrollableX
+        scrollableY
+        selectable
+        showBlank
+		sizeToFit:3[fitAcross fitDown fitBoth fitText]
+		sourced
+		subbed
+		trait
+        useTagForLabel
+        wasReset
+		;
+    overload
+        []      find
+        ;
+    void        changeText();
+    void        checkFit();
+    void        checkStretch();
+    void        clear();
+	int			contains(Point p);
+	void		dump();
+    void        dumpDetails();
+    void        getFitSettings();
+	int			initialize(GroupItem w);
+	void		processAttributes();
+    void        processMethods();
+    void        processReaction();
+    void        scrollContent(int length);
+	void		setFrame();
+    void        setInnerBox();
+	TextView    setPage(Frame indented);
+    void        setScroll(int step,int goAcross);
+    void        setStyle();
+}
+
+external Details.h
+{
+    GroupItem       blockContaining(GroupItem base,Point p);
+    GroupItem       findScrollable(GroupItem group);
+    Details         getAncestor(GroupItem item);
+    String          getCellText(GroupItem item);
+	Details			getDetail(GroupItem item);
+    Frame           getPadding(GroupItem group);
+    extern          Details setDetail(GroupItem item);
+    void            scrollBlock(GroupItem group,int length,int is Vertical);
+    void            scrollCards(GroupItem page,int up);
+    void            scrollSource(GroupItem item,int length);
+    void            setNoRoom(GroupItem item,int flag);
+}
+
+external DrawPoint
+{
+Point       point;
+char        xOperator,
+            yOperator;
+DrawPoint   control1,
+            control2;
+GroupItem   drawPathBlock;
+PLGitem     fillColor,
+            strokeColor;
+boolean
+    closeIt
+    direction:4[left right up down]
+    fillPath
+    hasOperator
+    middle
+    move
+    percent
+    relative
+    shape:3[arc curve oval]
+    strokePath
+    translate:4[invert rotate scale shift]
+    ;
+static GroupItem    drawGroup;
+static Point        priorPoint,
+                    targetPoint;
+
+    DrawPoint();
+    DrawPoint(Point p);
+    DrawPoint(PLGitem x,PLGitem y);
+    void        draw(Buffer buffer);
+    void        drawBlock(GroupItem item,Buffer buffer);
+    Point       get(Frame frame);
+    Point       getPoint(Frame frame,Point pp);
+    void        movePath(Point p,Buffer buffer);
+    void        reset();
+    String      toString();
+}
+
+external DrawPoint.h
+{
+    void        drawPath(GroupItem item);
+}
+
+external Filler
+{
+Color			color;
+Gradient        gradient;
+union
+    double      angle;
+    Point       center;
+    ;
+    Filler(Color c);
+    void        checkColor(GroupItem item);
+}
+
+external Groups extends PLGparse
+{
+PLGset	operateSet;
+PLGset	alphaSet;
+PLGset	hexSet;
+PLGset	nameSet;
+PLGset	notSpace;
+PLGset	pathOpSet;
+PLGset	curveOpSet;
+int	curving;
+Stylish         style;
+GroupItem		currentColor,
+                drawingBlock,
+                trait;
+DrawPoint       currentDP;
+PLGitem         fillColor,
+                strokeColor;
+boolean
+    asPercentOfFrame
+    closeOut
+    gotoPoint
+    itsAllRelative
+    nested
+    saveGraphicState
+    translated
+    ;
+	void            border(GroupItem t,Stylish s);
+    DrawPoint***    buildPath(GroupItem item);
+	int             colorize(GroupItem trait);
+    int             processKeySpec(GroupItem keyTrait);
+	PLGitem         run(String name);
+    PLGitem         run(String rule,GroupItem item);
+    alias
+        saveGraph   saveGraphicState
+        ;
+}
+
+external GroupItem
+{
+    alias
+        altSet          modified
+        commandSet      mustIndent
+        controlSet      indexed
+        functionSet     expanded
+        numericSet      dotdot
+        shiftSet        noAnchor
+        ;
+}
+
+external Layout extends View implements WbDelegate
+{
+GroupItem       activeMenu,
+                base,
+                storage,
+                selection;
+WbView          webView;
+URL             stubURL;
+Details         detail;
+Stak            displayStack;
+BOOL            debug,
+                drawn,
+                firstTimeThru,
+                hasVariableContent
+                isKeyEvent,
+                laidout,
+                noSelectSource,
+                notSelectable,
+                paging,
+                resized;
+
+    void        deselect();
+    void        fireAction(GroupItem block,Event event,int flag);
+    Layout      init(Frame f);
+    Point       invertY(Point point);
+	void		keyUp(Event event);
+	void		mouseUp(Event event);
+    void        rightMouseUp(Event event);
+    int         select(GroupItem block);
+	void		scrollWheel(Event event);
+}
+
+external OBwrap
+{
+#autoGetSet
+Color   color;
+Font    font;
+
+    void setColor(Color c);
+    void setFont(Font f);
+}
+
+external Source
+{
+#autoGetSet
+GroupItem       **list,
+                sourceItem;
+DoubleLinkList  listeners;
+int             current,
+                priorStart;
+boolean
+        exhausted
+        noNext
+        resetOnResize
+        sourceSelected
+        sorted
+        sourceAttributes
+        ;
+    Source();
+    Source(GroupItem item);
+    void        addListener(GroupItem item);
+	void		dump();
+	GroupItem	get(int index);
+    GroupItem   next();
+	int         pageShift(int length);
+    void        reset();
+    void        setList();
+    void        setSourceItem(GroupItem item);
+	void		sort(GroupItem compare);
+	void		updateListeners();
+	overload
+		[]		get
+		;
+}
+
+external Stylish.h
+{
+    GroupItem        sTYLE(GroupItem item);
+}
+
+external Stylish
+{
+String          styling;
+Shadow          shadow;
+NumberFormatter formatter;
+double			borderWidth,
+                radius,
+                transparency;
+GroupItem
+                blankItem,
+                commaItem,
+                createdBy,
+                filler,
+                fontItem,
+                formatItem,
+                selectFill,
+                selectStroke,
+                stroker,
+                texter,
+                zeroItem;
+boolean
+		align:3[center left right justify]
+		bottomBorder
+        fontModified
+		leftBorder
+		rightBorder
+		rounded
+		squared
+		topBorder
+		;
+    Stylish(GroupItem item);
+    Stylish(String name);
+    Stylish(Stylish source);
+}
+
+external
+{
+    void        errorHandler(unsigned long error,unsigned long detail,void *data);
+}
+
+#swapSelectDecor(notchosen,chosen)-
+    if notchosen && chosen
+        {
+        storage.setDataFrom(notchosen);
+        notchosen.setDataFrom(chosen);
+        chosen.setDataFrom(storage);
+        }-

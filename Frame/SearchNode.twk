@@ -1,0 +1,42 @@
+include frameIncludes
+
+/*******************************************************************************
+	SearchNode represents a node in a SearchTree.  It is implemented as a
+        doubly linked list to facilitate bidirectional traversals and guarantee
+        the order in cases where there are duplicates.
+        
+        At some point need to implement delete(). This is done in the SearchTree
+        remove() method.
+*******************************************************************************/
+class SearchNode
+{
+SearchNode		equal,
+				left,
+				right;
+char			splitter;
+SearchItem		start,
+                end;
+
+SearchNode( char *c )
+{
+        splitter = *c;
+        start	=
+        end	= null;
+        equal	=
+        left	=
+        right	= null;
+}
+
+void
+append(SearchItem item)
+{
+        if !start
+                {
+                end	=
+                start	= item;
+                return;
+                }
+        end.next = item;
+        end	= item;
+}
+}

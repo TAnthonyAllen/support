@@ -1,0 +1,45 @@
+include frameIncludes
+
+/*******************************************************************************
+	Doubly linked list class
+*******************************************************************************/
+class DoubleLinkList
+{
+static Tape globalLinkTape;
+DoubleLink	entry,
+            first,
+            last;
+int			length;
+boolean
+    hasKeys
+    isSorted:3[sortAscending sortDescending]
+    noDuplicates
+    ;
+	
+/*****************************************************************************
+	Constructors uses default constructor
+*****************************************************************************/
+DoubleLinkList()
+{
+    if !globalLinkTape
+        globalLinkTape = new("globalLinkTape",50000,sizeof(DoubleLink));
+}
+
+/*****************************************************************************
+	If hasKeys uses name as a key when adding
+*****************************************************************************/
+DoubleLink add(String name)
+{
+    if name
+        {
+        if hasKeys return add(name,(void*)name);
+        return add((void*)name);
+        }
+    return null;
+}
+    alias
+        Avoid       void*
+        ;
+include DoubleLinkList.rtn
+}
+

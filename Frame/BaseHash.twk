@@ -1,0 +1,249 @@
+include frameIncludes
+
+/******************************************************************************
+	BaseHash provides an ordered hash. Altho there are push and pop aliases
+    a BaseHash is not a stack because items that share the same hash are
+    kept together, not in the order they were entered.
+******************************************************************************/
+class BaseHash
+{
+int             hashSize;
+DoubleLink      **hashStack;
+DoubleLinkList  hashList;
+
+/******************************************************************************
+	Constructors
+******************************************************************************/
+BaseHash()
+{
+    hashSize    = 255;
+    hashStack   = (DoubleLink**)calloc(hashSize,sizeof(DoubleLink*));
+    hashList    = new;
+}
+
+BaseHash(int tableSize)
+{
+	hashSize	= tableSize;
+	hashStack	= (DoubleLink**)calloc(hashSize,sizeof(DoubleLink*));
+    hashList    = new;
+}
+
+/******************************************************************************
+	Add entry, duplicates allowed. Hash list is FIFO except that duplicates are
+    kept together.
+******************************************************************************/
+DoubleLink add(String name,void *entry)
+{
+use hashList
+    if name && entry
+        {
+        int             hashed      = getHashIndex(name);
+        int             order       = hashList.length;
+        DoubleLink      atHash      = hashStack[hashed];
+        DoubleLink      newEntry    = getLink(name,entry);
+
+        newEntry.linkHash   = hashed;
+        if atHash
+            {
+            DoubleLink  lastEntry = atHash;
+            // the hash may match multiple names so we have to check
+            while (atHash && atHash.linkHash == hashed && atHash.key lt name)
+                {
+                lastEntry = atHash;
+                atHash = atHash.next;
+                }
+            // duplicates allowed so we scan for the last match entered
+            if atHash && atHash.linkHash == hashed
+                {
+                if atHash.key eq name
+                    while (atHash.next && name eq atHash.next.key)
+                        atHash = atHash.next;
+                atHash.append(newEntry);
+                }
+            else lastEntry.append(newEntry);
+            }
+        else {
+            hashList.add(newEntry);
+            hashStack[hashed] = newEntry;
+            }
+        linkOrder = order++;
+        return newEntry;
+        }
+    cerr "BashHash add: got null argument passed in";
+    return null;
+}
+
+DoubleLink add(String name)
+{
+    return add(name,(void*)name);
+}
+
+/***************************************************************************
+    clear all entries from the table and replace the hashStack
+***************************************************************************/
+void clear()
+{
+    hashList.clear();
+    free(hashStack);
+    hashStack    = (DoubleLink**)calloc(hashSize,sizeof(DoubleLink*));
+}
+
+/***************************************************************************
+	If it exists, return the first link with key == name
+***************************************************************************/
+DoubleLink find(String name)
+{
+    if name
+        {
+        int         hashed = getHashIndex(name);
+        DoubleLink	atHash = hashStack[hashed];
+        while (atHash && atHash.linkHash == hashed && atHash.key ne name)
+            atHash = atHash.next;
+        if atHash && atHash.key eq name return atHash;
+        }
+    return null;
+}
+
+/***************************************************************************
+	If it exists, return the first value in the table with key == name
+***************************************************************************/
+void* get(String name)
+{
+    if name
+        {
+        DoubleLink atHash = find(name);
+        if atHash return atHash.value;
+        }
+    return null;
+}
+
+/***************************************************************************
+	This extends BaseHash get to take a PLGitem as argument
+***************************************************************************/
+void* get(PLGitem item)
+{
+void *result = get(item.string());
+    item.unString();
+    return result;
+}
+
+/***************************************************************************
+	Hash the name passed in and return the hash index
+***************************************************************************/
+int getHashIndex(String name)
+{
+unsigned int	h;
+char			*p	= name ;
+    while *p
+		{ h <<= 5; h += *p++; }
+	return h % hashSize;
+}
+
+/***************************************************************************
+    List the keys for each entry.
+***************************************************************************/
+void listKeys()
+{
+use hashList
+    while entry = nextLink()    print entry.key:;
+}
+
+/***************************************************************************
+    Iterator that returns the next available entry w/key matching name.
+    Note if the entry field is changed outside this method all bets are off.
+***************************************************************************/
+void* next(String name)
+{
+use hashList
+    if name
+        if !entry
+            {
+            entry = find(name);
+            if entry return entry.value;
+            }
+        else
+        while entry = nextLink()
+            if entry.key eq name
+                { return entry.value; }
+    return null;
+}
+
+/******************************************************************************
+    Add an entry to the hash table and returns a pointer to the stored
+    entry. Duplicates overwrite (only the last value is kept for a given key).
+    List is kept in FIFO order.
+******************************************************************************/
+DoubleLink put(String name,void *entry)
+{
+use hashList
+    if name && entry
+        {
+        int             hashed      = getHashIndex(name);
+        DoubleLink      atHash      = hashStack[hashed];
+        DoubleLink      newEntry    = getLink(name,entry);
+        int             order       = hashList.length;
+
+        newEntry.linkHash   = hashed;
+        if atHash
+            {
+            DoubleLink lastEntry = atHash;
+            // the hash may match multiple names so we have to check
+            while (atHash && atHash.linkHash == hashed && atHash.key lt name)
+                {
+                lastEntry = atHash;
+                atHash = atHash.next;
+                }
+            // duplicates not allowed so we scan for the first match entered
+            if atHash && atHash.linkHash == hashed
+                if atHash.key eq name
+                    atHash.value = entry;
+                else atHash.append(newEntry);
+            else lastEntry.append(newEntry);
+            }
+        else {
+            hashList.add(newEntry);
+            hashStack[hashed] = newEntry;
+            linkOrder = order++;
+            }
+        return newEntry;
+        }
+    cerr "BashHash put: got null argument passed in";
+    return null;
+}
+
+DoubleLink put(String name)
+{
+    return put(name,(void*)name);
+}
+
+/*****************************************************************************
+    Removes the first matching item found and returns it.
+*****************************************************************************/
+void* remove(String name)
+{
+DoubleLink  atHash  = find(name);
+    if atHash
+        {
+        void*   data = atHash.value;
+        removeFromHash(atHash);
+        atHash.remove();
+        return data;
+        }
+    return null;
+}
+
+/*****************************************************************************
+    Cleans up the hash when a link is removed.
+*****************************************************************************/
+void removeFromHash(DoubleLink atHash)
+{
+DoubleLink  hashed  = hashStack[linkHash];
+    // check if we need to clean up the hashStack
+    if atHash && atHash == hashed
+        {
+        if atHash.next && atHash.next.linkHash == hashed.linkHash
+            hashStack[hashed.linkHash] = atHash.next;
+        else hashStack[hashed.linkHash] = 0;
+        }
+}
+}

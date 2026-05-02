@@ -1,0 +1,584 @@
+external	Class
+			NSInteger
+			CGPoint
+			NSRange
+			CGRect
+			CGSize UIKit/UIKit.h local OC type
+external	NSAffineTransform
+			NSArray
+			NSAttributedString
+			UIBezierPath
+			UILabel
+			UIColor
+			UIControl
+			NSData
+			NSDate
+			NSError
+			UIEvent
+			UIFont
+			UIFontDescriptor
+            CGGradient
+			UIImage
+			UIImageView
+			NSIndexSet
+			NSLayoutManager
+            NSLineBreakMode
+			NSMutableData
+			NSMutableAttributedString
+			NSNotification
+            NSPort
+			UIResponder
+            NSRunLoop
+            NSShadow
+			NSTextContainer
+			UITextField
+			NSTextStorage
+            UIScrollView
+			UITextView
+			UIView
+			UIWindow
+			NSURL
+			NSURLConnection
+			NSURLResponse
+			NSURLRequest
+			QCView UIKit/UIKit.h local OC proper
+external	NSString UIKit/UIKit.h local OC isChar proper
+external	NSObject UIKit/UIKit.h local OC proper
+{
+	id                  copy();
+	static Class		class();
+	id					init();
+	id					performSelector(SEL s);
+    int                 respondsToSelector(SEL s);
+	alias
+		Box				NSTextContainer
+		Color			UIColor
+		Data			NSData
+		Date			NSDate
+		Event			UIEvent
+		Font			UIFont
+		FontData		UIFontDescriptor
+		Frame			CGRect
+        Gradient        CGGradient
+		Image			UIImage
+		ImageView		UIImageView
+		IndexSet		NSIndexSet
+		LayoutManager	NSLayoutManager
+        LineBreak       NSLineBreakMode
+		Mutable			NSMutableData
+		MutableText		NSMutableAttributedString
+		Notification	NSNotification
+		Object			NSObject
+		Path			UIBezierPath
+		Point			CGPoint
+        Port            NSPort
+		Range			NSRange
+		Responder		UIResponder
+        RunLoop         NSRunLoop
+        ScrollView      UIScrollView
+        Shadow          NSShadow
+		Size			CGSize
+        TextCell        UILabel
+		TextField		UITextField
+        TextLabel       UILabel
+		TextStore		NSTextStorage
+        TextString      NSAttributedString
+		TextView		UITextView
+        Transform       NSAffineTransform
+		URL				NSURL
+		URLconnect		NSURLConnection
+		URLrequest		NSURLRequest
+        URLresponse     NSURLResponse
+		View			UIView
+		Window			UIWindow
+        respondsTo      respondsToSelector
+		;
+}
+external id UIKit/UIKit.h local OC proper
+{
+	id					performSelector(SEL s);
+    int                 respondsToSelector(SEL s);
+    alias
+        respondsTo      respondsToSelector
+		;
+}
+external
+{
+	typedef				BOOL;
+	typedef				IBAction;
+	typedef             NSTextAlignment;
+	NSInteger           NSTextAlignmentLeft;
+    NSInteger           NSTextAlignmentRight;
+    NSInteger           NSTextAlignmentCenter;
+    NSInteger           NSTextAlignmentJustified;
+	void				CFRelease(void* v);
+	void*				CFRetain(void* v);
+    String              sel_getName(SEL s);
+	Frame				indent(Frame f,double b);
+	SEL					NSSelectorFromString(NSString s);
+	SEL					@selector(void* v);
+	int					NSASCIIStringEncoding;
+	alias
+        alignLeft       NSTextAlignmentLeft
+        alignRight      NSTextAlignmentRight
+        alignCenter     NSTextAlignmentCenter
+        alignJustified  NSTextAlignmentJustified
+        Alignment       NSTextAlignment
+		encoder			NSASCIIStringEncoding
+		bool			BOOL
+		hold			CFRetain
+		getSelector		NSSelectorFromString
+		release			CFRelease
+		selector		@selector
+        selectorName    sel_getName
+        sendMessage     objc_msgSend
+		;
+}
+external OCroutines.h
+{
+    URLrequest  getURLrequest(String url);
+    int         getURLintoBuffer(String url,Buffer buffer);
+	String      toString(NSString s);
+    extender
+        toString
+        ;
+}
+external NSArray
+{
+	id					objectAtIndex(int i);
+	static id			arrayWithObjects(id i,...);
+	overload
+		[]		objectAtIndex
+		;
+}
+external Box extends Object
+{
+	int					heightTracksTextView;
+	id					initWithContainerSize(Size s);
+	int					widthTracksTextView;
+	void				setHeightTracksTextView(int i);
+	void				setWidthTracksTextView(int i);
+	void				setContainerSize(Size s);
+	void				setTextView(TextView v);
+	alias
+		init		initWithContainerSize
+		trackHeight	setHeightTracksTextView
+		trackWidth	setWidthTracksTextView
+		size		setContainerSize
+		;
+}
+external Color extends Object
+{
+	static Color		blackColor;
+	static Color		clearColor;
+	static Color		whiteColor;
+	static Color		colorWithRed(double red,double green,double blue,double alpha);
+    Color               colorWithAlphaComponent(double alpha);
+    void                getRed(double *red,double *green,double* blue,double *alpha);
+	void				setFill();
+	void				setStroke();
+	alias
+		black		blackColor
+		rgbColor	colorWithRed
+        alpha       colorWithAlphaComponent
+        getRGB      getRed
+		white		whiteColor
+		;
+}
+external UIControl extends View
+{
+	BOOL                selected;
+}
+external Date extends Object
+{
+    static Date         date();
+    Date                dateByAddingTimeInterval(double seconds);
+	double				timeIntervalSinceNow();
+	double				timeIntervalSinceDate(Date d);
+    static double       timeIntervalSinceReferenceDate;
+    overload
+        +=          dateByAddingTimeInterval
+        ;
+	alias
+		toNow       timeIntervalSinceNow
+		toDate      timeIntervalSinceDate
+        toReference timeIntervalSinceReferenceDate
+		;
+}
+external Data extends Object
+{
+	void				*bytes();
+	int					length();
+}
+external NSError extends Object
+{
+	NSString			localizedDescription();
+	alias
+		description	localizedDescription
+		;
+}
+Conditions
+    capsLocked      (modifierFlags() & 1 << 16)
+	shiftKeyed      (modifierFlags() & 1 << 17)
+    controlKeyed    (modifierFlags() & 1 << 18)
+    altKeyed        (modifierFlags() & 1 << 19)
+    commandKeyed    (modifierFlags() & 1 << 20)
+    ; 
+external Event extends Object
+{
+	double				deltaY();
+    NSString            characters();
+    NSString            charactersIgnoringModifiers();
+	int					keyCode();
+	Point				locationInWindow();
+    static unsigned int modifierFlags();
+    int                 type();
+	alias
+        keyMod          characters
+        keyString       charactersIgnoringModifiers
+		mouseAt         locationInWindow
+		;
+}
+external Font extends Object
+{
+	Frame			boundingRectForFont();
+	NSString		displayName();
+	NSString		fontName();
+	static Font		fontWithDescriptor(FontData n,double size);
+	static Font		fontWithName(NSString n,double size);
+	FontData		fontDescriptor();
+	double			pointSize();
+	static Font		systemFontOfSize(double size);
+	alias
+		fontBounds	boundingRectForFont
+		getFont		fontWithDescriptor
+		getFont		fontWithName
+		descriptor	fontDescriptor
+		size		pointSize
+		;
+}
+external FontData extends Object
+{
+	FontData	fontDescriptorWithFamily(NSString s);
+	FontData	fontDescriptorWithSize(double d);
+	alias
+		withFamily	fontDescriptorWithFamily
+		withSize	fontDescriptorWithSize
+		;
+}
+external FontManager extends Object
+{
+	static FontManager	sharedFontManager();
+	NSArray				availableFonts();
+	NSArray				availableFontFamilies();
+	NSArray				availableFontNamesMatchingFontDescriptor(FontData f);
+	Font				convertFont(Font font,NSString toFamily);
+	Font				convertFont(Font font,int toHaveTrait);
+	Font				convertFont(Font font,double toSize);
+	alias
+		fonts			availableFonts
+		fontFamilies	availableFontFamilies
+		fontNames		availableFontNamesMatchingFontDescriptor
+		convert			convertFont
+		;
+}
+external Frame
+{
+	Point				origin;
+	Size				size;
+}
+external Gradient
+{
+    id                  initWithColors(NSArray colors);
+    id                  initWithStartingColor(Color s,Color endingColor);
+    void                drawInBezierPath(Path p,double angle);
+    void                drawInBezierPath(Path p,Point relativeCenterPosition);
+    alias
+        draw            drawInBezierPath
+        init            initWithColors
+        init            initWithStartingColor
+        ;
+}
+external GraphContext extends Object
+{
+    static GraphContext currentContext();
+	static void			restoreGraphicsState();
+	static void			saveGraphicsState();
+    void                setCompositingOperation(int i);
+    alias
+        restoreGS       restoreGraphicsState
+        saveGS          saveGraphicsState
+        setCompositer   setCompositingOperation
+        ;
+}
+external Image extends Object
+{
+    Size                size;
+	void				drawAtPoint(Point p);
+	void				drawInRect(Frame f);
+	id					initWithContentsOfFile(NSString s);
+	alias
+		drawAt		drawAtPoint
+		drawIn		drawInRect
+		init		initWithContentsOfFile
+		;
+}
+external ImageView extends View
+{
+    Image               image;
+}
+external LayoutManager extends Object
+{
+	void				addTextContainer(Box c);
+    int                 characterIndexForGlyphAtIndex(int i);
+    Range               characterRangeForGlyphRange(Range r,int actualGlyphRange);
+    Range               characterRangeForGlyphRange(Range r,Range actualGlyphRange);
+	Range				glyphRangeForTextContainer(Box c);
+    Frame               lineFragmentUsedRectForGlyphAtIndex(int i,Range effectiveRange,int withoutAdditionalLayout);
+	TextStore			textStorage();
+	alias
+		addBox			addTextContainer
+		glyphRange		glyphRangeForTextContainer
+        lineRange       lineFragmentUsedRectForGlyphAtIndex
+        textIndex       characterIndexForGlyphAtIndex
+        textRange       characterRangeForGlyphRange
+		store			textStorage
+		;
+}
+external Mutable extends Data
+{
+	void				appendData(Data d);
+	id					initWithCapacity(int i);
+	alias
+		init		initWithCapacity
+		;
+	overload
+		+=	appendData
+		;
+}
+external MutableText extends TextString
+external NSString
+{
+    int                 length;
+    static NSString        stringWithCString(String s,int encoding);
+    String                cStringUsingEncoding(int encoding);
+    String                getCString(String s,int maxLength,int encoding);
+    alias
+        ocString    stringWithCString
+        cString        cStringUsingEncoding
+        ;
+}
+external Path extends Object
+{
+    int                 isEmpty;
+	double				lineWidth;
+    void                addClip();
+    void                addCurveToPoint(Point p,Point controlPoint1,Point controlPoint2);
+    void                addLineToPoint(Point p);
+    void                addArcWithCenter(Point center,Float radius,Float startAngle,Float endAngle);
+	static Path			bezierPath();
+    Frame               bounds();
+	void				closePath();
+    bool                containsPoint(Point p);
+	void				fill();
+	double				lineWidth();
+	void				moveToPoint(Point p);
+	void				setClip();
+	void				stroke();
+	alias
+        arc         addArcWithCenter
+		curveTo		addCurveToPoint
+		lineTo		addLineToPoint
+		moveTo		moveToPoint
+		;
+}
+external Point
+{
+	double				x,
+						y;
+}
+external Protocol
+external Proxy
+{
+    void                setProtocolForProxy(Protocol p);
+    alias
+        setProto        setProtocolForProxy
+        ;
+}
+external Range
+{
+	int					length,
+						location;
+}
+external Responder extends Object
+{
+	int					resignFirstResponder();
+}
+external RunLoop extends Object
+{
+    static RunLoop      currentRunLoop();
+    void                run();
+    void                runUntilDate(Date d);
+    alias
+        runUntil        runUntilDate
+        ;
+}
+external Size
+{
+	double				width,
+						height;
+}
+external Shadow
+{
+    void                set();
+    void                setShadowBlurRadius(double d);
+    void                setShadowColor(Color c);
+    void                setShadowOffset(Size s);
+    alias
+        blur     setShadowBlurRadius
+        color    setShadowColor
+        offset   setShadowOffset
+        ;
+}
+external ScrollView extends View
+external TextField extends UIControl
+{
+    NSString            text;
+    Font                font;
+    Alignment           textAlignment;
+	Color				textColor;
+	alias
+        alignment   textAlignment
+		color		textColor
+		;
+}
+external TextLabel extends View
+{
+    Font                font;
+    id                  init();
+    LineBreak           lineBreakMode;
+    NSInteger           numberOfLines;
+    NSString            text;
+    Alignment           textAlignment;
+    Color               textColor;
+    alias
+        align           textAlignment
+        color           textColor
+        lineBreak       lineBreakMode
+        string          text
+        ;
+}
+external TextStore extends MutableText
+{
+	void				addLayoutManager(LayoutManager l);
+	void				setAttributedString(TextString s);
+	alias
+		setText			setAttributedString
+		;
+}
+external TextString extends Object
+{
+    int                 length;
+	id					initWithString(NSString s);
+    NSString            string;
+	alias
+		init			initWithString
+		;
+}
+external TextView extends ScrollView
+{
+    BOOL                editable;
+    Color               textColor;
+	LayoutManager		layoutManager;
+	Alignment           textAlignment;
+	Box					textContainer;
+	TextStore			textStorage;
+	Font				font;
+	id					initWithFrame(Frame f,Box textContainer);
+	void				insertText(NSString s);
+    NSString            text;
+	alias
+		alignment	textAlignment
+		box			textContainer
+		init		initWithFrame
+		store		textStorage
+		;
+}
+external Transform
+{
+    void                concat();
+    void                invert();
+    void                rotateByDegrees(double d);
+    void                scaleBy(double x);
+    void                scaleXBy(double x,double yBy);
+    static Transform    transform();
+    Path                transformBezierPath(Path p);
+    Point               transformPoint(Point p);
+    void                transformSize(Size s);
+    void                translateXBy(double x,double yBy);
+    alias
+        rotateBy        rotateByDegrees
+        shiftSize       transformSize
+        shiftBy         translateXBy
+        scaleBy         scaleXBy
+        transformPath   transformBezierPath
+        ;
+}
+external View extends Responder
+{
+    double              alpha;
+    Color               backgroundColor;
+    Frame               bounds;
+    Frame               frame;
+    int                 needsDisplay;
+    BOOL                opaque;
+    View                superview;
+    Window              window;
+	void				addSubview(View v);
+	Point				convertPoint(Point p,View fromView);
+    Point               convertPoint(Point p,View toView);
+	id					initWithFrame(Frame f);
+	void                removeFromSuperview();
+	void				setNeedsDisplay();
+	alias
+		add			addSubview
+        bgColor     backgroundColor
+		init		initWithFrame
+		mustDisplay setNeedsDisplay
+        remove      removeFromSuperview
+		;
+}
+external URL extends Object
+{
+	id					initWithString(NSString s);
+	static id			URLWithString(NSString s);
+	alias
+		init		initWithString
+		makeURL		URLWithString
+		;
+}
+external URLconnect extends Object
+{
+    void                cancel();
+	id					initWithRequest(URLrequest r,id delegate);
+    static Data         sendSynchronousRequest(URLrequest r,URLresponse returningResponse,NSError error);
+	alias
+		init		initWithRequest
+        sendSync    sendSynchronousRequest
+		;
+}
+external URLrequest extends Object
+{
+	id					initWithURL(URL u);
+	alias
+		init		initWithURL
+		;
+}
+external Window extends View
+{
+	void				makeKeyWindow();
+	alias
+		keyFront	makeKeyWindow
+		;
+}
+

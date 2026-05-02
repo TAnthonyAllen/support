@@ -1,0 +1,68 @@
+include frameIncludes
+external CFTypeRef type
+/*******************************************************************************
+	A wrapper for NSURLconnection
+*******************************************************************************/
+class URLservice OC
+{
+URLconnect	connect;
+String		filename;
+Buffer		buffer;
+
+id init(Buffer b)
+{
+	buffer = b;
+	return self;
+}
+
+/*******************************************************************************
+	Send an async request to the url
+*******************************************************************************/
+void send(String url)
+{
+URLrequest	request = getURLrequest(url);
+    if request
+        {
+        connect	= new(request,self);
+        hold((CFTypeRef)connect);
+        }
+}
+
+/*******************************************************************************
+	Delegate method that fires when loading finishes. If filename is set, the
+	contents are written to the file otherwise they are retained in the buffer.
+*******************************************************************************/
+void connectionDidFinishLoading(URLconnect c)
+{
+	if file == filename
+        { closeFile(); }
+	release((CFTypeRef)connect);
+}
+
+/*******************************************************************************
+	Delegate method that fires on error
+*******************************************************************************/
+void connection(URLconnect c,NSError didFailWithError)
+{
+	cerr description() "\n";
+	release((CFTypeRef)connect);
+}
+
+/*******************************************************************************
+	Delegate method that fires every time data is received (may happen more
+	that once).
+*******************************************************************************/
+void connection(URLconnect c,Data didReceiveData)
+{
+    buffer += (String)bytes();
+}
+
+/*******************************************************************************
+	Delegate method that fires when a response is received (not sure how this
+	differs in practice from the finish loading message).
+*******************************************************************************/
+void connection(URLconnect c,URLresponse didReceiveResponse)
+{
+	cout "Got a response from " url "\n";
+}
+}

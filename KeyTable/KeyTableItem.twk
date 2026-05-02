@@ -1,0 +1,22 @@
+include frameIncludes
+
+/*******************************************************************************
+	A class that contains an entry in a KeyTable
+*******************************************************************************/
+class KeyTableItem
+{
+String			key;
+union
+    void		*value;
+    String      itemText;
+;
+int             position;
+KeyTableItem	next;
+
+KeyTableItem( String k,void *v )
+{
+	key		= k;
+	value	= v;
+	next	= null;
+}
+}

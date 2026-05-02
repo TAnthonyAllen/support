@@ -1,0 +1,56 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor swap / backup files
+*.swp
+*.swo
+*~
+.*.swp
+.*.swo
+
+# Excluded from repo per project decision (still on disk under Include/)
+Include/TokTests/
+Include/WithJIT/
+
+# Loose backup / archive files
+*.zip
+*.save
+*.new
+*.bak
+
+# C/C++ build artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.exe
+*.out
+*.app
+*.lo
+*.la
+*.slo
+*.gch
+*.pch
+
+# Build output dirs
+build/
+DerivedData/
+bin/
+obj/
+cmake-build-*/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Logs
+*.log

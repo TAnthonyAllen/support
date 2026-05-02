@@ -1,0 +1,161 @@
+include frameIncludes
+
+/*****************************************************************************
+	A simple memory allocator that manages an indexed block of memory aligned
+	on int boundaries.
+*****************************************************************************/
+class Tape
+{
+String      name;
+Stak        usedList;
+int         blockLength,
+            length,
+            reused,
+            size,
+            stripSize;
+TapeSegment segment;
+DoubleLinkList  list;
+boolean
+            noRecycle,
+            zeroOut
+            ;
+
+/*****************************************************************************
+	Constructors
+*****************************************************************************/
+Tape(String n,int l,int s)
+{
+    name        = n;
+	size	    = l;
+    usedList    = new;
+	stripSize   = s / sizeof(void*);
+	if s > stripSize * sizeof(void*)
+		stripSize++;
+    blockLength  = stripSize * sizeof(void*);
+    //cout "Created " name,size:;
+    zeroOut     = true;
+    noRecycle   = false;
+}
+
+/*****************************************************************************
+	Adds a new segment and sets segmentStart and segmentCurrent to point to the new segment.
+    The list of segment strips is created the first time thru if it does not
+    exist (note, when list is created here it uses the globalLinkTape to
+    allocate links so adding a segment has to happen BEFORE the current list
+    runs out of space).
+*****************************************************************************/
+void addSegment()
+{
+    if segment size += size;
+    segment = new(size,blockLength);
+    // The list creation is deferred to avoid looping
+    if !list    list = new;
+    list += (void*)segment;
+    //cout "Adding tape segment", list.length, "to", name:`"new size", size:`"length",length:;
+}
+
+/*****************************************************************************
+	Return a pointer to the nth entry on the tape
+*****************************************************************************/
+void **atIndex(int n)
+{
+DoubleLink  link = list.first;
+TapeSegment segmentage = link.value;
+int         offset,
+            relative;
+void**      spot;
+    while segmentage && n > segmentLength + offset
+        {
+        offset += segmentLength;
+        if link = link.next
+            segmentage = link.value;
+        else segmentage = null;
+        }
+    if segmentage
+        {
+        relative = n - offset;
+        spot = segmentStart + (relative * stripSize);
+        return spot;
+        }
+    return null;
+}
+
+/*****************************************************************************
+	Clear tape and free resources. Can safely delete the tape after clearing.
+*****************************************************************************/
+void clear()
+{
+	if !length return;
+    if list
+        {
+        list.entry = null;
+        while segment = list.next()
+            free(segmentStart);
+        list.clear();
+        }
+    usedList.clear();
+	segment         = null;
+	length          =
+	size            =
+	stripSize       = 0;
+    delete list;
+    delete usedList;
+}
+
+/*****************************************************************************
+	Adds a strip passed in to the used list. Note Stak is extendable.
+*****************************************************************************/
+void free(void *spot)
+{
+    usedList += spot;
+}
+
+/*****************************************************************************
+	Returns a strip of memory from tape and advances the segmentCurrent tape pointer.
+	If you get to end of tape, a new tape segment is allocated. The strip
+    returned is not zeroed out. That must be done after you get the strip.
+*****************************************************************************/
+void *getStrip()
+{
+void		*spot;
+    if usedList.length && !noRecycle
+        {
+        reused++;
+        spot =  usedList.pop();
+        }
+    else {
+        if !segment addSegment();
+        spot = segment.next(stripSize);
+        if !spot cerr "Tape getStrip: returned null strip":;
+        }
+    length++;
+    if segmentLength + 5 == size addSegment();
+	return (void*)spot;
+}
+
+/*****************************************************************************
+	Iterator to next thru allocated strips
+*****************************************************************************/
+void *next(void **spot)
+{
+TapeSegment currentSegment = list.entry ? (TapeSegment)list.entry.value : list.next();
+
+    if !spot return (void*)(spot = currentSegment.segmentStart);
+    spot += stripSize;
+    if currentSegment.contains(spot) return (void*)spot;
+    if currentSegment = list.next()
+        return (void*)(spot = currentSegment.segmentStart);
+    return null;
+}
+
+/*****************************************************************************
+	Debugging routine to print out tape status;
+*****************************************************************************/
+void status()
+{
+int listLength  = list ? list.length : 1;
+    cout name " segments: " listLength:
+        `"length " length:`"segment size " size:`"segment length " segmentLength:
+        `"strip size " stripSize: `"reused:",reused: `"On used list:",usedList.length:;
+}
+}

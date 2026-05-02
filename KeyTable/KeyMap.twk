@@ -1,0 +1,36 @@
+include frameIncludes
+
+/*******************************************************************************
+	A class that contains a map of follow letters
+*******************************************************************************/
+class KeyMap
+{
+char			letter;
+PLGset			follow;
+DoubleLinkList	entries;
+int				length;		// All entries will have keys this long
+
+KeyMap(char l)
+{
+	letter = l;
+	follow = new();
+	entries = new();
+}
+
+/*******************************************************************************
+	Return the value of the entry indexed by key if it exists
+*******************************************************************************/
+KeyTableItem
+find( String key )
+{
+DoubleLink		link;
+KeyTableItem	item;
+	for link = entries.first
+		{
+		item = link.value;
+		if !strncmp(key,item.key,length)
+			return item;
+		}
+	return null;
+}
+}
