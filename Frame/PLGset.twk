@@ -1,0 +1,474 @@
+include PLGincludes
+
+/*****************************************************************************
+	PLGset class definition
+*****************************************************************************/
+class PLGset
+{
+unsigned long	*map;
+String			name;
+String          specs;
+Buffer          setBuffer;
+boolean
+            deferUpdate
+			hidden
+			negated
+			parsed
+            setUpdated
+			;
+static unsigned long    *mapper;
+
+PLGset()
+{
+    map		= (unsigned long*)calloc(4,sizeof(long));
+    if !mapper mapper = calloc(257,sizeof(long));
+    setBuffer = new("setBuffer",50);
+}
+
+PLGset(String input)
+{
+    map		= (unsigned long*)calloc(4,sizeof(long));
+    if !mapper mapper = calloc(257,sizeof(long));
+    setBuffer = new("setBuffer",50);
+    specs    = input;
+    set(input);
+}
+
+/*****************************************************************************
+	Clears the set
+*****************************************************************************/
+void clear()
+{
+	map[0]	= 0;
+	map[1]	= 0;
+	map[2]	= 0;
+	map[3]	= 0;
+	hidden	=
+	negated	=
+	parsed	= false;
+    setBuffer.reset();
+}
+
+/*****************************************************************************
+	Check if a character is in the set
+*****************************************************************************/
+int contains(char c)
+{
+    if c {
+        unsigned char   a = c;
+        int     word    = a / 64,
+                bit     = a % 64;
+        unsigned long   foundIt,
+                        mask = bitMask((int)a);
+        //cout "contains: " (char)a,(int)a:this;
+        if !bit     word--;
+        foundIt     = map[word] & mask;
+        if negated foundIt = !foundIt;
+        return bit = foundIt > 0;
+        }
+    return false;
+}
+
+/*****************************************************************************
+	Check if every character in the string passed in is in the set
+*****************************************************************************/
+int contains(String s)
+{
+    if s {
+        String atText = s;
+        while *atText
+            if contains(*atText) atText++;
+            else break;
+        if *atText return false;
+        return true;
+        }
+    return false;
+}
+
+/*****************************************************************************
+	Check if the string passed in has any character in this set
+*****************************************************************************/
+int foundIn(String text)
+{
+    if text
+        {
+        String	atText = text;
+        if text && !isEmpty()
+            while *atText
+                if contains(*atText)
+                    return true;
+                else atText++;
+        }
+    return false;
+}
+
+/*****************************************************************************
+	Check if the item contains any character in this set
+*****************************************************************************/
+int foundIn(PLGitem item)
+{
+    if item
+        {
+        int		i;
+        String	atText = itemStart;
+        if itemStart && !isEmpty()
+            for ( i = itemLength; i > 0; i--, atText++ )
+                if contains(*atText)
+                    return true;
+        }
+    return false;
+}
+
+/*****************************************************************************
+	Generate the code to implement this set
+*****************************************************************************/
+void generate(Buffer output)
+{
+    output.setMark();
+	if hidden return;
+	if setBuffer.length() {
+		print(output) "currentSet = getSet(";
+        if name     print "\"" name "\"";
+        if specs    {
+            if name print ",";
+            print "\"" specs "\""; }
+		else        printText(setBuffer.string(),output);
+		print ");\n";
+		}
+    else cerr "PLGset: tried to print an empty set":;
+    mark = 0;
+}
+
+/*****************************************************************************
+	Returns true if the set is empty
+*****************************************************************************/
+int isEmpty()
+{
+	if map[0] + map[1] + map[2] + map[3] == 0
+		return true;
+	return false;
+}
+
+/*****************************************************************************
+	Returns the number of bits set
+*****************************************************************************/
+int length()
+{
+int count = bitCount(map[0]) + bitCount(map[1]) + bitCount(map[2]) + bitCount(map[3]);
+	return count;
+}
+
+/*****************************************************************************
+	append text in a quoted string representation to the buffer passed in.
+*****************************************************************************/
+static void printText(String text,Buffer output)
+{
+char	*atText;
+	if !text || !output return;
+	for ( atText = text; *atText; atText++ )
+		switch(*atText)
+			{
+			case '\n':
+				print '\\' 'n';
+				break;
+			case '\r':
+				print '\\' 'r';
+				break;
+			case '\f':
+				print '\\' 'f';
+				break;
+			case '\t':
+				print '\\' 't';
+				break;
+			case '"':
+				print '\\' '"';
+				break;
+			case '\\':
+				switch(*(atText + 1))
+					{
+					case 'n':
+					case 'r':
+					case 'f':
+					case 't':
+					case '"':
+					case '\\':
+						print '\\';
+						atText++;
+						print *atText;
+						continue;
+					}
+				print '\\' '\\';
+				break;
+			default:
+				print *atText;
+			}
+}
+
+/*****************************************************************************
+	Turn off a character in the set
+*****************************************************************************/
+void reset(int a)
+{
+unsigned long	mask;
+int				word = a / 64,
+    			bit = a % 64;
+    if bit
+		mask	= 1L << 64 - bit;
+    else mask	= 1L;
+	map[word] &= ~mask;
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Turn off a range of characters in the set
+*****************************************************************************/
+void reset(int left,int right)
+{
+int	i;
+int flag = deferUpdate;
+    deferUpdate = true;
+    for ( i = left; i <= right; i++ )
+		reset(i);
+    deferUpdate = flag;
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Turn off the contents of set in this set
+*****************************************************************************/
+void reset(PLGset set)
+{
+    if isEmpty()    return;
+	if set.negated
+		{
+		map[0] &= set.map[0];
+		map[1] &= set.map[1];
+		map[2] &= set.map[2];
+		map[3] &= set.map[3];
+		}
+	else {
+		map[0] &= ~set.map[0];
+		map[1] &= ~set.map[1];
+		map[2] &= ~set.map[2];
+		map[3] &= ~set.map[3];
+		}
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Add a character to the set
+*****************************************************************************/
+void set(int a)
+{
+char c = (char)a;
+    if contains(start,c)    return;
+int word = a / 64,
+    bit = a % 64;
+int offset = 64 - bit;
+unsigned long result;
+    if bit  map[word] |= 1L << offset;
+    else map[--word] |= 1L;
+    result = *(map+word);
+    setBuffer += c;
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Add a range of characters to the set
+*****************************************************************************/
+void set(int left,int right)
+{
+char leftC = (char)left;
+    if contains(start,leftC)    cerr "PLGset: WARNING adding range but set already contains range start",leftC:;
+int	i;
+int flag = deferUpdate;
+    deferUpdate = true;
+    for ( i = left; i <= right; i++ )   set(i);
+    deferUpdate = flag;
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Add a set to this set
+*****************************************************************************/
+void set(PLGset set)
+{
+    if isEmpty()
+		{
+		map[0] = set.map[0];
+		map[1] = set.map[1];
+		map[2] = set.map[2];
+		map[3] = set.map[3];
+        if set.negated  negated = true;
+		}
+	or set.negated
+		{
+		map[0] |= ~set.map[0];
+		map[1] |= ~set.map[1];
+		map[2] |= ~set.map[2];
+		map[3] |= ~set.map[3];
+		}
+	else {
+		map[0] |= set.map[0];
+		map[1] |= set.map[1];
+		map[2] |= set.map[2];
+		map[3] |= set.map[3];
+		}
+    if !deferUpdate updateBuffer();
+}
+
+/*****************************************************************************
+	Add every character in a string to the set taking into account negation
+    and ranges
+*****************************************************************************/
+void set(String text)
+{
+String          atText  = text;
+unsigned char   lastChar,
+                setting;
+int             value;
+    deferUpdate = true;
+    if atText {
+        if atText == '^' && !setBuffer.length() {
+            negated = true;
+            atText++; }
+        while *atText {
+            if atText == '\\' {
+                atText++;
+                switch(*atText) {
+                    case 'n':   value = '\n';
+                    case 't':   value = '\t';
+                    case 'r':   value = '\r';
+                    default:    value = *atText; }
+                set(value); }
+            else {
+                if *atText == '-' {
+                    if lastChar {
+                        if setting = (unsigned char)*(atText + 1) {
+                            set((int)lastChar,(int)setting);
+                            atText++; }
+                        atText++;
+                        lastChar = 0;
+                        continue; }}
+                if lastChar set((int)lastChar);
+                lastChar = (unsigned char)*atText; }
+            atText++; }
+        if lastChar set((int)lastChar); }
+    deferUpdate = false;
+}
+
+/*****************************************************************************
+	Add every character in a string ignoring negation and ranges
+*****************************************************************************/
+void setSimple(String text)
+{
+String          atText  = text;
+    deferUpdate = true;
+    if atText
+        while *atText set((int)*atText++);
+    deferUpdate = false;
+}
+
+/*****************************************************************************
+	Advance the parser pointer if the current character is in this set
+    You pass in the parser pointer not the parser
+*****************************************************************************/
+String skip(String plgStart)
+{
+int		bit,
+		foundIt,
+		word;
+unsigned char a;
+	while plgStart && *plgStart
+		{
+		a = *plgStart;
+		word = a / 64;
+		bit = a % 64;
+		foundIt = false;
+		if bit
+			{
+			if map[word] & 1L << 64 - bit
+				foundIt = true;
+			}
+		else foundIt = map[word] & 1L;
+		if foundIt || negated   plgStart++;
+		else break;
+		}
+	return plgStart;
+}
+
+/*******************************************************************************
+	returns a string representation of the PLGset
+*******************************************************************************/
+String toString()
+{
+int         i = 1;
+int         j,
+            k,
+            count,
+			limit = sizeof(long) * 8;
+Segment     segment = new(0);
+String      output;
+String      text = setBuffer.toString();
+
+    setBuffer.reset();
+	if name  print(setBuffer) "Set: " name "\n";
+	else print "No name set:\n";
+	if text {
+		print "\ttext: ";
+		printText(text,setBuffer);
+		print "\n"; }
+    else print `"No text: ";
+    print `"contents":`;
+    while j < 4 {
+        for (i = 1; i <= limit; i++) {
+            count++;
+            if count < 32 continue;
+            if count > 126 break;
+            k++;
+            if map[j] & bitMask(i) || negated   print (char)count; }
+        j++; }
+    print :`"total",k:;
+    output  = setBuffer.toString();
+    delete segment;
+    setBuffer.reset();
+    setBuffer += text;
+    return output;
+}
+
+/*******************************************************************************
+	Updates the setBuffer to keep it current after setting or resetting
+*******************************************************************************/
+void updateBuffer()
+{
+int     i = 1;
+int     j,
+        count,
+        limit = sizeof(long) * 8;
+unsigned long   mapped,
+                masked;
+    setBuffer.reset();
+    if map[0] || map[1] || map[2] || map[3]
+        {
+        if negated print '^';
+        while j < 4
+            {
+            mapped = map[j];
+            for (i = 1; i <= limit; i++)
+                {
+                char    c = (char)++count;
+                masked = bitMask(count);
+                if count >= 32 && count <= 126
+                    if mapped & masked
+                        print c;
+                or count == 9   print "\\t";
+                or count == 10  print "\\n";
+                or count == 12  print "\\f";
+                or count == 13  print "\\r";
+                }
+            j++;
+            }
+        }
+    setUpdated = true;
+}
+}
