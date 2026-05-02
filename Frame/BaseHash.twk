@@ -1,4 +1,5 @@
-include frameIncludes
+include /Users/anthony/Dropbox/data/InProcess/Include/globals
+include /Users/anthony/Dropbox/data/InProcess/Include/frame
 
 /******************************************************************************
 	BaseHash provides an ordered hash. Altho there are push and pop aliases
@@ -115,16 +116,6 @@ void* get(String name)
         if atHash return atHash.value;
         }
     return null;
-}
-
-/***************************************************************************
-	This extends BaseHash get to take a PLGitem as argument
-***************************************************************************/
-void* get(PLGitem item)
-{
-void *result = get(item.string());
-    item.unString();
-    return result;
 }
 
 /***************************************************************************

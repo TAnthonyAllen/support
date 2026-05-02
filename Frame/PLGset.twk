@@ -1,4 +1,6 @@
-include PLGincludes
+include /Users/anthony/Dropbox/data/InProcess/Include/globals
+include /Users/anthony/Dropbox/data/InProcess/Include/frame
+include /Users/anthony/Dropbox/data/InProcess/Include/maps
 
 /*****************************************************************************
 	PLGset class definition
@@ -98,23 +100,6 @@ int foundIn(String text)
                 if contains(*atText)
                     return true;
                 else atText++;
-        }
-    return false;
-}
-
-/*****************************************************************************
-	Check if the item contains any character in this set
-*****************************************************************************/
-int foundIn(PLGitem item)
-{
-    if item
-        {
-        int		i;
-        String	atText = itemStart;
-        if itemStart && !isEmpty()
-            for ( i = itemLength; i > 0; i--, atText++ )
-                if contains(*atText)
-                    return true;
         }
     return false;
 }

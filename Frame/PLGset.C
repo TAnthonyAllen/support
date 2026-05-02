@@ -1,23 +1,21 @@
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "StringRoutines.h"
 #include "Buffer.h"
 #include "Segment.h"
-#include "PLGtester.h"
-#include "PLGitem.h"
 #include "PLGset.h"
 unsigned long *PLGset::mapper;
 
 PLGset::PLGset()
 {
 	name = 0;
+	specs = 0;
 	deferUpdate = 0;
 	hidden = 0;
 	negated = 0;
 	parsed = 0;
 	setUpdated = 0;
-	specs = 0;
 	map = (unsigned long*)::calloc(4,sizeof(long));
 	if ( !PLGset::mapper )
 		PLGset::mapper = (unsigned long*)::calloc(257,sizeof(long));
@@ -113,23 +111,6 @@ int PLGset::foundIn(char *text)
 }
 
 /*****************************************************************************
-	Check if the item contains any character in this set
-*****************************************************************************/
-int PLGset::foundIn(PLGitem *item)
-{
-	if ( item )
-		{
-		int 	i = 0;
-		char 	*atText = item->itemStart;
-		if ( item->itemStart && !isEmpty() )
-			for ( i = item->itemLength; i > 0; i--, atText++ )
-				if ( contains(*atText) )
-					return 1;
-		}
-	return 0;
-}
-
-/*****************************************************************************
 	Generate the code to implement this set
 *****************************************************************************/
 void PLGset::generate(Buffer *output)
@@ -154,7 +135,7 @@ void PLGset::generate(Buffer *output)
 			output->appendString(specs);
 			output->appendString("\"");
 			}
-		else	PLGset::printText(setBuffer->string(),output);
+		else	printText(setBuffer->string(),output);
 		output->appendString(");\n");
 		}
 	else	::fprintf(stderr,"PLGset: tried to print an empty set\n");
@@ -491,7 +472,7 @@ char 		*text = setBuffer->toString();
 	if ( text )
 		{
 		setBuffer->appendString("\ttext: ");
-		PLGset::printText(text,setBuffer);
+		printText(text,setBuffer);
 		setBuffer->appendString("\n");
 		}
 	else {
@@ -574,3 +555,7 @@ unsigned long 	masked = 0;
 		}
 	setUpdated = 1;
 }
+/*	Warning: the following methods were referenced but not declared
+	isEmpty()
+	printText(char*,Buffer*)
+*/

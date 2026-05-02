@@ -1,0 +1,83 @@
+name: support
+options:
+  bundleIdPrefix: com.taa.support
+  deploymentTarget:
+    macOS: "12.0"
+
+# tawk-emitted .C files — force C++ compilation.
+fileTypes:
+  C:
+    buildPhase: sources
+    lastKnownFileType: sourcecode.cpp.cpp
+
+settings:
+  base:
+    ALWAYS_SEARCH_USER_PATHS: NO
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++17"
+    CLANG_CXX_LIBRARY: "libc++"
+    GCC_C_LANGUAGE_STANDARD: "gnu11"
+
+targets:
+  support:
+    type: library.static
+    platform: macOS
+    sources:
+      # ── Sources (.C) ─────────────────────────────────────────────────
+      - path: Frame
+        group: Sources
+        buildPhase: sources
+        includes: ["*.C"]
+        excludes: ["BeforeRefactor"]
+      - path: Maps
+        group: Sources
+        buildPhase: sources
+        includes: ["*.C"]
+        excludes: ["perfect.c"]   # K&R-era, won't compile cleanly
+      - path: KeyTable
+        group: Sources
+        buildPhase: sources
+        includes: ["*.C"]
+
+      # ── Headers (.h) — for editing/navigation, not compiled ─────────
+      - path: Frame
+        group: Headers
+        buildPhase: none
+        includes: ["*.h"]
+        excludes: ["BeforeRefactor"]
+      - path: Maps
+        group: Headers
+        buildPhase: none
+        includes: ["*.h"]
+      - path: KeyTable
+        group: Headers
+        buildPhase: none
+        includes: ["*.h"]
+
+      # ── TAWK source (.twk) ──────────────────────────────────────────
+      - path: Frame
+        group: TAWK
+        buildPhase: none
+        includes: ["*.twk"]
+        excludes: ["BeforeRefactor"]
+      - path: Maps
+        group: TAWK
+        buildPhase: none
+        includes: ["*.twk"]
+      - path: KeyTable
+        group: TAWK
+        buildPhase: none
+        includes: ["*.twk"]
+
+    settings:
+      base:
+        HEADER_SEARCH_PATHS:
+          - "$(SRCROOT)/Frame"
+          - "$(SRCROOT)/Maps"
+          - "$(SRCROOT)/KeyTable"
+          - "$(SRCROOT)/Include"
+        WARNING_CFLAGS:
+          - "-Wno-parentheses"
+          - "-Wno-write-strings"
+        OTHER_CFLAGS:
+          - "-Wno-parentheses"
+          - "-Wno-write-strings"

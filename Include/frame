@@ -1,6 +1,5 @@
 external    DoubleLink
 external	DoubleLinkList
-external    PLGitem
 external	PLGset
 external	Stack
 external	Stak
@@ -19,7 +18,6 @@ DoubleLinkList  hashList;
     void            clear();
 	DoubleLink		find(String name);
 	void*			get(String name);
-    void*           get(PLGitem item);
 	int				getHashIndex(String name);
     void            listKeys();
     void*           next(String name);

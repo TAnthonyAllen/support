@@ -1,10 +1,9 @@
-#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "StringRoutines.h"
 #include "DoubleLinkList.h"
 #include "DoubleLink.h"
-#include "PLGitem.h"
 #include "BaseHash.h"
 
 /******************************************************************************
@@ -111,16 +110,6 @@ void *BaseHash::get(char *name)
 			return atHash->value;
 		}
 	return 0;
-}
-
-/***************************************************************************
-	This extends BaseHash get to take a PLGitem as argument
-***************************************************************************/
-void *BaseHash::get(PLGitem *item)
-{
-void 	*result = get(item->string());
-	item->unString();
-	return result;
 }
 
 /***************************************************************************

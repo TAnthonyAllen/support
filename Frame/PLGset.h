@@ -1,6 +1,4 @@
 class Buffer;
-class PLGtester;
-class PLGitem;
 /*****************************************************************************
 	PLGset class definition
 *****************************************************************************/
@@ -10,6 +8,7 @@ class PLGset
 public:
 unsigned long *map;
 char *name;
+char *specs;
 Buffer *setBuffer;
 struct 
 	{
@@ -20,15 +19,12 @@ struct
 	unsigned int setUpdated:1;
 	};
 static unsigned long *mapper;
-char *specs;
 PLGset();
 PLGset(char *input);
-int addTest(PLGtester *test);
 void clear();
 int contains(char c);
 int contains(char *s);
 int foundIn(char *text);
-int foundIn(PLGitem *item);
 void generate(Buffer *output);
 int isEmpty();
 int length();
@@ -43,6 +39,5 @@ void set(int left, int right);
 void setSimple(char *text);
 char *skip(char *plgStart);
 char *toString();
-char *toText();
 void updateBuffer();
 };
