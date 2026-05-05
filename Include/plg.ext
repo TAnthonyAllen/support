@@ -100,7 +100,8 @@ String			eof,
 				plgInput,
 				plgStart;
 int				inputLength,
-				itemCount;
+				itemCount,
+				helperCount;
 PLGset			currentSet,
 				defaultSkip,
 				skipSet;
