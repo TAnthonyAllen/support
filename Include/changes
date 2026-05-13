@@ -1,6 +1,0 @@
-
-Sun 17 10:45AM      Started modifying Tok macros to only take one parameter
-    There is a discontinuity in that a macro definition allows multiple parameters but a macro invocation only allows one. Since a macro invocation ought not be (and is not) constrained by its parameter, it is not feasible to have multiple parameters because there is no way to easily differentiate parameters when a parameter can be anything. Otherwise the syntax gets ugly.
-    Turns out the balance rule for CheckMacroParameters is crapping out. Need to rewrite so plg handling of balance rules will have to be modified
-     
-
