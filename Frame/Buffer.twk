@@ -16,58 +16,110 @@ String		file,
 			start;
 
 /*****************************************************************************
+	Constructors
+*****************************************************************************/
+Buffer()
+{
+    bufferName  = "No name buffer";
+    size        = 500;
+    roomLeft    = size;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+}
+
+Buffer(String name)
+{
+    bufferName  = name;
+    size        = 500;
+    roomLeft    = size;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+}
+
+Buffer(String name, int buffersize)
+{
+    bufferName  = name;
+    size        = buffersize;
+    roomLeft    = size;
+    start       = calloc(size + 1,sizeof(char));
+    end         = start + size;
+    current     = start;
+}
+
+/*****************************************************************************
 	append methods
 *****************************************************************************/
-void appendChar(char c)
+void appendString(String text,String format,int width)
+{
+	if !text return;
+int length  = (int)strlen(text);
+    if !format
+        {
+        extend(length);
+        while *text
+            { *current++ = *text++; }
+        *current = '\0';
+        }
+    else {
+        if width > length extend(width);
+        else extend(length);
+        length = sprintf(current,format,text);
+        current += length;
+        }
+}
+
+void appendChar(char c,String format,int width)
 {
 	if !c return;
 	extend(10);
-    *current++ = c;
-    *current = '\0';
-    roomLeft--;
+    if !format
+        {
+        *current++ = c;
+        *current = '\0';
+        }
+    else {
+        if width > 10 extend(width);
+        width = sprintf(current,format,c);
+        current += width;
+        }
 }
 
-void appendCount(int i,String format)
+void appendInt(int i,String format,int width)
 {
-    extend(50);
-int added = snprintf(current,size,format,i);
-    roomLeft    -= added;
-    current     += added;
-    *current = '\0';
+    if !format  format  = "%d";
+    if !width   width   = 10;
+	extend(width);
+	width = sprintf(current,format,i);
+    current += width;
 }
 
-void appendCount(int i)
+void appendDouble(double d,String format,int width)
 {
-    appendCount(i,"%d");
+    if !format  format  = "%f";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,d);
+    current += width;
 }
 
-void appendNumber(double d,String format)
+void appendFloat(float f,String format,int width)
 {
-    extend(50);
-int added = snprintf(current,size,format,d);
-    roomLeft    -= added;
-    current     += added;
-    *current = '\0';
+    if !format  format  = "%f";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,f);
+    current += width;
 }
 
-void appendNumber(double d)
+void appendLong(long l,String format,int width)
 {
-    appendNumber(d,"%.1f");
-}
-
-void appendString(String text,String format)
-{
-	if text {
-        int length  = (int)strlen(text);
-        extend(length);
-        length  = snprintf(current,size,format,text);
-        roomLeft    -= length;
-        current     += length; }
-}
-
-void appendString(String text)
-{
-	appendString(text,"%s");
+    if !format  format  = "%lld";
+    if !width   width   = 20;
+	extend(width);
+	width = sprintf(current,format,l);
+    current += width;
 }
 
 /*****************************************************************************
@@ -175,8 +227,8 @@ void insertIntoBuffer(String text,int offset)
         String tail    = getMarkedString();
         current     = mark;
         mark        = saveMark;
-        appendString(text);
-        appendString(tail); }
+        this += text;
+        this += tail; }
     else cerr "ERROR insertIntoBuffer: invalid offset",offset:;
 }
 
@@ -294,55 +346,4 @@ void unMark()
         *current    = 0;
         mark        = 0; }
 }
-}
-
-/*****************************************************************************
-        Buffer factories aliased to new
-*****************************************************************************/
-Buffer bufferFactory1()
-{
-Buffer  buffer = calloc(1,sizeof(Buffer));
-    bufferName  = "No name buffer";
-    size        = 500;
-    roomLeft    = size;
-    start       = calloc(size + 1,sizeof(char));
-    end         = start + size;
-    current     = start;
-    return buffer;
-}
-
-Buffer bufferFactory2(String name)
-{
-Buffer  buffer = calloc(1,sizeof(Buffer));
-    bufferName  = name;
-    size        = 500;
-    roomLeft    = size;
-    start       = calloc(size + 1,sizeof(char));
-    end         = start + size;
-    current     = start;
-    return buffer;
-}
-
-Buffer bufferFactory3(String name,int buffersize)
-{
-Buffer  buffer = calloc(1,sizeof(Buffer));
-    bufferName  = name;
-    size        = buffersize;
-    roomLeft    = size;
-    start       = calloc(size + 1,sizeof(char));
-    end         = start + size;
-    current     = start;
-    return buffer;
-}
-
-Buffer bufferFactory4(int buffersize)
-{
-Buffer  buffer = calloc(1,sizeof(Buffer));
-    bufferName  = "No name buffer";
-    size        = buffersize;
-    roomLeft    = size;
-    start       = calloc(size + 1,sizeof(char));
-    end         = start + size;
-    current     = start;
-    return buffer;
 }

@@ -1,6 +1,6 @@
 external    DoubleLink
 external	DoubleLinkList
-external	PLGset
+external	CharSet
 external	Stack
 external	Stak
 external	Tape
@@ -38,7 +38,6 @@ DoubleLinkList  hashList;
             ;
 }
 
-//external    Buffer C addClassNameToMethods
 external    Buffer
 {
 #autoGetSet
@@ -51,13 +50,17 @@ String		file,
 			end,
 			mark,
 			start;
-    void    appendChar(char c);
-    void    appendCount(int i,String format);
-    void    appendCount(int i);
-    void    appendNumber(double d,String format);
-    void    appendNumber(double d);
-    void    appendString(String text,String format);
-    void    appendString(String text);
+
+    Buffer();
+    Buffer(String name);
+    Buffer(String name, int buffersize);
+
+    void    appendString(String text,String format,int width);
+    void    appendChar(char c,String format,int width);
+    void    appendInt(int i,String format,int width);
+    void    appendDouble(double d,String format,int width);
+    void    appendFloat(float f,String format,int width);
+    void    appendLong(long l,String format,int width);
     void    backupToMark();
     int     closeFile();
     void    deleteFromBuffer(int count);
@@ -77,11 +80,10 @@ String		file,
     void    unMark();
     // Order of the two last append aliases is important below
     alias
-        new             bufferFactory
-        append          appendChar
-        append          appendCount
-        append          appendString
-        append          appendChar
+        append          appendChar(format=0,width=0)
+        append          appendInt(format=0,width=0)
+        append          appendString(format=0,width=0)
+        append          appendChar(format=0,width=0)
         delete          deleteFromBuffer(count=1)
         insert          insertIntoBuffer
         ;
@@ -91,18 +93,44 @@ String		file,
         ;
 }
 
-external    Buffer.h
+external CharSet
 {
-    Buffer      bufferFactory1();
-    Buffer      bufferFactory2(String name);
-    Buffer      bufferFactory3(String name,int buffersize);
-    Buffer      bufferFactory4(int buffersize);
-    alias
-        bufferFactory   bufferFactory1
-        bufferFactory   bufferFactory2
-        bufferFactory   bufferFactory3
-        bufferFactory   bufferFactory4
-        ;
+unsigned char   *inSet;
+String          name;
+String          specs;
+Buffer          setBuffer;
+boolean
+            deferUpdate
+            hidden
+            negated
+            parsed
+            setUpdated
+            ;
+static unsigned long    *mapper;
+	CharSet();
+	CharSet(String s);
+	void		clear();
+    int			contains(char c);
+    int         contains(String s);
+	int			foundIn(String s);
+	void		generate(Buffer b);
+	int			isEmpty();
+	int			length();
+    void		reset(int i);
+    void		reset(int b, int e);
+	void		reset(CharSet s);
+    void		set(int i);
+    void		set(int b, int e);
+    void        set(CharSet other);
+	void		set(String text);
+    void        setSimple(String text);
+    String      skip(String plgStart);
+    String		toString();
+    void        updateBuffer();
+	static void printText(String text,Buffer output);
+	overload
+		+=		set
+		;
 }
 
 external    GroupItem
@@ -305,7 +333,7 @@ KeyTableItem	next;
 external	KeyMap
 {
 char			letter;
-PLGset			follow;
+CharSet			follow;
 DoubleLinkList	entries;
 int				length;
 	KeyMap(char c);
@@ -321,7 +349,7 @@ int				debug,
 				size;
 KeyTableItem	current, first, last;
 void            **keyValueList;
-PLGset          keySet;
+CharSet          keySet;
     KeyTable();
 	KeyTable(String s);
 	int             add(String s);
@@ -480,7 +508,7 @@ external	StringRoutines.h
     extern String      getStringFromFile(String inputFile);
     extern String      headToChar(String input,char match);
     extern String      headToCount(String text,int count);
-    extern String      headToSet(String input,PLGset matchSet);
+    extern String      headToSet(String input,CharSet matchSet);
     extern String      headToString( String s,String c );
     extern void        indent(int indentify,String indenter,Buffer indentBuffer);
     extern void        setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);

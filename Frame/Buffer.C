@@ -7,112 +7,133 @@
 #include "Buffer.h"
 
 /*****************************************************************************
-        Buffer factories aliased to new
+	Constructors
 *****************************************************************************/
-Buffer *bufferFactory1()
+Buffer::Buffer()
 {
-Buffer 	*buffer = (Buffer*)::calloc(1,sizeof(Buffer));
-	buffer->bufferName = "No name buffer";
-	buffer->size = 500;
-	buffer->roomLeft = buffer->size;
-	buffer->start = (char*)::calloc(buffer->size + 1,sizeof(char));
-	buffer->end = buffer->start + buffer->size;
-	buffer->current = buffer->start;
-	return buffer;
+	fd = 0;
+	file = 0;
+	mark = 0;
+	bufferName = "No name buffer";
+	size = 500;
+	roomLeft = size;
+	start = (char*)::calloc(size + 1,sizeof(char));
+	end = start + size;
+	current = start;
 }
 
-Buffer *bufferFactory2(char *name)
+Buffer::Buffer(char *name, int buffersize)
 {
-Buffer 	*buffer = (Buffer*)::calloc(1,sizeof(Buffer));
-	buffer->bufferName = name;
-	buffer->size = 500;
-	buffer->roomLeft = buffer->size;
-	buffer->start = (char*)::calloc(buffer->size + 1,sizeof(char));
-	buffer->end = buffer->start + buffer->size;
-	buffer->current = buffer->start;
-	return buffer;
+	fd = 0;
+	file = 0;
+	mark = 0;
+	bufferName = name;
+	size = buffersize;
+	roomLeft = size;
+	start = (char*)::calloc(size + 1,sizeof(char));
+	end = start + size;
+	current = start;
 }
 
-Buffer *bufferFactory3(char *name, int buffersize)
+Buffer::Buffer(char *name)
 {
-Buffer 	*buffer = (Buffer*)::calloc(1,sizeof(Buffer));
-	buffer->bufferName = name;
-	buffer->size = buffersize;
-	buffer->roomLeft = buffer->size;
-	buffer->start = (char*)::calloc(buffer->size + 1,sizeof(char));
-	buffer->end = buffer->start + buffer->size;
-	buffer->current = buffer->start;
-	return buffer;
+	fd = 0;
+	file = 0;
+	mark = 0;
+	bufferName = name;
+	size = 500;
+	roomLeft = size;
+	start = (char*)::calloc(size + 1,sizeof(char));
+	end = start + size;
+	current = start;
 }
 
-Buffer *bufferFactory4(int buffersize)
+void Buffer::appendChar(char c, char *format, int width)
 {
-Buffer 	*buffer = (Buffer*)::calloc(1,sizeof(Buffer));
-	buffer->bufferName = "No name buffer";
-	buffer->size = buffersize;
-	buffer->roomLeft = buffer->size;
-	buffer->start = (char*)::calloc(buffer->size + 1,sizeof(char));
-	buffer->end = buffer->start + buffer->size;
-	buffer->current = buffer->start;
-	return buffer;
+	if ( !c )
+		return;
+	extend(10);
+	if ( !format )
+		{
+		*current++ = c;
+		*current = '\0';
+		}
+	else {
+		if ( width > 10 )
+			extend(width);
+		width = ::sprintf(current,format,c);
+		current += width;
+		}
+}
+
+void Buffer::appendDouble(double d, char *format, int width)
+{
+	if ( !format )
+		format = "%f";
+	if ( !width )
+		width = 20;
+	extend(width);
+	width = ::sprintf(current,format,d);
+	current += width;
+}
+
+void Buffer::appendFloat(float f, char *format, int width)
+{
+	if ( !format )
+		format = "%f";
+	if ( !width )
+		width = 20;
+	extend(width);
+	width = ::sprintf(current,format,f);
+	current += width;
+}
+
+void Buffer::appendInt(int i, char *format, int width)
+{
+	if ( !format )
+		format = "%d";
+	if ( !width )
+		width = 10;
+	extend(width);
+	width = ::sprintf(current,format,i);
+	current += width;
+}
+
+void Buffer::appendLong(long l, char *format, int width)
+{
+	if ( !format )
+		format = "%lld";
+	if ( !width )
+		width = 20;
+	extend(width);
+	width = ::sprintf(current,format,l);
+	current += width;
 }
 
 /*****************************************************************************
 	append methods
 *****************************************************************************/
-void Buffer::appendChar(char c)
+void Buffer::appendString(char *text, char *format, int width)
 {
-	if ( !c )
+	if ( !text )
 		return;
-	extend(10);
-	*current++ = c;
-	*current = '\0';
-	roomLeft--;
-}
-
-void Buffer::appendCount(int i, char *format)
-{
-	extend(50);
-int added = snprintf(current,size,format,i);
-	roomLeft -= added;
-	current += added;
-	*current = '\0';
-}
-
-void Buffer::appendCount(int i)
-{
-	appendCount(i,"%d");
-}
-
-void Buffer::appendNumber(double d, char *format)
-{
-	extend(50);
-int added = snprintf(current,size,format,d);
-	roomLeft -= added;
-	current += added;
-	*current = '\0';
-}
-
-void Buffer::appendNumber(double d)
-{
-	appendNumber(d,"%.1f");
-}
-
-void Buffer::appendString(char *text, char *format)
-{
-	if ( text )
+int length = (int)::strlen(text);
+	if ( !format )
 		{
-		int 	length = (int)::strlen(text);
 		extend(length);
-		length = snprintf(current,size,format,text);
-		roomLeft -= length;
+		while ( *text )
+			{
+			*current++ = *text++;
+			}
+		*current = '\0';
+		}
+	else {
+		if ( width > length )
+			extend(width);
+		else	extend(length);
+		length = ::sprintf(current,format,text);
 		current += length;
 		}
-}
-
-void Buffer::appendString(char *text)
-{
-	appendString(text,"%s");
 }
 
 /*****************************************************************************
@@ -247,8 +268,8 @@ void Buffer::insertIntoBuffer(char *text, int offset)
 		char 	*tail = getMarkedString();
 		current = mark;
 		mark = saveMark;
-		appendString(text);
-		appendString(tail);
+		this->appendString(text,0,0);
+		this->appendString(tail,0,0);
 		}
 	else	::fprintf(stderr,"ERROR insertIntoBuffer: invalid offset %d\n",offset);
 }
@@ -382,8 +403,3 @@ void Buffer::unMark()
 		mark = 0;
 		}
 }
-/*	Warning: the following methods were referenced but not declared
-	snprintf(char*,int,char*,int)
-	snprintf(char*,int,char*,double)
-	snprintf(char*,int,char*,char*)
-*/
