@@ -5,12 +5,10 @@ include /Users/anthony/Dropbox/data/InProcess/Include/groups.ext
 include /Users/anthony/Dropbox/data/InProcess/Include/PLGrevision
 
 /*****************************************************************************
-    PLGset — parser-rule "set of tests" + character set.
+    CharSet — character-set utility class.
 
-    Sister class CharSet (support/Frame) handles the pure character-set role.
-    PLGset is a superset: it has every character-set method CharSet has, plus
-    the parser-rule extras (addTest, foundIn(PLGitem), generateNamed, setName,
-    skip(PLGparse) overload) needed for PLG guard-set construction.
+    Sister to PLGset, which adds parser-rule extras. CharSet is the clean
+    character-set role: hold a set of chars, support add/remove/test/iterate.
 
     Representation: inSet[256] holds one byte per ASCII codepoint, 1 = in set,
     0 = not in set. Trivially debuggable — every byte is directly inspectable.
@@ -25,28 +23,28 @@ include /Users/anthony/Dropbox/data/InProcess/Include/PLGrevision
     "^abc" for generation purposes). inSet[] holds the resolved set for
     matching.
 *****************************************************************************/
-class PLGset
+class CharSet
 {
 unsigned char   *inSet;
 String          name;
 String          specs;
 Buffer          setBuffer;
 boolean
-            changed
             deferUpdate
             hidden
             negated
             parsed
+            setUpdated
             ;
 static unsigned long    *mapper;
 
-PLGset()
+CharSet()
 {
     inSet = (unsigned char*)calloc(256, sizeof(char));
     setBuffer = new("setBuffer",50);
 }
 
-PLGset(String input)
+CharSet(String input)
 {
     inSet = (unsigned char*)calloc(256, sizeof(char));
     setBuffer = new("setBuffer",50);
@@ -110,55 +108,23 @@ int foundIn(String text)
 }
 
 /*****************************************************************************
-    Check if the item contains any character in this set
-*****************************************************************************/
-int foundIn(PLGitem item)
-{
-int     i;
-String  atText = item.itemStart;
-    if item.itemStart && !isEmpty()
-        for ( i = item.itemLength; i > 0; i--, atText++ )
-            if inSet[(unsigned char)*atText]
-                return true;
-    return false;
-}
-
-/*****************************************************************************
     Generate the code to implement this set
 *****************************************************************************/
 void generate(Buffer output)
 {
     output.setMark();
     if hidden return;
-    if name
-        print(output) "currentSet = " name ";\n";
-    or setBuffer.length() {
-        print(output) "currentSet = getSet(\"";
-        printText(setBuffer.string(),output);
-        print "\");\n";
+    if setBuffer.length() {
+        print(output) "currentSet = getSet(";
+        if name     print "\"" name "\"";
+        if specs    {
+            if name print ",";
+            print "\"" specs "\""; }
+        else        printText(setBuffer.string(),output);
+        print ");\n";
         }
+    else cerr "CharSet: tried to print an empty set":;
     mark = 0;
-}
-
-/*****************************************************************************
-    Generate the code to create a named set
-*****************************************************************************/
-void generateNamed(Buffer output)
-{
-    output.setMark();
-    if hidden return;
-    if !name || name eq "defaultSKIP" return;
-    print(output) name " = getSet( \"" name "\",\"";
-    printText(setBuffer.string(),output);
-    print "\" );\n";
-}
-
-/*****************************************************************************
-    Stub. Retained for API compatibility with the older lazy-parse lineage.
-    All construction parses immediately, so init() has nothing to do.
-*****************************************************************************/
-void init()
-{
 }
 
 /*****************************************************************************
@@ -236,7 +202,7 @@ void reset(int a)
 {
     if a >= 0 && a < 256
         inSet[a] = 0;
-    if !deferUpdate && changed updateBuffer();
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
@@ -250,21 +216,20 @@ int flag = deferUpdate;
     for ( i = left; i <= right; i++ )
         reset(i);
     deferUpdate = flag;
-    if !deferUpdate && changed updateBuffer();
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
     Turn off the contents of set in this set
 *****************************************************************************/
-void reset(PLGset set)
+void reset(CharSet set)
 {
 int i;
     if isEmpty()    return;
-    set.init();
     for ( i = 0; i < 256; i++ )
         if set.inSet[i]
             inSet[i] = 0;
-    if !deferUpdate && changed updateBuffer();
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
@@ -274,10 +239,9 @@ void set(int a)
 {
     if a >= 0 && a < 256 {
         if inSet[a] return;
-        changed     = true;
-        inSet[a]    = 1;
+        inSet[a] = 1;
         setBuffer += (char)a;
-        if !deferUpdate && changed updateBuffer();
+        if !deferUpdate updateBuffer();
         }
 }
 
@@ -288,27 +252,26 @@ void set(int left, int right)
 {
 char leftC = (char)left;
     if inSet[(unsigned char)leftC]
-        cerr "PLGset: WARNING adding range but set already contains range start", leftC:;
+        cerr "CharSet: WARNING adding range but set already contains range start", leftC:;
 int i;
 int flag = deferUpdate;
     deferUpdate = true;
     for ( i = left; i <= right; i++ )
         set(i);
     deferUpdate = flag;
-    if !deferUpdate && changed updateBuffer();
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
     Add a set to this set
 *****************************************************************************/
-void set(PLGset set)
+void set(CharSet set)
 {
 int i;
-    set.init();
     for ( i = 0; i < 256; i++ )
         if set.inSet[i]
             inSet[i] = 1;
-    if !deferUpdate && changed updateBuffer();
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
@@ -365,20 +328,7 @@ int             negate;
             }
         }
     deferUpdate = false;
-    if !deferUpdate && changed updateBuffer();
-}
-
-/*****************************************************************************
-    Set the name if there is none to quoted representation of set text.
-*****************************************************************************/
-void setName()
-{
-Buffer  buffer = new;
-    print(buffer) "[";
-    printText(setBuffer.string(), buffer);
-    print "]";
-    name = buffer.toString();
-    delete buffer;
+    if !deferUpdate updateBuffer();
 }
 
 /*****************************************************************************
@@ -395,7 +345,6 @@ String  atText = text;
 
 /*****************************************************************************
     Advance the parser pointer if the current character is in this set.
-    Pointer-in / pointer-out variant — sister to skip(PLGparse).
 *****************************************************************************/
 String skip(String plgStart)
 {
@@ -409,7 +358,7 @@ String skip(String plgStart)
 }
 
 /*******************************************************************************
-    Returns a string representation of the PLGset. Walks inSet[256] and emits
+    Returns a string representation of the CharSet. Walks inSet[256] and emits
     each character that's present, with its decimal value for unambiguous
     debugging.
 *******************************************************************************/
@@ -456,6 +405,6 @@ int i;
             or i == 12  setBuffer += "\\f";
             or i == 13  setBuffer += "\\r";
             }
-    changed = false;
+    setUpdated = true;
 }
 }
