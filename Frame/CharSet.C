@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Buffer.h"
-#include "GroupRules.h"
-#include "GroupControl.h"
 #include "CharSet.h"
 unsigned long *CharSet::mapper;
 
@@ -407,7 +405,7 @@ int 	i = 0;
 int 	count = 0;
 char 	*output = 0;
 char 	*text = setBuffer->toString();
-Buffer 	*buffer = GroupControl::groupController->groupRules->stringBUFFER;
+Buffer 	*buffer = new Buffer();
 	if ( name )
 		{
 		buffer->appendString("Set: ",0,0);

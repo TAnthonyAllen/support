@@ -4,10 +4,6 @@
 #include "StringRoutines.h"
 #include "CharSet.h"
 #include "Buffer.h"
-#include "PLGitem.h"
-#include "GroupRules.h"
-#include "GroupControl.h"
-#include "PLGparse.h"
 #include "PLGset.h"
 unsigned long *PLGset::mapper;
 
@@ -96,20 +92,6 @@ int PLGset::foundIn(char *text)
 				return 1;
 			else	atText++;
 		}
-	return 0;
-}
-
-/*****************************************************************************
-    Check if the item contains any character in this set
-*****************************************************************************/
-int PLGset::foundIn(PLGitem *item)
-{
-int 	i = 0;
-char 	*atText = item->itemStart;
-	if ( item->itemStart && !isEmpty() )
-		for ( i = item->itemLength; i > 0; i--, atText++ )
-			if ( inSet[(unsigned char)*atText] )
-				return 1;
 	return 0;
 }
 
@@ -462,7 +444,7 @@ int 	i = 0;
 int 	count = 0;
 char 	*output = 0;
 char 	*text = setBuffer->toString();
-Buffer 	*buffer = GroupControl::groupController->groupRules->stringBUFFER;
+Buffer 	*buffer = new Buffer();
 	if ( name )
 		{
 		buffer->appendString("Set: ",0,0);

@@ -24,7 +24,8 @@
 		A26F5EB3C6C496F7A5B06213 /* TapeSegment.C in Sources */ = {isa = PBXBuildFile; fileRef = 9EF4B1CAC9047DA1B0E51C3A /* TapeSegment.C */; };
 		AD02AC26333FEA0609C37845 /* Stack.C in Sources */ = {isa = PBXBuildFile; fileRef = 99B94B3E585CC60BCE6628BC /* Stack.C */; };
 		AD82AC0AA0D4072A21925C97 /* BitMAP.C in Sources */ = {isa = PBXBuildFile; fileRef = A9A0B4058434E93DB8FAF9E7 /* BitMAP.C */; };
-		B357F68429425AE34B864C03 /* PLGset.C in Sources */ = {isa = PBXBuildFile; fileRef = 8C9AB19C624931DEF6A60091 /* PLGset.C */; };
+		B357F68429425AE34B864C03 /* CharSet.C in Sources */ = {isa = PBXBuildFile; fileRef = 8C9AB19C624931DEF6A60091 /* CharSet.C */; };
+		C7C69AFA155A53059FB93726 /* PLGset.C in Sources */ = {isa = PBXBuildFile; fileRef = 1AD49DE2BF3BCE56151B1472 /* PLGset.C */; };
 		D323A6DBAE061EF23839DBF2 /* KeyMap.C in Sources */ = {isa = PBXBuildFile; fileRef = 5507FD74B10D50A4382AF263 /* KeyMap.C */; };
 		DF4E17D5527E89AD619F1349 /* SearchNode.C in Sources */ = {isa = PBXBuildFile; fileRef = 1796389B3032C9A2287DA76C /* SearchNode.C */; };
 		E06439FBECB4C20BD0CFD61F /* DispatchQ.C in Sources */ = {isa = PBXBuildFile; fileRef = BDC5C40D67E706D8876C2EDB /* DispatchQ.C */; };
@@ -42,6 +43,7 @@
 		143F861177F899427F88E59D /* TapeSegment.twk */ = {isa = PBXFileReference; path = TapeSegment.twk; sourceTree = "<group>"; };
 		1796389B3032C9A2287DA76C /* SearchNode.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SearchNode.C; sourceTree = "<group>"; };
 		194C440BE3A38F55ACA27692 /* StringRoutines.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = StringRoutines.C; sourceTree = "<group>"; };
+		1AD49DE2BF3BCE56151B1472 /* PLGset.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PLGset.C; sourceTree = "<group>"; };
 		1C968AA3945842C32579A2E5 /* StringRoutines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringRoutines.h; sourceTree = "<group>"; };
 		1E31714300478C7C856545B8 /* Buffer.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Buffer.C; sourceTree = "<group>"; };
 		27C99744197DE3EA4494FC61 /* HashLink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashLink.h; sourceTree = "<group>"; };
@@ -66,15 +68,17 @@
 		5A4E550F8D0CDB5E4F900974 /* HashLink.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HashLink.C; sourceTree = "<group>"; };
 		5E0837F86A21E6EEA1995612 /* BitMAP.twk */ = {isa = PBXFileReference; path = BitMAP.twk; sourceTree = "<group>"; };
 		6C7E082778215A745D3276E3 /* KeyTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyTable.h; sourceTree = "<group>"; };
-		6EA83BDCD9056C18378FFEA5 /* PLGset.twk */ = {isa = PBXFileReference; path = PLGset.twk; sourceTree = "<group>"; };
+		6EA83BDCD9056C18378FFEA5 /* CharSet.twk */ = {isa = PBXFileReference; path = CharSet.twk; sourceTree = "<group>"; };
 		6FC48E871D698ACA48727691 /* DoubleLink.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DoubleLink.C; sourceTree = "<group>"; };
-		7157ED95764E99FE1126F923 /* PLGset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLGset.h; sourceTree = "<group>"; };
+		7157ED95764E99FE1126F923 /* CharSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CharSet.h; sourceTree = "<group>"; };
 		752D3648EC297583FB3AC67A /* Bot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bot.h; sourceTree = "<group>"; };
+		79608E14FE28BDC83F0F4489 /* PLGset.twk */ = {isa = PBXFileReference; path = PLGset.twk; sourceTree = "<group>"; };
 		7AC4FC54ABDB2E9B3E892EA9 /* Segment.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Segment.C; sourceTree = "<group>"; };
 		7D79E2A3AC7A0A06166A8308 /* TapeSegment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TapeSegment.h; sourceTree = "<group>"; };
 		819A405E4FE0649A3302A330 /* SearchTree.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SearchTree.C; sourceTree = "<group>"; };
 		894EC11AB0AA23D87D8942EA /* KeyMap.twk */ = {isa = PBXFileReference; path = KeyMap.twk; sourceTree = "<group>"; };
-		8C9AB19C624931DEF6A60091 /* PLGset.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = PLGset.C; sourceTree = "<group>"; };
+		89F43781546E5988604D413B /* PLGset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLGset.h; sourceTree = "<group>"; };
+		8C9AB19C624931DEF6A60091 /* CharSet.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CharSet.C; sourceTree = "<group>"; };
 		8FE31A1E6FD5B353E4BE8220 /* URLservice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLservice.h; sourceTree = "<group>"; };
 		97F53B90D14C3CC50EE480CC /* OCroutines.twk */ = {isa = PBXFileReference; path = OCroutines.twk; sourceTree = "<group>"; };
 		99B94B3E585CC60BCE6628BC /* Stack.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stack.C; sourceTree = "<group>"; };
@@ -170,9 +174,12 @@
 				4385031BB25DD8C4B47ABCC4 /* HashList.twk */,
 				AFDFBFB4EB7FD1C7FB3CCCEC /* OCroutines.h */,
 				97F53B90D14C3CC50EE480CC /* OCroutines.twk */,
-				8C9AB19C624931DEF6A60091 /* PLGset.C */,
-				7157ED95764E99FE1126F923 /* PLGset.h */,
-				6EA83BDCD9056C18378FFEA5 /* PLGset.twk */,
+				8C9AB19C624931DEF6A60091 /* CharSet.C */,
+				7157ED95764E99FE1126F923 /* CharSet.h */,
+				6EA83BDCD9056C18378FFEA5 /* CharSet.twk */,
+				1AD49DE2BF3BCE56151B1472 /* PLGset.C */,
+				89F43781546E5988604D413B /* PLGset.h */,
+				79608E14FE28BDC83F0F4489 /* PLGset.twk */,
 				A8C3E681523885C76A2D050A /* SearchItem.C */,
 				BD36B3B5F63303D69078858F /* SearchItem.h */,
 				56EE2EDB8E0E28D4A2459CBA /* SearchItem.twk */,
@@ -322,7 +329,8 @@
 				D323A6DBAE061EF23839DBF2 /* KeyMap.C in Sources */,
 				EC5DB36D9421B8D4EDEDFA44 /* KeyTable.C in Sources */,
 				2667081EB554708B9FE7A87A /* KeyTableItem.C in Sources */,
-				B357F68429425AE34B864C03 /* PLGset.C in Sources */,
+				B357F68429425AE34B864C03 /* CharSet.C in Sources */,
+				C7C69AFA155A53059FB93726 /* PLGset.C in Sources */,
 				3CC7A8B8B2E283654A77F6BC /* SearchItem.C in Sources */,
 				DF4E17D5527E89AD619F1349 /* SearchNode.C in Sources */,
 				EE60FD27B0E1E11858D133AF /* SearchTree.C in Sources */,

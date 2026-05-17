@@ -1,5 +1,4 @@
 class Buffer;
-class PLGitem;
 class CharSet;
 /*****************************************************************************
     PLGset — parser-rule "set of tests" + character set.
@@ -46,7 +45,6 @@ void clear();
 int contains(char c);
 int contains(char *s);
 int foundIn(char *text);
-int foundIn(PLGitem *item);
 void generate(Buffer *output);
 void generateNamed(Buffer *output);
 void init();

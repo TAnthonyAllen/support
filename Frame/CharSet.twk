@@ -367,7 +367,7 @@ String toString()
 int     i, count;
 String  output;
 String  text = setBuffer.toString();
-Buffer  buffer = stringBUFFER;
+Buffer  buffer = new Buffer();
 
     if name print(buffer) "Set: " name "\n";
     else print "No name set:\n";

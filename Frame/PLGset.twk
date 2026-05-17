@@ -1,7 +1,6 @@
 include /Users/anthony/Dropbox/data/InProcess/Include/globals
 include /Users/anthony/Dropbox/data/InProcess/Include/frame
 include /Users/anthony/Dropbox/data/InProcess/Include/maps
-include /Users/anthony/Dropbox/data/InProcess/Include/groups.ext
 include /Users/anthony/Dropbox/data/InProcess/Include/PLGrevision
 
 /*****************************************************************************
@@ -106,20 +105,6 @@ int foundIn(String text)
                 return true;
             else atText++;
         }
-    return false;
-}
-
-/*****************************************************************************
-    Check if the item contains any character in this set
-*****************************************************************************/
-int foundIn(PLGitem item)
-{
-int     i;
-String  atText = item.itemStart;
-    if item.itemStart && !isEmpty()
-        for ( i = item.itemLength; i > 0; i--, atText++ )
-            if inSet[(unsigned char)*atText]
-                return true;
     return false;
 }
 
@@ -418,7 +403,7 @@ String toString()
 int     i, count;
 String  output;
 String  text = setBuffer.toString();
-Buffer  buffer = stringBUFFER;
+Buffer  buffer = new Buffer();
 
     if name print(buffer) "Set: " name "\n";
     else print "No name set:\n";
