@@ -153,6 +153,7 @@ PLGrule         deferRule;
     void unString();
     String toString();
     void runDeferred(PLGparse state);
+    PLGitem getLabel(String name);
 
 static PLGitem  itemEmpty;
 alias
