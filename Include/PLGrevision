@@ -216,6 +216,8 @@ Stak        actionNames;
     void reportError(Alternative alt, String message);
     void addTest(int kind, String data, String label, int min, int max, String skipSet);
     void divertInput(String s);
+    PLGitem divertInput(String s, PLGrule rule);
+    PLGitem divertInput(String s, String ruleName);
     void generateRules(Buffer output, String baseName);
     PLGrule getRule(String name);
     PLGset getSet(String specs);
@@ -274,6 +276,7 @@ boolean
     doNotGuard
     debug
     guardComputed
+    succeeded
     ;
     PLGrule(String s);
     void addAlternative(Alternative alt);

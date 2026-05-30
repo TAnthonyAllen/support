@@ -133,7 +133,7 @@ void PLGset::generateNamed(Buffer *output)
 	output->appendString(" = getSet( \"",0,0);
 	output->appendString(name,0,0);
 	output->appendString("\",\"",0,0);
-	PLGset::printText(setBuffer->string(),output);
+	PLGset::printText(setBuffer->toString(),output);
 	output->appendString("\" );\n",0,0);
 }
 
@@ -443,7 +443,6 @@ char *PLGset::toString()
 int 	i = 0;
 int 	count = 0;
 char 	*output = 0;
-char 	*text = setBuffer->toString();
 Buffer 	*buffer = new Buffer();
 	if ( name )
 		{
@@ -451,26 +450,48 @@ Buffer 	*buffer = new Buffer();
 		buffer->appendString(name,0,0);
 		buffer->appendString("\n",0,0);
 		}
-	else	buffer->appendString("No name set:\n",0,0);
-	if ( text )
-		{
-		buffer->appendString("\ttext: ",0,0);
-		buffer->appendString(text,0,0);
+	else {
+		buffer->appendString("No name set:",0,0);
 		buffer->appendString("\n",0,0);
 		}
-	else	buffer->appendString("\tNo text\n",0,0);
-	buffer->appendString("\tcontents:\n",0,0);
-	for ( i = 0; i < 256; i++ )
+	if ( specs )
+		{
+		buffer->appendString("\t",0,0);
+		buffer->appendString("specs: ",0,0);
+		buffer->appendString(specs,0,0);
+		buffer->appendString("\n",0,0);
+		}
+	else {
+		buffer->appendString("\t",0,0);
+		buffer->appendString("No specs",0,0);
+		buffer->appendString("\n",0,0);
+		}
+	buffer->appendString("\t",0,0);
+	buffer->appendString("contents:",0,0);
+	buffer->appendString("\n",0,0);
+	buffer->appendString("\t",0,0);
+	for ( i = 0; i < 128; i++ )
 		if ( inSet[i] )
 			{
 			count++;
-			buffer->appendString("\t  [",0,0);
-			buffer->appendInt(i,0,0);
-			buffer->appendString("] ",0,0);
-			buffer->appendChar((char)i,0,0);
-			buffer->appendString("\n",0,0);
+			if ( i == 9 )
+				buffer->appendString("\\t",0,0);
+			else
+			if ( i == 10 )
+				buffer->appendString("\\n",0,0);
+			else
+			if ( i == 12 )
+				buffer->appendString("\\f",0,0);
+			else
+			if ( i == 13 )
+				buffer->appendString("\\r",0,0);
+			else
+			if ( i > 32 )
+				buffer->appendChar((char)i,0,0);
 			}
-	buffer->appendString("\ttotal ",0,0);
+	buffer->appendString("\n",0,0);
+	buffer->appendString("\t",0,0);
+	buffer->appendString("total ",0,0);
 	buffer->appendInt(count,0,0);
 	buffer->appendString("\n",0,0);
 	output = buffer->toString();
@@ -488,7 +509,7 @@ int 	i = 0;
 	setBuffer->reset();
 	if ( isEmpty() )
 		return;
-	for ( i = 0; i < 256; i++ )
+	for ( i = 0; i < 128; i++ )
 		if ( inSet[i] )
 			{
 			if ( i >= 32 && i <= 126 )
