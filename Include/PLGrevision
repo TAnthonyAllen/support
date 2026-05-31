@@ -141,6 +141,7 @@ BaseHash    children;
 PLGitem     terminator;
 PLGitem     itemNext;
 void*       itemValue;
+int         amount;
 boolean     conditionResult;
 char        savedChar;
 DoubleLinkList  deferred;
@@ -154,6 +155,7 @@ PLGrule         deferRule;
     String toString();
     void runDeferred(PLGparse state);
     PLGitem getLabel(String name);
+    int getAmount();
 
 static PLGitem  itemEmpty;
 alias
@@ -162,6 +164,9 @@ alias
     label       itemLabel
     next        itemNext
     value       itemValue
+    ;
+overload
+    []  getLabel
     ;
 }
 
@@ -219,6 +224,7 @@ Stak        actionNames;
     PLGitem divertInput(String s, PLGrule rule);
     PLGitem divertInput(String s, String ruleName);
     void generateRules(Buffer output, String baseName);
+    void attachActions(String content);
     PLGrule getRule(String name);
     PLGset getSet(String specs);
     PLGset getSet(PLGset named, String specs);
@@ -281,7 +287,7 @@ boolean
     PLGrule(String s);
     void addAlternative(Alternative alt);
     void declareActions(Buffer output);
-    void generate(Buffer output);
+    void generate(String parserName, Buffer output);
     PLGitem match(PLGparse state);
     PLGset setGuard();
     void writeActions(String parserName,Buffer output);
