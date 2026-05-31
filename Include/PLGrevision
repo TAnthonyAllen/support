@@ -25,9 +25,16 @@ external Alternative
 {
 DoubleLinkList  elements;
 PLGset          guardSet;
+PLGitem         immediateAction,
+                deferAction;
+String          actionName;
+int             &immediate(PLGparse state, PLGitem i);
+void            &defer(PLGparse state, PLGitem i);
 
     Alternative();
-    void generate(Buffer output);
+    void generate(String parserName, Buffer output);
+    void writeActions(String parserName, Buffer output);
+    void writeCaptures(Buffer output);
     int match(PLGparse state, PLGitem *out);
 }
 
@@ -146,6 +153,7 @@ boolean     conditionResult;
 char        savedChar;
 DoubleLinkList  deferred;
 PLGrule         deferRule;
+Alternative     deferAlt;
     PLGitem();
     PLGitem(String start, long length);
     PLGitem(String s);
@@ -164,6 +172,7 @@ alias
     label       itemLabel
     next        itemNext
     value       itemValue
+    get         getLabel
     ;
 overload
     []  getLabel
