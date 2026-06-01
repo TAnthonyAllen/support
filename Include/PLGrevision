@@ -149,7 +149,10 @@ PLGitem     terminator;
 PLGitem     itemNext;
 void*       itemValue;
 int         amount;
-boolean     conditionResult;
+boolean     conditionResult
+            flag1
+            flag4
+            ;
 char        savedChar;
 DoubleLinkList  deferred;
 PLGrule         deferRule;
@@ -172,16 +175,17 @@ alias
     label       itemLabel
     next        itemNext
     value       itemValue
+    valueItem   itemValue
     get         getLabel
     ;
 overload
     []  getLabel
+    %   getLabel
     ;
 }
 
 external PLGparse
 {
-Buffer      buffer;
 Buffer      buffer;
 String      cursor,
             eof,
@@ -224,33 +228,33 @@ Buffer      spliceAccumulator;
 Stak        actionNames;
     PLGparse();
     PLGparse(String input);
-    String snapshot();
-    void   restore(String s);
-    void   skip();
-    void reportError(Alternative alt, String message);
-    void addTest(int kind, String data, String label, int min, int max, String skipSet);
-    void divertInput(String s);
+    String  snapshot();
+    void    restore(String s);
+    void    skip();
+    void    reportError(Alternative alt, String message);
+    void    addTest(int kind, String data, String label, int min, int max, String skipSet);
+    void    divertInput(String s);
     PLGitem divertInput(String s, PLGrule rule);
     PLGitem divertInput(String s, String ruleName);
-    void generateRules(Buffer output, String baseName);
-    void attachActions(String content);
+    void    generateRules(Buffer output, String baseName);
+    void    attachActions(String content);
     PLGrule getRule(String name);
-    PLGset getSet(String specs);
-    PLGset getSet(PLGset named, String specs);
-    PLGset getSet(String name, String specs);
-    void initialize();
+    PLGset  getSet(String specs);
+    PLGset  getSet(PLGset named, String specs);
+    PLGset  getSet(String name, String specs);
+    void    initialize();
     PLGitem parse(PLGrule rule);
     PLGitem parse(String name);
-    void revertInput();
-    void setNoSkip();
-    void setBanged();
-    void setIgnored();
-    void setInput(String s);
-    void setInput(PLGitem item);
-    void setSkip();
-    void skip();
-    String stripComments(String input);
-    void summary(int threshold);
+    void    revertInput();
+    void    setNoSkip();
+    void    setBanged();
+    void    setIgnored();
+    void    setInput(String s);
+    void    setInput(PLGitem item);
+    void    setSkip();
+    void    skip();
+    String  stripComments(String input);
+    void    summary(int threshold);
 }
 
 external PLGparse.h
