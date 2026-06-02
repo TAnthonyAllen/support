@@ -1,20 +1,15 @@
 
 external GroupStak
+external Bytecode
 external GroupItem
 external RuleStuff
-external Layout extends View implements WindowDelegate
-{
-GroupItem       base,
-                fireDraw,
-                selection;
-Path            layoutPath;
-    Layout      init(Frame f);
-    Point       invertY(Point point);
-	void		keyUp(Event event);
-	void		mouseUp(Event event);
-    void        rightMouseUp(Event event);
-	void		scrollWheel(Event event);
-}
+external PLGset
+external PLGrgx
+external PLGitem
+external Buffer
+external BitMAP
+external Object
+external Stak
 
 external GroupList
 {
@@ -54,13 +49,11 @@ union
     Stak            gStak;
     ;
 
-/******************************************************************************
-	Basic incant traits
-******************************************************************************/
 boolean bools {
     isRule
     isLabel
     noPrint
+    invoke
     data:5[isANY isCHAR isSET isBUFFER isCOUNT isGROUP isITEM isMAP isNUMBER isOBJECT isREGEX isSTAK isSTRING isTOKEN]
     actionType:2[isAction isCoded]
     binType:3[isBIN isCLASS isLIST isREGISTRY]
@@ -79,7 +72,6 @@ boolean bools {
     hasAttributes
     hasListeners
     hasMembers
-    invoke
     isArgument
     isAssign
     isCondition
@@ -95,13 +87,12 @@ boolean bools {
     isToggle
     isUnary
     isVirtual
+    isXP
     mergeOn
     negate
+    recursive
     tokened } flags;
 
-/******************************************************************************
-	Methods aliases and overloads
-******************************************************************************/
     GroupBody();
     GroupBody(String s);
 	alias
@@ -134,30 +125,12 @@ DispatchQ       dispatchQ;
 static GroupControl groupController;
 	GroupControl(int i);
     void            addBaseRegistry(GroupItem r);
-    GroupItem       copyOf(GroupItem grup);
     void            dumpSearchList();
     GroupItem       getRegistry(String c);
     GroupItem       locate(String name);
     GroupItem       locate(GroupItem item);
     GroupItem       locateInMethod(String name);
     void            setBaseRegistries();
-}
-
-external GroupDraw
-{
-GroupItem   drawRegistry;
-Layout      layout;
-static GroupDraw    drawer;
-}
-
-external GroupDraw.h
-{
-    extern GroupItem    blockContaining(GroupItem grup,Point p);
-    extern int          containsPoint(GroupItem grup,Point p);
-    extern Frame        getFrame(GroupItem item);
-    extern TextView     getTextView(GroupItem field);
-    String              toString(Point p);
-    String              toString(Frame f);
 }
 
 external RuleStuff
@@ -171,7 +144,6 @@ GroupItem	    parent,
 RuleStuff       rStuff;
 boolean GroupOptions {
     affiliation:2[isAttribute isMember isEmbedded]
-    recursive
     isCopy } options;
 
     GroupItem();
@@ -299,14 +271,12 @@ external GroupRules
 {
     String          atRuleMark;
     RuleStuff       ruleSTUFF;
-    /***************************************************************************
-        Registries
-    ***************************************************************************/
     GroupItem
                 currentMETHOD,
                 currentRegistry,
                 debugJunk,
                 baseRegistryList,
+                bcOPs,
                 commands,
                 files,
                 grokking,
@@ -315,16 +285,15 @@ external GroupRules
                 opFields,
                 properties,
                 registries;
-    /***************************************************************************
-        Global group fields
-    ***************************************************************************/
     GroupItem
                 divertOutput,
                 falseResult,
                 inDENT,
                 lastREF,
+                generator,
                 printSPACE,
                 ruleSkipSet,
+                runningActions,
                 searchList,
                 setupFILE,
                 sourceFILE,
@@ -334,6 +303,7 @@ external GroupRules
                 nameSet,
                 punctuateSet,
                 shortcutSet,
+                skipSet,
                 spaceSet;
     Stak        blockSTAK,
                 bufferSTAK,
@@ -384,6 +354,7 @@ external GroupRules.h
     extern GroupItem    aCTionBraced(GroupItem input);
     extern GroupItem    aCTionBrancH(GroupItem input);
     extern GroupItem    aCTionCheckFor(GroupItem input);
+    extern GroupItem    aCTionCodE(GroupItem rule);
     extern GroupItem    aCTionDEBUG(GroupItem input);
     extern GroupItem    aCTionDefinE(GroupItem input);
     extern GroupItem    aCTionDO(GroupItem input);
@@ -408,8 +379,12 @@ external GroupRules.h
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
+    extern GroupItem    applyDirectives(GroupItem argument,GroupItem target);
+    extern GroupItem    applyTextDirective(GroupItem argument,GroupItem target);
     extern GroupItem    cLEAR(GroupItem input);
+    extern int          closeFile(GroupItem bufField);
     extern GroupItem    cOPY(GroupItem field);
+    extern GroupItem    copyOf(GroupItem grup);
     extern String       dataType(GroupItem input);
     extern GroupItem    debugOnGuard(GroupItem group);
     extern void         debugRuleNamed(String name);
@@ -434,12 +409,12 @@ external GroupRules.h
     extern GroupItem    opAddAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opAND(GroupItem argument,GroupItem target);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
-    extern GroupItem    opAssignGroup(GroupItem argument,GroupItem target);
     extern GroupItem    opCopyList(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
     extern GroupItem    opDot(GroupItem argument,GroupItem target);
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
+    extern GroupItem    opEnd(GroupItem argument,GroupItem target);
     extern GroupItem    opGetAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opGetMember(GroupItem argument,GroupItem target);
     extern GroupItem    opGE(GroupItem argument,GroupItem target);
@@ -448,6 +423,7 @@ external GroupRules.h
     extern GroupItem    opLastREF(GroupItem result);
     extern GroupItem    opLE(GroupItem argument,GroupItem target);
     extern GroupItem    opLT(GroupItem argument,GroupItem target);
+    extern GroupItem    matchSpanInLines(GroupItem targetLines,GroupItem fromBlock);
     extern GroupItem    opMatch(GroupItem argument,GroupItem target);
     extern GroupItem    opMinus(GroupItem argument,GroupItem target);
     extern GroupItem    opMinusEQ(GroupItem argument,GroupItem target);
@@ -473,20 +449,29 @@ external GroupRules.h
     extern GroupItem    processFlags(GroupItem input);
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    rEGISTER(GroupItem item);
+    extern GroupItem    resolveList(GroupItem input);
     extern void         restoreLocalFields(GroupItem action);
     extern GroupItem    ruleMethod(GroupItem group);
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
+    extern void         ReplaceAtAnchor(GroupItem targetLines,GroupItem anchor,GroupItem fromBlock,GroupItem toBlock);
+    extern GroupItem    ReplaceDirective(GroupItem argument,GroupItem target);
+    extern String       replaceUsingFind(String text,String fromTxt,String toTxt);
     extern void         saveLocalFields(GroupItem action);
+    extern void         setMark(GroupItem bufField);
     extern int          setCompiledMethod(GroupItem block,String name);
     extern GroupItem    setInternalType(GroupItem grup);
     extern void         setLimits(GroupItem rule,GroupItem limits);
     extern GroupItem    setRuleAction(GroupItem block);
+    extern void         spliceDirectives(GroupItem target,GroupItem directive);
+    extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
     extern GroupItem    testing(GroupItem item);
     extern GroupItem    tokenInSet(String input,PLGset endSet);
     extern GroupItem    tokenize(GroupItem label);
+    extern void         unMark(GroupItem bufField);
+    extern GroupItem    unWrap(GroupItem result);
     extern GroupItem    wrapDot(GroupItem argument);
     extern String       wrapped(GroupItem input);
 }
@@ -573,23 +558,17 @@ external RuleStuff.h
     extern int          testUpTo(GroupItem field);
 }
 
-external Splitter
+external Bytecode.h
 {
-ParseXML		**splits;
-PLGitem			input;
-int				count;
-	Splitter(int i);
-	void			cleanup(GroupItem b,GroupItem match);
-	void			dump();
-	GroupItem		findMatchingBlock(GroupItem b,String name);
-	PLGitem			getEndItem(String text,int size);
-	void			handleEndTags(GroupItem block);
-	GroupItem		map(GroupControl list);
-	void			matchEndTags(GroupItem block,PLGitem stuff);
-	void			parse();
-	GroupItem		run(String filename);
-	int				split(String filename);
-	GroupItem		unsplit();
-    void            useLocalLinkTape(GroupControl list);
+    extern GroupItem    opStackOf(GroupItem instr);
+    extern GroupItem    runBR(GroupItem instr);
+    extern GroupItem    runBRZ(GroupItem instr);
+    extern GroupItem    runCall(GroupItem instr);
+    extern GroupItem    runGT(GroupItem instr);
+    extern GroupItem    runMultiply(GroupItem instr);
+    extern GroupItem    runPushField(GroupItem instr);
+    extern GroupItem    runPushLit(GroupItem instr);
+    extern GroupItem    runRET(GroupItem instr);
+    extern GroupItem    runStoreField(GroupItem instr);
 }
 
