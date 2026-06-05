@@ -29,7 +29,7 @@ GroupItem       registry;
 PLGset          guardSet;
 union
     GroupItem       &gMethod(GroupItem);
-    GroupItem       &gOp(GroupItem,GroupItem);
+    GroupItem       &gOp(GroupItem,GroupItem&);
     ;
 union
     String          gText;
@@ -221,7 +221,7 @@ boolean GroupOptions {
     void            setMethod(GroupItem &m(GroupItem));
 	void			setNumber(double d);
     void            setObject(Object v);
-    void            setOperat(GroupItem &m(GroupItem,GroupItem));
+    void            setOperat(void *m);
 	void			setPointer(void *v);
     void            setRegex(PLGrgx v);
     void            setStak(Stak s);
@@ -436,12 +436,14 @@ external GroupRules.h
     extern GroupItem    opPlus(GroupItem argument,GroupItem target);
     extern GroupItem    opPlusEQ(GroupItem argument,GroupItem target);
     extern GroupItem    opPlusPlus(GroupItem result);
+    extern GroupItem    opPointer(GroupItem field);
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
     extern GroupItem    opReplace(GroupItem argument,GroupItem target);
     extern GroupItem    opSetGroup(GroupItem argument,GroupItem target);
     extern GroupItem    opSlash(GroupItem argument,GroupItem target);
     extern GroupItem    opSlashEQ(GroupItem result);
     extern GroupItem    opString(GroupItem target,Buffer buffer);
+    extern GroupItem    makePointer(GroupItem field);
     extern void         printField(GroupItem field,String format,Buffer buffer);
     extern GroupItem    printToBuffer(GroupItem bufferField);
     extern GroupItem    processAction(GroupItem field);
