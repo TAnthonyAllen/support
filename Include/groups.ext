@@ -290,6 +290,7 @@ external GroupRules
                 falseResult,
                 inDENT,
                 lastREF,
+                lastStatement,
                 generator,
                 printSPACE,
                 ruleSkipSet,
@@ -399,6 +400,7 @@ external GroupRules.h
     extern GroupItem    getFile(GroupItem filing);
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
+    extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    listenTo(GroupItem group);
     extern GroupItem    loadDirectory(GroupItem input);
     extern GroupItem    loadInputFromFile(GroupItem input);
