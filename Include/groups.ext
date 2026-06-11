@@ -65,6 +65,7 @@ boolean bools {
     methodType:2[immediateACTION parseACTION]
 
     altered
+    byRef
     debugged
     debugGuard
     deferred
@@ -91,6 +92,7 @@ boolean bools {
     mergeOn
     negate
     recursive
+    reversePrint
     tokened } flags;
 
     GroupBody();
@@ -309,9 +311,7 @@ external GroupRules
     Stak        blockSTAK,
                 bufferSTAK,
                 inputSTAK;
-    int         blocking,
-                labelIndex,
-                lastIndent,
+    int         lastIndent,
                 rulesParsed,
                 sourceLINE;
     String      beforeSkip,
@@ -351,7 +351,6 @@ external GroupRules.h
 {
     extern GroupItem    aCTionANYtoken(GroupItem input);
     extern GroupItem    aCTionBlocK(GroupItem input);
-    extern GroupItem    BLOCKing(GroupItem input);
     extern GroupItem    aCTionBraced(GroupItem input);
     extern GroupItem    aCTionBrancH(GroupItem input);
     extern GroupItem    aCTionCheckFor(GroupItem input);
@@ -400,6 +399,7 @@ external GroupRules.h
     extern GroupItem    getFile(GroupItem filing);
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
+    extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    listenTo(GroupItem group);
     extern GroupItem    loadDirectory(GroupItem input);
@@ -508,7 +508,8 @@ GroupItem	stakSource,
 external RuleStuff
 {
 String      ruleName;       // for debugging
-String      hereAt;
+String      hereAt,
+            failedAt;
 GroupItem   label,
             onFail,
             onGroup,
@@ -534,6 +535,7 @@ boolean
     noAdvance
     noLabel
     noSkip
+    notifyFail
     overTo:2[upTo upToOver]
     sukcess
     ;
