@@ -14,6 +14,7 @@ Buffer::Buffer()
 	fd = 0;
 	file = 0;
 	mark = 0;
+	markIsSet = 0;
 	bufferName = "No name buffer";
 	size = 500;
 	roomLeft = size;
@@ -27,6 +28,7 @@ Buffer::Buffer(char *name, int buffersize)
 	fd = 0;
 	file = 0;
 	mark = 0;
+	markIsSet = 0;
 	bufferName = name;
 	size = buffersize;
 	roomLeft = size;
@@ -40,6 +42,7 @@ Buffer::Buffer(char *name)
 	fd = 0;
 	file = 0;
 	mark = 0;
+	markIsSet = 0;
 	bufferName = name;
 	size = 500;
 	roomLeft = size;
@@ -50,20 +53,38 @@ Buffer::Buffer(char *name)
 
 void Buffer::appendChar(char c, char *format, int width)
 {
-	if ( !c )
-		return;
-	extend(10);
-	if ( !format )
+	if ( c )
 		{
-		*current++ = c;
-		*current = '\0';
-		}
-	else {
 		if ( width > 10 )
 			extend(width);
-		width = ::sprintf(current,format,c);
-		current += width;
+		else	extend(10);
+		if ( !format )
+			{
+			if ( mark && mark < current )
+				{
+				shiftAtMark(1);
+				*mark = c;
+				}
+			else {
+				*current++ = c;
+				*current = '\0';
+				}
+			}
+		else {
+			if ( mark && mark < current )
+				{
+				shiftAtMark(width);
+				width = ::sprintf(mark,format,c);
+				mark += width;
+				}
+			else {
+				width = ::sprintf(current,format,c);
+				current += width;
+				}
+			}
+		roomLeft = (int)(end - current);
 		}
+	else	::fprintf(stderr,"Buffer: ERROR no character passed into appendChar\n");
 }
 
 void Buffer::appendDouble(double d, char *format, int width)
@@ -72,9 +93,17 @@ void Buffer::appendDouble(double d, char *format, int width)
 		format = "%f";
 	if ( !width )
 		width = 20;
+	if ( mark )
+		{
+		char 	*formatted = (char*)::alloca(width + 1);
+		int 	formattedLen = ::sprintf(formatted,format,d);
+		insertAtMark(formatted,formattedLen);
+		return;
+		}
 	extend(width);
 	width = ::sprintf(current,format,d);
 	current += width;
+	roomLeft = (int)(end - current);
 }
 
 void Buffer::appendFloat(float f, char *format, int width)
@@ -83,9 +112,17 @@ void Buffer::appendFloat(float f, char *format, int width)
 		format = "%f";
 	if ( !width )
 		width = 20;
+	if ( mark )
+		{
+		char 	*formatted = (char*)::alloca(width + 1);
+		int 	formattedLen = ::sprintf(formatted,format,f);
+		insertAtMark(formatted,formattedLen);
+		return;
+		}
 	extend(width);
 	width = ::sprintf(current,format,f);
 	current += width;
+	roomLeft = (int)(end - current);
 }
 
 void Buffer::appendInt(int i, char *format, int width)
@@ -94,9 +131,17 @@ void Buffer::appendInt(int i, char *format, int width)
 		format = "%d";
 	if ( !width )
 		width = 10;
+	if ( mark && mark < current )
+		{
+		char 	*formatted = (char*)::alloca(width + 1);
+		int 	formattedLen = ::sprintf(formatted,format,i);
+		insertAtMark(formatted,formattedLen);
+		return;
+		}
 	extend(width);
 	width = ::sprintf(current,format,i);
 	current += width;
+	roomLeft = (int)(end - current);
 }
 
 void Buffer::appendLong(long l, char *format, int width)
@@ -105,35 +150,56 @@ void Buffer::appendLong(long l, char *format, int width)
 		format = "%lld";
 	if ( !width )
 		width = 20;
+	if ( mark )
+		{
+		char 	*formatted = (char*)::alloca(width + 1);
+		int 	formattedLen = ::sprintf(formatted,format,l);
+		insertAtMark(formatted,formattedLen);
+		return;
+		}
 	extend(width);
 	width = ::sprintf(current,format,l);
 	current += width;
+	roomLeft = (int)(end - current);
 }
 
 /*****************************************************************************
-	append methods
+	append methods. When mark is set, each appends as an insert-at-mark
+    operation that also advances mark past the inserted bytes; otherwise the
+    existing append-at-current behavior. The mark-aware path is what enables
+    text-substrate incant directives (`buf += stringField` when buf has a mark).
 *****************************************************************************/
 void Buffer::appendString(char *text, char *format, int width)
 {
-	if ( !text )
-		return;
-int length = (int)::strlen(text);
-	if ( !format )
+	if ( text )
 		{
+		int 	length = width ? width : (int)::strlen(text);
 		extend(length);
-		while ( *text )
+		if ( !format )
 			{
-			*current++ = *text++;
+			if ( mark && mark < current )
+				insertAtMark(text,length);
+			else
+			while ( *text )
+				{
+				*current++ = *text++;
+				}
 			}
-		*current = '\0';
+		else {
+			if ( mark && mark < current )
+				{
+				shiftAtMark(length);
+				length = ::sprintf(mark,format,text);
+				mark += length;
+				}
+			else {
+				length = ::sprintf(current,format,text);
+				current += length;
+				}
+			}
+		roomLeft = (int)(end - current);
 		}
-	else {
-		if ( width > length )
-			extend(width);
-		else	extend(length);
-		length = ::sprintf(current,format,text);
-		current += length;
-		}
+	else	::fprintf(stderr,"Buffer: ERROR no text passed into appendString\n");
 }
 
 /*****************************************************************************
@@ -145,6 +211,7 @@ void Buffer::backupToMark()
 		{
 		current = mark;
 		*current = 0;
+		roomLeft = (int)(end - current);
 		}
 }
 
@@ -170,10 +237,26 @@ int 	success = 0;
 }
 
 /*****************************************************************************
-    Delete number of characters from buffer.
+    Delete number of characters from buffer. When markIsSet, deletes count
+    chars starting at mark (left-shifts content after mark left by count);
+    mark stays at the same absolute position so that what was at mark+count
+    is now at mark. Otherwise the existing behavior: delete count chars
+    walking back from current.
 *****************************************************************************/
 void Buffer::deleteFromBuffer(int count)
 {
+	if ( mark )
+		{
+		int 	tailLen = (int)(current - mark + count);
+		if ( tailLen < 0 )
+			tailLen = 0;
+		memmove(mark,mark + count,(size_t)tailLen);
+		current -= count;
+		if ( current < mark )
+			mark = 0;
+		*current = 0;
+		}
+	else
 	if ( count >= length() )
 		reset();
 	else
@@ -182,9 +265,10 @@ void Buffer::deleteFromBuffer(int count)
 	else {
 		current -= count;
 		*current = 0;
-		if ( mark < current )
+		if ( current < mark )
 			mark = 0;
 		}
+	roomLeft = (int)(end - current);
 }
 
 /*****************************************************************************
@@ -207,6 +291,33 @@ void Buffer::extend(int len)
 		start = extent;
 		end = start + size;
 		}
+}
+
+/*****************************************************************************
+    Find a substring in the buffer. Scans from mark (if mark is set) or buffer
+    start. On match: sets mark to start of match, sets markIsSet, returns 1.
+    On no-match: leaves state unchanged, returns 0. This is the find-and-
+    arm-mark primitive that opIN dispatches to for buffer targets.
+*****************************************************************************/
+int Buffer::findInBuffer(char *needle)
+{
+char 	*scanFrom = 0;
+int 	needleLen = 0;
+	if ( !needle || !*needle )
+		return 0;
+	scanFrom = mark ? mark : start;
+	needleLen = (int)::strlen(needle);
+	while ( *scanFrom )
+		{
+		if ( !::strncmp(scanFrom,needle,(size_t)needleLen) )
+			{
+			mark = scanFrom;
+			markIsSet = 1;
+			return 1;
+			}
+		scanFrom++;
+		}
+	return 0;
 }
 
 /*****************************************************************************
@@ -253,6 +364,28 @@ char 	*text = 0;
 }
 
 /*****************************************************************************
+    Insert helper: insert length bytes from text at the mark, then advance
+    mark past the inserted bytes. The chars previously at mark..current get
+    shifted right. Used by mark-aware append-style methods when markIsSet.
+    Callers must guarantee markIsSet is true (mark != 0 in well-formed Buffer).
+*****************************************************************************/
+void Buffer::insertAtMark(char *text, int length)
+{
+	if ( mark )
+		{
+		int 	tailLen = (int)(current - mark);
+		extend(length);
+		memmove(mark + length,mark,(size_t)tailLen);
+		::memcpy(mark,text,(size_t)length);
+		mark += length;
+		current += length;
+		*current = 0;
+		roomLeft = (int)(end - current);
+		}
+	else	::fprintf(stderr,"Buffer: ERROR cannot insertAtMark because mark not set\n");
+}
+
+/*****************************************************************************
         Insert a string into buffer after the offset passed in. It is an error
         if the offset is greater than Buffer length and nothing happens.
 *****************************************************************************/
@@ -272,6 +405,7 @@ void Buffer::insertIntoBuffer(char *text, int offset)
 		this->appendString(tail,0,0);
 		}
 	else	::fprintf(stderr,"ERROR insertIntoBuffer: invalid offset %d\n",offset);
+	roomLeft = (int)(end - current);
 }
 
 /*****************************************************************************
@@ -296,7 +430,9 @@ void Buffer::reSize(int length)
 		{
 		::free(start);
 		size = length;
+		roomLeft = size;
 		start = (char*)::calloc(size + 100,sizeof(char));
+		current = start;
 		end = start + size;
 		}
 	reset();
@@ -310,6 +446,7 @@ void Buffer::reset()
 	mark = 0;
 	current = start;
 	*current = 0;
+	roomLeft = size;
 }
 
 /*****************************************************************************
@@ -321,11 +458,66 @@ void Buffer::setFile(char *name)
 }
 
 /*****************************************************************************
-        Sets a mark in the buffer (marks are offsets from start)
+        Sets a mark in the buffer at the current position and arms the
+        mark-aware machinery (markIsSet = true). Subsequent append and
+        delete operations operate at/around mark; findInBuffer scans from
+        mark forward. unMark disarms (clears markIsSet).
 *****************************************************************************/
 void Buffer::setMark()
 {
 	mark = current;
+	markIsSet = 1;
+}
+
+/*****************************************************************************
+    Shift text from mark right by length leaving mark as is. current is
+    incremented by length. Text between mark and mark + length is left as is
+    expected to be replaced.
+*****************************************************************************/
+void Buffer::shiftAtMark(int length)
+{
+	if ( mark )
+		{
+		int 	tailLen = (int)(current - mark);
+		extend(length);
+		memmove(mark + length,mark,(size_t)tailLen);
+		current += length;
+		*current = 0;
+		}
+	else	::fprintf(stderr,"Buffer: ERROR cannot shiftAtMark because mark not set\n");
+}
+
+/*****************************************************************************
+    Drop the last count characters: back current up by count and re-terminate.
+    Deliberately MARK-UNAWARE -- shorten always operates on the TAIL, where
+    deleteFromBuffer diverts to a delete-at-mark when a mark is set. That
+    divergence is why this is its own primitive rather than an alias: a caller
+    that wants "give back what I just appended" must not have its meaning
+    changed by whether some earlier code armed a mark.
+    Underflow is a clamp, not an error: count at or past length() empties the
+    buffer via reset(). A count of zero is a no-op so a back-off loop can call
+    it without guarding. A negative count is a caller defect and says so.
+*****************************************************************************/
+void Buffer::shorten(int count)
+{
+	if ( count < 0 )
+		::fprintf(stderr,"ERROR shorten: negative number to shorten %d\n",count);
+	else
+	if ( !count )
+		return;
+	else
+	if ( count >= length() )
+		reset();
+	else {
+		current -= count;
+		*current = 0;
+		if ( mark > current )
+			{
+			mark = 0;
+			markIsSet = 0;
+			}
+		roomLeft = (int)(end - current);
+		}
 }
 
 /*****************************************************************************
@@ -352,9 +544,9 @@ void Buffer::tabRight(int count)
 		while ( count-- )
 			{
 			*current++ = '\t';
-			roomLeft--;
 			}
 		*current = '\0';
+		roomLeft = (int)(end - current);
 		}
 }
 
@@ -392,14 +584,17 @@ char 	*text = 0;
 }
 
 /*****************************************************************************
-        Turn off the mark
+        Turn off the mark — disarms the mark-aware machinery so subsequent
+        append/delete operations fall back to append-at-current behavior.
+        Does NOT truncate the buffer (the prior behavior of truncating to
+        mark was removed 2026-05-28; backupToMark is the explicit truncate
+        operation). Mark pointer cleared so getMarkedString returns empty.
 *****************************************************************************/
 void Buffer::unMark()
 {
-	if ( mark && mark != start )
-		{
-		current = mark;
-		*current = 0;
-		mark = 0;
-		}
+	markIsSet = 0;
+	mark = 0;
 }
+/*	Warning: the following methods were referenced but not declared
+	memmove(char*,char*,size_t)
+*/
