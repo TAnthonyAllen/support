@@ -105,6 +105,15 @@ int         HPDF_TALIGN_LEFT,
         textCENTER          HPDF_TALIGN_CENTER
         textJUSTIFY         HPDF_TALIGN_JUSTIFY
        ;
+/*******************************************************************************
+        Compression constants - parameters to setCompress (alias defined in
+        PDFdocument) and defined as macros in hpdf_consts.h
+*******************************************************************************/
+int         HPDF_COMP_NONE,
+            HPDF_COMP_TEXT,
+            HPDF_COMP_IMAGE,
+            HPDF_COMP_METADATA,
+            HPDF_COMP_ALL;
 }
 /*******************************************************************************
         Document Handling Methods
@@ -114,32 +123,76 @@ external PDFdocument
 #autoGetSet
     PDFpage     HPDF_AddPage();
     void        HPDF_Free();
+    void        HPDF_FreeDoc();
+    void        HPDF_FreeDocAll();
     PDFpage     HPDF_GetCurrentPage();
     PDFfont     HPDF_GetFont(String name,String encoding);
+    int         HPDF_GetStreamSize();
 	PDFimage    HPDF_LoadJpegImageFromFile(String filename);
 	PDFimage    HPDF_LoadPngImageFromFile(String filename);
+    PDFimage    HPDF_LoadJpegImageFromMem(String buf,int size);
+    PDFimage    HPDF_LoadPngImageFromMem(String buf,int size);
     String      HPDF_LoadTTFontFromFile(String fileName,int embedflag);
     String      HPDF_LoadTTFontFromFile2(String fileName,int index,int embedflag);
     String      HPDF_LoadType1FontFromFile(String afmFile,String dataFile);
+    int         HPDF_NewDoc();
     PDFpoint    HPDF_Page_GetCurrentPos();
     PDFpage     HPDF_InsertPage(PDFpage);
+    int         HPDF_ReadFromStream(String buffer,int length);
+    int         HPDF_ResetStream();
     int         HPDF_SaveToFile(String filename);
+    int         HPDF_SaveToStream();
     int         HPDF_SetCompressionMode(int mode);
     alias
         addPage             HPDF_AddPage
         currentPage         HPDF_GetCurrentPage
         currentPosition     HPDF_Page_GetCurrentPos
+        extractPDF          HPDF_ReadFromStream
         freePDF             HPDF_Free
+        freePDFdocument     HPDF_FreeDocAll
+        getNewDocument      HPDF_NewDoc
         getPDFfont          HPDF_GetFont(encoding=0)
+        getPDFsize          HPDF_GetStreamSize
         loadJPG             HPDF_LoadJpegImageFromFile
+        loadJPGfromBuffer   HPDF_LoadJpegImageFromMem
         loadPNG             HPDF_LoadPngImageFromFile
+        loadPNGfromBuffer   HPDF_LoadPngImageFromMem
         loadTTFfont         HPDF_LoadTTFontFromFile(embedflag=0)
         loadTTCfont         HPDF_LoadTTFontFromFile2
         loadType1Font       HPDF_LoadType1FontFromFile
         insertPage          HPDF_InsertPage
         new                 HPDF_New
+        resetPDF            HPDF_ResetStream
+        savePDF             HPDF_SaveToStream
         savePDF             HPDF_SaveToFile
-        setCompressMode     HPDF_SetCompressionMode
+        setCompress         HPDF_SetCompressionMode
+        ;
+}
+external PDFfont
+{
+    int         HPDF_Font_GetAscent();
+    int         HPDF_Font_GetCapHeight();
+    int         HPDF_Font_GetDescent();
+    int         HPDF_Font_GetXHeight();
+    alias
+        ascent      HPDF_Font_GetAscent
+        descent     HPDF_Font_GetDescent
+        capHeight   HPDF_Font_GetCapHeight
+        xHeight     HPDF_Font_GetXHeight
+        ;
+}
+external PDFimage
+{
+/*******************************************************************************
+        Image
+*******************************************************************************/
+    int         HPDF_Image_GetBitsPerComponent();
+    int         HPDF_Image_GetHeight();
+    int         HPDF_Image_GetWidth();
+    alias
+        getBitsPer      HPDF_Image_GetBitsPerComponent
+        getImageHeight  HPDF_Image_GetHeight
+        getImageWidth   HPDF_Image_GetWidth
         ;
 }
 external PDFpage
@@ -157,7 +210,7 @@ float       pageZoom;
 int         renderingMode;
 float       wordSpace;
     int         HPDF_Page_BeginText();
-    int         HPDF_Page_DrawImage(PDFimage,float x,float y,float widht,float height);
+    int         HPDF_Page_DrawImage(PDFimage,float x,float y,float width,float height);
     int         HPDF_Page_EndText();
     float       HPDF_Page_GetCharSpace();
     PDFpoint    HPDF_Page_GetCurrentTextPos();
@@ -179,7 +232,6 @@ float       wordSpace;
     int         HPDF_Page_ShowText(String);
     int         HPDF_Page_TextOut(float x,float y,String);
     int         HPDF_Page_TextRect(float left,float top,float right,float bottom,String text,int align,int* length);
-    // rewrite the method above to take a Frame argument and figure out what the length parameter is
     alias
         beginText           HPDF_Page_BeginText
         drawImage           HPDF_Page_DrawImage
@@ -207,7 +259,12 @@ float       wordSpace;
         /***********************************************************************
             The following setter assignments are necessary because HPDF setters
             return an error code instead of void so default setter pattern
-            matching does not work
+            matching does not work.
+            
+            Note: when you alias a field to a method and the method has no
+            parameters and returns a value that is the same type as the field,
+            the method is set as the field getter.
+            When the method has a parameter, it is set to be the field setter
         ***********************************************************************/
         kerning             setKerning
         pageHeight          setPageHeight
@@ -253,7 +310,7 @@ RGBcolor    RGBfill;
     alias
         closePDFpath        HPDF_Page_ClosePath
         closeFillStroke     HPDF_Page_ClosePathFillStroke
-        drawArc             HPDF_Page_Arc
+        pdfArcTo            HPDF_Page_Arc
         endPath             HPDF_Page_EndPath
         getRGBfill          HPDF_Page_GetRGBFill
         pdfFill             HPDF_Page_Fill

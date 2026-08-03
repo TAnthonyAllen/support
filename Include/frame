@@ -64,15 +64,19 @@ String		file,
     void    backupToMark();
     int     closeFile();
     void    deleteFromBuffer(int count);
+    int     findInBuffer(String needle);
     String  getMarkedString();
     void    extend(int i);
     void    flush();
+    void    insertAtMark(String text,int length);
     void    insertIntoBuffer(String text,int offset);
     int     length();
     void    reset();
     void    reSize(int length);
     void    setMark();
     void    setFile(String s);
+    void    shiftAtMark(int length);
+    void    shorten(int count);
     String  string();
     void    tabRight(int count);
     String  tail(int offset);
@@ -492,36 +496,36 @@ external StringRoutines
 }
 external	StringRoutines.h
 {
-    extern String      alignLeft(String text,int length);
-    extern String      alignRight(String text,int length);
-    extern int         bitCount(unsigned long bits);
-    extern int         booleanIsSet(unsigned char *item,int wordOffset,int bitOffset);
-    extern int         buttonIsSet(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
-    extern int         checkSys(int r, String s);
-	extern int         compare(String left, String right);
-    extern int         compareToStream(String left, String right);
-    extern String      concat(int count ...);
-    extern int         containsCharacter(String text, char c);
-    extern int         containsString(String text,String substring);
-    extern void        convertNewLine(String text);
-    extern String      copyString(String input);
-    extern String      getStringFromFile(String inputFile);
-    extern String      headToChar(String input,char match);
-    extern String      headToCount(String text,int count);
-    extern String      headToSet(String input,CharSet matchSet);
-    extern String      headToString( String s,String c );
-    extern void        indent(int indentify,String indenter,Buffer indentBuffer);
-    extern void        setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);
-    extern void        setButton(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
-    extern int         stringIsNumeric(String text);
-	extern String      tail( String s,String c );
-	extern String      toStringFromChar( char c );
-	extern String      toStringFromInt( int i );
-	extern String      toStringFromLong( long l );
-	extern String      toStringFromFloat( float f );
-	extern String      toStringFromDouble( double d );
-    extern String      truncateString(String text,int length);
-    extern String      urlDecode(String in);
+    extern String   alignLEFT(String text,int length);
+    extern String   alignRIGHT(String text,int length);
+    extern int      bitCount(unsigned long bits);
+    extern int      booleanIsSet(unsigned char *item,int wordOffset,int bitOffset);
+    extern int      buttonIsSet(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    extern int      checkSys(int r, String s);
+	extern int      compare(String left, String right);
+    extern int      compareToStream(String left, String right);
+    extern String   concat(int count ...);
+    extern int      containsCharacter(String text, char c);
+    extern int      containsString(String text,String substring);
+    extern void     convertNewLine(String text);
+    extern String   copyString(String input);
+    extern String   getStringFromFile(String inputFile);
+    extern String   headToChar(String input,char match);
+    extern String   headToCount(String text,int count);
+    extern String   headToSet(String input,CharSet matchSet);
+    extern String   headToString( String s,String c );
+    extern void     indent(int indentify,String indenter,Buffer indentBuffer);
+    extern void     setBoolean(unsigned char *item,int wordOffset,int bitOffset,int value);
+    extern void     setButton(unsigned char *item,int wordOffset,int bitOffset,int length,int amount);
+    extern int      stringIsNumeric(String text);
+	extern String   tail( String s,String c );
+	extern String   toStringFromChar( char c );
+	extern String   toStringFromInt( int i );
+	extern String   toStringFromLong( long l );
+	extern String   toStringFromFloat( float f );
+	extern String   toStringFromDouble( double d );
+    extern String   truncateString(String text,int length);
+    extern String   urlDecode(String in);
     alias
         contains    containsCharacter
         contains    containsString

@@ -1,4 +1,4 @@
-class PLGset;
+class CharSet;
 class DoubleLinkList;
 class KeyTableItem;
 /*******************************************************************************
@@ -8,7 +8,7 @@ class KeyTableItem;
 class KeyMap
 {
 public:
-PLGset *follow;
+CharSet *follow;
 DoubleLinkList *entries;
 int length;
 char letter;

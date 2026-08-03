@@ -10,6 +10,24 @@ external Buffer
 external BitMAP
 external Object
 external Stak
+external Layout OC
+external Stylish
+
+external Bytecode.h
+{
+    extern GroupItem    opStackOf(GroupItem instr);
+    extern GroupItem    runBR(GroupItem instr);
+    extern GroupItem    runBRZ(GroupItem instr);
+    extern GroupItem    runCall(GroupItem instr);
+    extern GroupItem    runGT(GroupItem instr);
+    extern GroupItem    runLE(GroupItem instr);
+    extern GroupItem    runMultiply(GroupItem instr);
+    extern GroupItem    runPlus(GroupItem instr);
+    extern GroupItem    runPushField(GroupItem instr);
+    extern GroupItem    runPushLit(GroupItem instr);
+    extern GroupItem    runRET(GroupItem instr);
+    extern GroupItem    runStoreField(GroupItem instr);
+}
 
 external GroupList
 {
@@ -54,6 +72,7 @@ boolean bools {
     isLabel
     noPrint
     invoke
+    fLAG
     data:5[isANY isCHAR isSET isBUFFER isCOUNT isGROUP isITEM isMAP isNUMBER isOBJECT isREGEX isSTAK isSTRING isTOKEN]
     actionType:2[isAction isCoded]
     binType:3[isBIN isCLASS isLIST isREGISTRY]
@@ -64,12 +83,12 @@ boolean bools {
     isSorted:2[sortAscending sortDescending]
     methodType:2[immediateACTION parseACTION]
 
+    addingMembers
     altered
     byRef
     debugged
     debugGuard
     deferred
-    fLAG
     hasAttributes
     hasListeners
     hasMembers
@@ -78,6 +97,7 @@ boolean bools {
     isCondition
     isIndexed
     isInitialized
+    isIterator
     isLiteral
     isLocal
     isMacro
@@ -88,6 +108,7 @@ boolean bools {
     isToggle
     isUnary
     isVirtual
+    isWindow
     isXP
     mergeOn
     negate
@@ -135,6 +156,33 @@ static GroupControl groupController;
     void            setBaseRegistries();
 }
 
+external Layout extends View implements WindowDelegate OC
+{
+GroupItem       base,
+                selection;
+Path            layoutPath;
+Color           strokeColor,
+                textColor,
+                wallColor;
+Font            currentFont;
+}
+
+external GroupDraw
+{
+GroupItem   drawRegistry;
+Layout      layout;
+}
+
+external GroupDraw.h
+{
+    extern GroupItem blockContaining(GroupItem grup,Point p);
+    extern int containsPoint(GroupItem grup,Point p);
+    extern Frame getFrame(GroupItem item);
+    extern TextView getTextView(GroupItem field);
+    String toString(Point p);
+    String toString(Frame f);
+}
+
 external RuleStuff
 external GroupItem
 {
@@ -144,6 +192,7 @@ GroupItem	    parent,
                 nextInParent,
                 priorInParent;
 RuleStuff       rStuff;
+JitData         jitData;
 boolean GroupOptions {
     affiliation:2[isAttribute isMember isEmbedded]
     isCopy } options;
@@ -202,6 +251,7 @@ boolean GroupOptions {
 	GroupItem		nextAttribute(GroupItem current);
     GroupItem       nextGroup(GroupItem grup);
 	GroupItem		nextMember(GroupItem current);
+    GroupItem       definingRule();
     GroupItem       parse(RuleStuff pStuff);
     GroupItem       pop();
     void            prepend(GroupItem grup);
@@ -226,6 +276,7 @@ boolean GroupOptions {
     void            setOperat(void *m);
 	void			setPointer(void *v);
     void            setRegex(PLGrgx v);
+    void            setRStuff(RuleStuff stuff);
     void            setStak(Stak s);
 	void			setText(String s);
     void            setRuleStuff();
@@ -249,6 +300,7 @@ boolean GroupOptions {
             +%		addAttribute
             /       getMember
 			+=		add
+            :+      replace
             *=      addComponentsOf
 			-=		remove
             &=      intersectWith
@@ -274,6 +326,7 @@ external GroupRules
     String          atRuleMark;
     RuleStuff       ruleSTUFF;
     GroupItem
+                currentDefine,
                 currentMETHOD,
                 currentRegistry,
                 debugJunk,
@@ -296,7 +349,6 @@ external GroupRules
                 generator,
                 printSPACE,
                 ruleSkipSet,
-                runningActions,
                 searchList,
                 setupFILE,
                 sourceFILE,
@@ -335,7 +387,9 @@ external GroupRules
             isPRINTING
             isRELATIVE
             isRigorous
+            membering
             noSkipping
+            parseTrace
             processingCode
             showWarnings
             useDefaultSpace
@@ -363,8 +417,11 @@ external GroupRules.h
     extern GroupItem    aCTionFOR(GroupItem input);
     extern GroupItem    aCTionIF(GroupItem input);
     extern GroupItem    aCTionNamE(GroupItem input);
+    extern GroupItem    aCTionNewGroup(GroupItem field);
     extern GroupItem    aCTionNumbeR(GroupItem input);
     extern GroupItem    aCTionPrinT(GroupItem input);
+    extern GroupItem    aCTionCerR(GroupItem input);
+    extern GroupItem    aCTionCouT(GroupItem input);
     extern GroupItem    aCTionQuotE(GroupItem input);
     extern GroupItem    aCTionRunRulE(GroupItem input);
     extern void         aCTionScopeXP(GroupItem input);
@@ -379,8 +436,6 @@ external GroupRules.h
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
-    extern GroupItem    applyDirectives(GroupItem argument,GroupItem target);
-    extern GroupItem    applyTextDirective(GroupItem argument,GroupItem target);
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    cOPY(GroupItem field);
@@ -397,11 +452,19 @@ external GroupRules.h
     extern GroupItem    genXP(GroupItem input);
     extern String       getDebugText(String input,int length);
     extern GroupItem    getFile(GroupItem filing);
+    extern GroupItem    getMarkLineAt(GroupItem argument);
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
+    extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
+    extern GroupItem    jitEmitCompare(GroupItem argument,GroupItem target,int op);
+    extern int          jitRunAction(GroupItem action);
+    extern int          jitRunIfTest(GroupItem field);
+    extern GroupItem    jitSeedField(GroupItem token);
+    extern GroupItem    jitSeedLiteral(GroupItem token);
     extern GroupItem    listenTo(GroupItem group);
+    extern GroupItem    markWindow(GroupItem input);
     extern GroupItem    loadDirectory(GroupItem input);
     extern GroupItem    loadInputFromFile(GroupItem input);
     extern void         loadRegistryFromString(String name,String content);
@@ -414,6 +477,7 @@ external GroupRules.h
     extern GroupItem    opCopyList(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
+    extern GroupItem    opDivEQ(GroupItem result);
     extern GroupItem    opDot(GroupItem argument,GroupItem target);
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
     extern GroupItem    opEnd(GroupItem argument,GroupItem target);
@@ -425,7 +489,6 @@ external GroupRules.h
     extern GroupItem    opLastREF(GroupItem result);
     extern GroupItem    opLE(GroupItem argument,GroupItem target);
     extern GroupItem    opLT(GroupItem argument,GroupItem target);
-    extern GroupItem    matchSpanInLines(GroupItem targetLines,GroupItem fromBlock);
     extern GroupItem    opMatch(GroupItem argument,GroupItem target);
     extern GroupItem    opMinus(GroupItem argument,GroupItem target);
     extern GroupItem    opMinusEQ(GroupItem argument,GroupItem target);
@@ -440,12 +503,19 @@ external GroupRules.h
     extern GroupItem    opPlusPlus(GroupItem result);
     extern GroupItem    opPointer(GroupItem field);
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
-    extern GroupItem    opReplace(GroupItem argument,GroupItem target);
+    extern GroupItem    opCerr(GroupItem target,Buffer buffer);
+    extern GroupItem    opCout(GroupItem target,Buffer buffer);
+    extern int          jitEmitSelfCall(GroupItem action);
+    extern GroupItem    arrondir(GroupItem field);
+    extern GroupItem    locateManier();
+    extern int          manyKant(GroupItem manier,GroupItem node);
+    extern GroupItem    manyMode(GroupItem argument);
+    extern GroupItem    opReplaceAttribute(GroupItem argument,GroupItem target);
+    extern GroupItem    opReplaceMember(GroupItem argument,GroupItem target);
+    extern GroupItem    opRem(GroupItem argument,GroupItem target);
     extern GroupItem    opSetGroup(GroupItem argument,GroupItem target);
-    extern GroupItem    opSlash(GroupItem argument,GroupItem target);
-    extern GroupItem    opSlashEQ(GroupItem result);
+    extern GroupItem    opSetTag(GroupItem argument,GroupItem target);
     extern GroupItem    opString(GroupItem target,Buffer buffer);
-    extern GroupItem    makePointer(GroupItem field);
     extern void         printField(GroupItem field,String format,Buffer buffer);
     extern GroupItem    printToBuffer(GroupItem bufferField);
     extern GroupItem    processAction(GroupItem field);
@@ -453,22 +523,28 @@ external GroupRules.h
     extern GroupItem    processFlags(GroupItem input);
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    rEGISTER(GroupItem item);
+    extern GroupItem    resetField(GroupItem argument);
     extern GroupItem    resolveList(GroupItem input);
     extern void         restoreLocalFields(GroupItem action);
     extern GroupItem    ruleMethod(GroupItem group);
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
-    extern void         ReplaceAtAnchor(GroupItem targetLines,GroupItem anchor,GroupItem fromBlock,GroupItem toBlock);
-    extern GroupItem    ReplaceDirective(GroupItem argument,GroupItem target);
-    extern String       replaceUsingFind(String text,String fromTxt,String toTxt);
     extern void         saveLocalFields(GroupItem action);
-    extern void         setMark(GroupItem bufField);
     extern int          setCompiledMethod(GroupItem block,String name);
+    extern int          materialiseTerms(GroupItem rule);
+    extern int          materialiseRegistry(GroupItem registry);
+    extern GroupItem    iterBind(GroupItem iter, GroupItem container);
+    extern int          iterSpins(GroupItem iter, int reset);
+    extern GroupItem    iterAdvance(GroupItem iter, int forward);
+    extern int          auditMissingRules(GroupItem registry);
+    extern int          auditMissingTerms(GroupItem registry);
+    extern int          auditSpurious(GroupItem registry);
+    extern GroupItem    auditRStuff(GroupItem argument);
     extern GroupItem    setInternalType(GroupItem grup);
     extern void         setLimits(GroupItem rule,GroupItem limits);
+    extern GroupItem    setMark(GroupItem argument);
     extern GroupItem    setRuleAction(GroupItem block);
-    extern void         spliceDirectives(GroupItem target,GroupItem directive);
     extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
     extern GroupItem    testing(GroupItem item);
@@ -505,6 +581,25 @@ GroupItem	stakSource,
         ;
 }
 
+external Layout extends View implements WindowDelegate
+{
+GroupItem       base,
+                selection;
+TextCell        cell;
+TextField       textField;
+Path            layoutPath;
+Stylish         style;
+Frame           frame;
+    void    displayCell();
+    void    displayImage();
+    void    displayText();
+    void    drawRect(Frame r);
+    Layout  init(GroupItem field);
+    Point   invertY(Point point);
+    void    viewDidEndLiveResize();
+    void    windowWillClose(Notification notification);
+}
+
 external RuleStuff
 {
 String      ruleName;       // for debugging
@@ -513,13 +608,16 @@ String      hereAt,
 GroupItem   label,
             onFail,
             onGroup,
+            parentLabel,
             sourceLine,
             rule;
 int         kount,
             max,
-            min;
+            min,
+            termCount;
 RuleStuff   parentStuff;
 int         &testMatch(GroupItem);
+GroupItem   &parseMethod(GroupItem);
 boolean
     banged
     doNothing
@@ -562,19 +660,95 @@ external RuleStuff.h
     extern int          testSet(GroupItem field);
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
+    extern int          lit(GroupItem field, String str);
+    extern int          litOption(GroupItem field, GroupItem into, String str);
+    extern int          inGuard(GroupItem field, String chars, char ch);
+    extern GroupItem    leaveRule(GroupItem rule, GroupItem into, GroupItem label, String from, int ok);
+    extern GroupItem    leaveAlt(GroupItem rule, String from, int ok);
+    extern GroupItem    parseR(GroupItem term, GroupItem into);
+    extern int          manyJSONblockFields(GroupItem label, GroupItem term);
+    extern int          manyJSONlistItems(GroupItem label, GroupItem term);
+    extern GroupItem    parseJSONblock(GroupItem rule);
+    extern GroupItem    parseJSONfield(GroupItem rule);
+    extern GroupItem    parseJSONvalue(GroupItem rule);
+    extern GroupItem    parseJSONtoken(GroupItem rule);
+    extern GroupItem    parseGeneric(GroupItem into, String ruleName);
+    extern GroupItem    parseJSONitem(GroupItem rule);
+    extern GroupItem    parseJSONlist(GroupItem rule);
+    extern GroupItem    parseJSONarray(GroupItem rule);
+    extern GroupItem     genParse(GroupItem argument);
+    extern GroupItem     dumpRuleTerms(GroupItem argument);
+    extern GroupItem     parseRuleMethod(GroupItem input);
+    extern GroupItem     parseTermCount(GroupItem input);
+    extern int           countRuleTerms(GroupItem rule);
+    extern int           unresolvedTerms(GroupItem rule);
+    extern GroupItem     planTerm(GroupItem term, int index);
+    extern GroupItem     planRule(GroupItem rule);
+    extern int           printPlan(GroupItem plan, String pad);
+    extern GroupItem     dumpRulePlans(GroupItem argument);
+    extern GroupItem     dumpSpellings(GroupItem argument);
+    extern GroupItem     locateSpeller();
+    extern GroupItem     spellMode(GroupItem argument);
+    extern String        spellKant(GroupItem speller, GroupItem node, String sink);
+    extern String        emitLeaf(GroupItem node, String local, String sink);
+    extern int           emitMany(GroupItem node);
+    extern GroupItem     emitPlan(GroupItem plan);
+    extern GroupItem     locateRule(String name);
+    extern GroupItem     ruleOrRefuse(String name, String who);
+    extern GroupItem     traceParse(GroupItem argument);
+    extern GroupItem     demoRprime(GroupItem argument);
+    extern int           showTree(GroupItem node, String pad);
+    extern GroupItem     treeOf(GroupItem argument);
+    extern GroupItem     parseScafA(GroupItem rule);
+    extern GroupItem     parseScafB(GroupItem rule);
+    extern int           manyScafC1(GroupItem label, GroupItem term);
+    extern GroupItem     parseScafC(GroupItem rule);
+    extern GroupItem     parseScafE(GroupItem rule);
+    extern GroupItem     parseScafF(GroupItem rule);
+    extern GroupItem     parseScafI(GroupItem rule);
+    extern GroupItem     parseScafALT(GroupItem rule);
+    extern GroupItem     parseScafOUT(GroupItem rule);
 }
 
-external Bytecode.h
+external Stylish
 {
-    extern GroupItem    opStackOf(GroupItem instr);
-    extern GroupItem    runBR(GroupItem instr);
-    extern GroupItem    runBRZ(GroupItem instr);
-    extern GroupItem    runCall(GroupItem instr);
-    extern GroupItem    runGT(GroupItem instr);
-    extern GroupItem    runMultiply(GroupItem instr);
-    extern GroupItem    runPushField(GroupItem instr);
-    extern GroupItem    runPushLit(GroupItem instr);
-    extern GroupItem    runRET(GroupItem instr);
-    extern GroupItem    runStoreField(GroupItem instr);
+String      styling;
+Shadow      shadow;
+double      borderWidth,
+            radius,
+            transparency;
+Color       bgColor,
+            fillColor,
+            strokeColor,
+            textColor;
+Font        font;
+GroupItem   shadowBlur,
+            shadowOffset,
+            shadowX,
+            shadowY,
+            shadowColor;
+NumberFormatter formatter;
+boolean
+        editable
+        selected
+        selectable
+        subbed
+		;
+    Stylish(GroupItem item);
+    Stylish(String name);
+    Stylish(GroupItem item,Stylish source);
 }
 
+external Stylish.h
+{
+    extern GroupItem    blockContaining(GroupItem base,Point p);
+    extern int          contains(GroupItem field,Point p);
+    extern Color        getColorNamed(String name);
+    extern Stylish      getStyle(GroupItem field);
+    extern Frame        indentFrame(Frame f,double b);
+    extern Frame        indentFrameWH(Frame f,double w,double h);
+    extern void         setColor(GroupItem field);
+    extern void         sHADOW(GroupItem item);
+    extern void         setFont(GroupItem field);
+    extern Stylish      makeStyleFor(GroupItem field);
+}

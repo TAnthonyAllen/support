@@ -4,6 +4,8 @@
 #include "StringRoutines.h"
 #include "CharSet.h"
 #include "Buffer.h"
+#include "PLGparse.h"
+#include "PLGitem.h"
 #include "PLGset.h"
 unsigned long *PLGset::mapper;
 

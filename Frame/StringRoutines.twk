@@ -3,7 +3,7 @@ include frameIncludes
 /**************************************************************************
     Return a new string aligned left w/length passed in padded w/blanks
 **************************************************************************/
-extern String alignLeft(String text,int length)
+extern String alignLEFT(String text,int length)
 {
 int textLength  = (int)strlen(text);
     if textLength >= length return truncateString(text,length);
@@ -19,7 +19,7 @@ String atText   = aligned + textLength;
 /**************************************************************************
     Return a new string aligned right w/length passed in padded w/blanks
 **************************************************************************/
-extern String alignRight(String text,int length)
+extern String alignRIGHT(String text,int length)
 {
 int textLength  = (int)strlen(text);
     if textLength >= length return truncateString(text,length);
@@ -157,6 +157,7 @@ char	**text, **atText;
 			length += (int)strlen(*atText);
 			atText++;
 			}
+        else cerr "StringRoutines: concat failed reading arg list":;
 		}
     va_end(list);
     atResult	=
@@ -332,7 +333,7 @@ int length = (int)strlen(text);
     Returns the first part of input up to the first character that matches
     the the character set passed in
 **************************************************************************/
-extern String headToSet(String input,PLGset matchSet)
+extern String headToSet(String input,CharSet matchSet)
 {
 String	atInput;
 int     length;

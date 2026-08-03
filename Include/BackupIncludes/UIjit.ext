@@ -21,7 +21,7 @@ external PLGitem
 external PLGparse
 external PLGrgx
 external PLGrule
-external PLGset
+external CharSet
 external PLGsetParse
 external PLGtester
 external KeyTable
@@ -487,7 +487,7 @@ external GroupRegistry extends BaseHash
                 tagged
 				;
 	static BaseHash		registries;
-	static PLGset		mustQuoteSet;
+	static CharSet		mustQuoteSet;
 }
 
 external ParseXML extends PLGparse
@@ -534,7 +534,7 @@ int				groupItems,
                 indentCount,
                 openTags
                 recordNumber;
-PLGset			cdataSet,
+CharSet			cdataSet,
                 notSpace,
                 spaces,
                 xpathSet;

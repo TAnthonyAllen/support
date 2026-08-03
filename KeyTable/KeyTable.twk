@@ -16,7 +16,7 @@ int				debug,
 				size;
 KeyTableItem	current, first, last;
 void            **keyValueList;
-PLGset          keySet;
+CharSet          keySet;
 
 KeyTable()
 {

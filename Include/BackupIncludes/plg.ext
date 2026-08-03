@@ -233,7 +233,6 @@ boolean
 static unsigned long    *mapper;
 	PLGset();
 	PLGset(String s);
-    int         addTest(PLGtester test);
 	void		clear();
     int			contains(char c);
     int         contains(String s);

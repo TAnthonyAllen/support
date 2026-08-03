@@ -8,25 +8,6 @@ class OCroutines
 }
 
 /*******************************************************************************
-	Converts a string into a URLrequest
-*******************************************************************************/
-URLrequest getURLrequest(String url)
-{
-URL			wrap;
-URLrequest	request;
-    if url
-        {
-        wrap		= new(url);
-        if wrap		request	= new(wrap);
-        else cerr "Could not create url from: " url:;
-        if !request
-            cerr "Could not create request for: " url:;
-        }
-	else  cerr "No url provided":;
-    return request;
-}
-
-/*******************************************************************************
 	Method that fires a synchronous request. Returns true if it works, with the
     results added to the buffer passed in.
 *******************************************************************************/
@@ -44,6 +25,25 @@ Data        data;
             }
         cerr description() "\n";
     return false;
+}
+
+/*******************************************************************************
+	Converts a string into a URLrequest
+*******************************************************************************/
+URLrequest getURLrequest(String url)
+{
+URL			wrap;
+URLrequest	request;
+    if url
+        {
+        wrap		= new(url);
+        if wrap		request	= new(wrap);
+        else cerr "Could not create url from: " url:;
+        if !request
+            cerr "Could not create request for: " url:;
+        }
+	else  cerr "No url provided":;
+    return request;
 }
 
 /*******************************************************************************

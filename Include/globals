@@ -91,6 +91,11 @@ external	stdlib.h local
     int     system(String s);
 }
 
+external gc/gc.h local
+{
+    void    GC_set_no_dls(int i);
+}
+
 external dispatch/dispatch.h local
 {
 	typedef			dispatch_block_t;

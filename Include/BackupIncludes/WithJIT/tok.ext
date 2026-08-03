@@ -1,0 +1,776 @@
+
+external    BlockTok
+external    Emitter
+external    Expression
+external	FormatC
+external	Instance
+external	InstanceTable
+external    Operate
+external	Statement
+external	Symbol
+external	SymbolType
+external    Tawk
+external	Types extends BaseHash
+external
+{
+    alias
+        Block       BlockTok
+        ;
+}
+external	Block
+{
+Symbol          blockMethod;
+DoubleLinkList	statements;
+int				modified,
+                width;
+boolean
+                hasBreak
+                indenting
+                isArrayInitializer
+                isBlock
+                isLambda
+                isSwitch
+                ;
+static int		indentCount;
+	Block();
+	Block(int i);
+	void add(Instance i);
+	void add(Statement s);
+	void add(String s);
+	void insert(Instance i);
+	int	getWidth();
+	int length();
+}
+
+external    Emitter
+{
+Builder         builder;
+LLVMContext     llvmContext;
+Module          module;
+EngineBuilder   tool;
+Instance        jitInstance;
+Value           nullValue;
+Stak            modifyStack;
+String          tempName;
+static  ExecutionEngine engine;
+
+    Emitter();
+    void        buildJITmethod(Instance instance);
+    void        checkForAssign(Instance instance);
+    void        setEmitters();
+}
+
+external	Expression
+{
+Operate		verb;
+Instance    subject,
+            object;
+boolean
+            buttoned
+            checked
+            full
+            hasParens
+            reordered
+            ;
+	Expression();
+	Expression(Instance s,Instance o,String v);
+    Expression(Instance s,Instance o,Operate v);
+	void				checkCast(Instance target);
+	void				checkExpression(FormatC f);
+    Instance            convertBoolean(Instance item,int setterFlag);
+    void                dump();
+	SymbolType			getType();
+    void                handleBooleans();
+	void				handleButtons();
+	int					isAssign();
+    void                reorder();
+    String              toString();
+    static BaseHash		CompareOperators;
+}
+
+external	FormatC
+{
+Block		staticBlock;
+Buffer		buffer,
+            errorBuffer,
+            forwardBuffer,
+            headerBuffer,
+			includeText,
+			junkBuffer,
+			structBuffer;
+Instance	stringEncoder;
+String		currentNameSpace,
+            filename;
+SymbolType	currentType;
+Symbol		ocStringConverter,
+            enclosingMethod;
+Stak		mStak;
+int         suppressedDeclarations;
+boolean
+            argumentIsOC
+            jitting
+            makeOCfile
+            writingParameters
+            ;
+	FormatC();
+    void        addNameSpace(String name);
+	void		checkInitialize(Instance i);
+	void		checkStatement(Statement s);
+    void        checkTypedefs();
+	void		close();
+	void		convert(Expression e);
+	void		declare(Block b);
+	void		declare(Expression e);
+	void		declare(Instance instance,int forDotH);
+	int			declare(Symbol symbol,int flag,int width);
+	void		declareBody(SymbolType t);
+	void		declareClass(SymbolType t);
+	void		declareHeaders(SymbolType t);
+    void        declareMethods(SymbolType type,int flag);
+	void		declareStructure(SymbolType t);
+	void		declareTail(Instance i,int f);
+    void        flagType(SymbolType type);
+    void        forwardClass(SymbolType type);
+	void		indent();
+	void		indentComment(Instance i);
+	void		initialize(Symbol s);
+	Instance	initialStatement(Symbol symbol);
+	Instance	makeOCstring(Instance instance);
+	void		printCode();
+	void		printQualified(Instance i);
+	int			printQualified(Symbol symbol,int hasParent,int methodRef);
+	String		toString(Instance i);
+	void		write(Block b);
+	void		write(Expression e);
+	void		write(Instance i);
+	void		write(Statement s);
+	void		writeIndirect(Instance i);
+    void        writeLambda(Statement statement);
+    void        writeOCsignature(Symbol method);
+    void        writeParameterType(Symbol symbol);
+	void		writeParameters(Instance i);
+	void		writeSignature(Symbol s,int f);
+    alias
+        declare     declare(width=0)
+        declare     declare(forDotH=false)
+        ;
+}
+
+external    FormatJIT
+{
+Statement       line;
+BasicBlock      currentBB;
+int             iCountU;
+String          blockLabel;
+FormatC         formatter;
+static Emitter  emitter;
+    
+    FormatJIT(Tawk t);
+    void        addToPhis(Statement statement);
+    void        createPhis(int count);
+    void        doNotIgnorePhi();
+    String      makeLabel(String text,int count);
+    void        saveJitterAtEndBlock(Statement statement,BasicBlock bb);
+    void        saveJitterForPhi(Instance instance);
+    void        saveJitterForPhi(Statement statement,Instance instance,BasicBlock bb);
+    void        savePhiData(Instance instance);
+    Instance    write(Block block);
+    void        write(Instance instance);
+    void        write(Statement statement);
+    alias
+        JIT     FormatJIT
+        ;
+}
+
+external	Instance
+{
+Block		block;
+Expression	express;
+Statement	statement;
+Symbol		symbol;
+SymbolType	type;
+Instance	cast,
+            format,
+            parent;
+int
+            instanceIndex,
+            level;
+boolean
+		arrayRef:4
+        assigning
+		atString
+		checked
+        emitted
+        hasBranch
+		indirection:4
+        isCase
+		isCast
+		isComment
+        isCondition
+		isConstant
+		isDeclaration
+		isError
+        isExternalType
+		isLabel
+		isLambda
+        isLocal
+		isMethod
+		isNew
+        isPrintMethod
+        isRange
+        isSelector
+        isUsed
+        noGetter
+		reference:4
+        requalified
+        resolved
+        terminated
+        virtuous:2
+		;
+String
+            prefix,
+            postfix;
+DoubleLinkList
+            parameters;
+JitData     jitStuff;
+static int	instanceCount;
+static Symbol   objectiveCsend;
+
+	Instance();
+	Instance(Block b);
+	Instance(Expression e);
+	Instance(Instance i);
+	Instance(Statement s);
+	Instance(String s);
+	Instance(Symbol s);
+	Instance(SymbolType t);
+	void		addParameter(Instance i);
+	void		addPrefix(String s);
+	void		addPostFix(String s);
+	Instance	castAlias();
+    void        checkBracketEqual();
+	Instance	checkCast(Instance target);
+	Instance	checkCast(Symbol target);
+	Instance    checkOverload();
+    void        checkSymbol();
+    void        convertMethod();
+    Instance    copyAndSetParent(Instance instance);
+    void        dump();
+	void		error(String s);
+	void		fixExtension();
+	Block		getBlock();
+	String		getCast();
+	void		getCast(Buffer buffer);
+	Symbol		getCompareMethod(Instance i);
+	int			getDirect();
+	Instance    getFormat();
+    JitData     getJitStuff();
+    Type        getJITtype();
+    String		getName();
+	Instance	getSubject();
+	Symbol		getSymbol();
+	SymbolType	getType();
+	String		getTypeName();
+	String		getValue();
+    int         howDirect();
+    void        insertParentAsParameter();
+	int			instanceOC();
+	int			isBlockStatement();
+	int         isVirtuous();
+	String		mangle();
+    String      pointerName();
+    int         qualified();
+    void        qualifyJit();
+    void        qualifyJit(Instance instance);
+    void        setDefaults(Tawk tok);
+	Instance    setIndirection(PLGitem direct);
+    void        setIsUsed(int flag);
+    Instance    setJITvalue();
+	void		setLevel();
+    void        setParent(Instance instance);
+	void		setRefer();
+	SymbolType	sourceType();
+    String      toString();
+    alias
+        isUsed      setIsUsed
+        jitStuff    getJitStuff
+        parent      setParent
+        ;
+}
+
+external	InstanceTable
+{
+long            count;
+int             debug,
+				scope;
+Stak			scopeStack;
+BaseHash		instances;
+Instance        &externalFind(String name);
+Instance        foundAncestor;
+SymbolType      presentClass;
+BitMAP          globalMap,
+                staticMap;
+static BaseHash	staticFields;
+
+	InstanceTable();
+	void		add( Instance i );
+	Instance	add( String item,SymbolType type );
+	void		dump();
+	void		dump(String s);
+	void		fillMaps();
+	Instance	find(String s);
+	Instance	findMethod(Instance s);
+    Instance    findSymbol(String name,Instance source);
+	Instance	getConverter(SymbolType t,SymbolType s);
+	void		pop(String s);
+	void		push(String s);
+	overload
+		+=	add
+		;
+}
+
+external Operate
+{
+String      op;
+int         rank;
+void        &method(Instance);
+boolean
+    assign
+    call
+    comparison:4[eql ltn lte gtn gte neq]
+    conjunction
+    overload
+    pointing
+    question
+    isRange
+    unary
+    ;
+static KeyTable verbs;
+
+    Operate(String v);
+    Operate(String v,int p);
+    int         compare(String v);
+}
+
+external enumerator sType
+{
+	CATCH
+	DELETE
+	DO
+	FINAL
+	FOR
+	IF
+    LABEL
+	LAMBDA
+	RETURN
+	SWITCH
+	WHILE
+	GOTO
+	THROW
+	TRY
+	NOTSPECIFIED
+}
+
+external struct PhiData no.h
+{
+    Symbol      phiSymbol;
+    Value       phiJitter;
+    BasicBlock  phiBlock;
+    void        *next;
+}
+external	Statement
+{
+Block		block;
+Instance	first,
+            second,
+            third,
+            fourth;
+boolean
+            branch
+            indented
+            noFallThru
+            switching
+            ;
+sType		statementType;
+Stak        phiStack;
+int         lvl;
+
+	Statement();
+	Statement(sType s);
+	void		add(Block b);
+	void		add(Expression e);
+	void		add(Instance i);
+	void		add(Statement s);
+    void        add(String s);
+    void        addBreaks();
+    void        addPhiData(PhiData *phidata);
+	void		checkBlock(Instance i);
+    void        clearPhiStack();
+    void        convertSwitch();
+	Block		getBlock();
+    PhiData     *getPhiData(Symbol symbol);
+    Instance    makeIfExpression(Statement line,Instance switcher,Instance lastCase);
+    void        makeIfStatement(Instance lastCase,Block body);
+    void        setJitterFromPhiData(Instance instance);
+	overload
+		+=	add
+		;
+}
+
+external Symbol
+{
+#autoGetSet
+String      name,
+            methodName;
+SymbolType
+			parentClass,
+			structType,
+			type;
+Symbol
+            getter,
+            setter,
+			source;
+Block		block;			// body of method, if this is a method
+DoubleLinkList
+			parameters;		// If symbol is method, parameters is list of
+							// symbols that define the method parameters
+boolean
+			hasEllipsis
+			indirect:4
+			isAlias
+			isArray:4
+            isAssigned
+            isConst
+			isConstructor
+            isDefault
+            isExtern
+			isExtension
+			isGetter
+			isHidden
+			isInitialized
+			isItem
+			isLambda
+            isMacro
+			isMethod
+            isOCfield
+			isOutlet
+            isProper
+			isSetter
+			isStatic
+            isThis
+			isVirtual
+            referred
+			reference:4
+            utilized
+			;
+String
+			array,
+			comment;
+short       symbolBitLength,
+            symbolBitOffset,
+            symbolIndex,
+            symbolOffset;
+JitData     symbolJitStuff;
+Instance    format;
+static int	symbolCount;
+
+	Symbol(String s);
+	Symbol(String s,SymbolType t);
+	Symbol(String s,String t);
+	Symbol(Symbol s);
+	void		addParameter(Symbol arg);
+    void        checkParameters(PLGitem parameter);
+	String		displayName();
+    void        dumpDefaultName();
+    String      externalMethodName();
+	void		extendType();
+    JitData     getSymbolJitStuff();
+    Type        getJITtype();
+	String		getOCmethodName();
+	String		getSignature();
+	String		getSignature(int cppFlag);
+	String		gitMethodName();
+    void        insertParameter(Symbol arg);
+    Symbol      makeAlias(String aliasName);
+    Symbol      makeSetter();
+	void		mangle();
+	int			matchMethod(Instance t);
+	Symbol		matchType(SymbolType t);
+	void		pushParameters(InstanceTable i);
+	void		setIndirection(PLGitem direct);
+	void		setRefer();
+	int			typeMatch(SymbolType t);
+    overload
+        +=      addParameter
+        ;
+}
+
+external SymbolList extends BaseHash
+{
+	SymbolType	type;
+	SymbolList();
+	void		add(Symbol s);
+	void		add(String t,Symbol s);
+overload
+		[]	get
+		[]=	put
+        %=  put
+		-=	remove
+		+=	put
+		;
+}
+
+external	SymbolType
+{
+#autoGetSet
+String		name,
+			comment,
+			constructor,
+			dotHname,
+			nameSpace;
+boolean
+            addClassNameToMethods
+			autoGetSet
+            classOK
+            composed
+            debug
+			expanded
+            hasExtern
+            hasLambda
+			hasOC
+            hasTypedef
+			isAtomic
+            isC
+			isChar
+			isDeclared
+			isDirect
+			isExternal
+            isFlagged
+			isGlobal
+			isLocal
+			isNumber
+			isOC
+			isReferenced
+            isTemplate
+			isVirtuous
+            mappedGlobal
+            mappedStatic
+			mustDeclare
+			nameLess
+            noClassForward
+			noDotH
+            noSign
+			proper
+			structure:4[isBoolean isEnumerator isProtocol isStruct isType isUnion]
+            typesFilled
+			;
+BaseHash	components,
+            componentFields,
+            componentTypes,
+            methods,
+			overloads,
+            protocols;
+DoubleLinkList
+            descendentTypes;
+Buffer		codeBuffer;
+Symbol      initializer;        // specified as an overload
+SymbolType	parent;
+int			lastBitOffset,
+            lastOffset,
+            levelMax,
+			symbolMapped,
+            typeIndex,
+            typeSize;
+BitMAP      componentMap,
+            typeMap;
+Instance    format;
+Stak        aliasStack;
+static Type         jitLong;
+static Type         jitPointer;
+static Types		types;
+static SymbolType	buttonType;
+static SymbolType   charType;
+static SymbolType	defaultType;
+static SymbolType   doubleType;
+static SymbolType   floatType;
+static SymbolType   globalType;
+static SymbolType   idType;
+static SymbolType   intType;
+static SymbolType   longType;
+static SymbolType   nullType;
+static SymbolType	ocRoutines;
+static SymbolType   ocStringType;
+static SymbolType   pointerType;
+static SymbolType	selectorType;
+static SymbolType   shortType;
+static SymbolType	stringRoutines;
+static SymbolType   stringType;
+static SymbolType   voidType;
+static DoubleLinkList	globalList;
+static BaseHash     ocSymbols;
+
+	SymbolType(String n);
+	SymbolType(SymbolType t);
+	void            add(Symbol s);
+	Symbol          add(String s,String t);
+	Symbol          add(String s,SymbolType t);
+    void            addComponent(String name,Instance instance);
+    void            addComponentType(Instance instance);
+	Symbol          addConstant(String s,SymbolType t);
+	void            addMethod(Symbol s);
+	void            addProtocol(SymbolType p);
+	void            checkGetterSetter(Symbol method);
+	void            dump();
+    void            dumpFields();
+    void            debugComponent(String text);
+    void            fillComponentMap();
+	void            fillComponentTypes();
+    Symbol          findField(String text);
+    Instance        findFieldInstance(String text);
+    Symbol          findMethod(Instance source);
+    Instance        findMethodInstance(Instance source);
+	unsigned int	getAutoGetSet();
+	Symbol          getConverter(SymbolType t,SymbolType s);
+	Symbol          getLocal(String s);
+	Symbol          getMethod(String s);
+    Symbol          handleAliasParameters(Symbol symbol,String aliasName,PLGitem body,Tawk tok);
+	int             hasParent(SymbolType type);
+    Instance        lazyGetField(String text,int depth,int nameIndex);
+    void            makeAlias(String aliasName,String target,PLGitem body,Tawk tok);
+	int             matches(SymbolType t);
+	void            mention();
+	void            overload(String s,String n);
+	String          overloaded(String s);
+	Symbol          ownMethod(String s);
+	void            setOverloadTable();
+    void            setParent(SymbolType type);
+	void            setRefer();
+	static SymbolType   find(String s);
+	static SymbolType   getType(String s);
+	static void         setTypeTable();
+    alias
+        get            findField
+        ;
+}
+
+external Tawk extends PLGparse
+{
+#autoGetSet
+int
+                iterating,
+                stringNumber;
+Block
+                currentBlock;
+Buffer
+                junkBuffer;
+FormatC
+                formatter;
+JIT             jit;
+BaseHash
+                includedFiles,
+                macroHash,
+                macroList,
+                missingMethods;
+Instance
+                defaultPrinter,
+                debugInstance,
+                virtualItem;
+InstanceTable
+                currentSymbols;
+Operate
+                commaOp;
+PLGitem
+                currentComment,
+                virtualOp;
+CharSet
+                lambdaSet;
+SymbolType
+                currentClass,
+                currentType,
+                expressType,
+                methodType,
+                newType,
+                saveStruct,
+                saveType;
+Stak
+                blockStack,
+                switchStack,
+                virtualStack;
+Symbol
+                currentMethod,
+                falseSymbol,
+                lambdaMethod,
+                nullSymbol,
+                printfSymbol,
+                asprintfSymbol,
+                fprintfSymbol,
+                sprintfSymbol,
+                trueSymbol;
+String
+                macroDelimiter;
+boolean
+            assigning
+            assuming
+            classOK
+            constDeclare
+            debugging
+            declaredSomething
+            extending
+            externDeclare
+            isQualified
+            noShortcuts
+            processingParameters
+            staticDeclare
+            stringing
+            virtualDeclare
+			;
+void        *externalENV;
+        void        checkConversion(Expression express);
+        Instance    concatenate(PLGitem source);
+        Expression  convertRangeX(Instance field,Instance range);
+        Instance    convertToString(Instance source);
+        String      extractComment();
+        Instance    findInitializer(Symbol symbol);
+        Instance    generatePrint(Instance argument);
+        void        initializeJIT();
+        void        initializeKeyWords();
+        Instance    makeError(String text);
+        Expression  makeExpress(Instance instance,PLGitem item);
+        void        popVirtuals();
+        void        process(String name);
+        void        pushVirtuals();
+        void        resetVirtuals();
+        PLGitem     run(String name);
+        static void	setComparisons();
+        void        setCurrentClass(SymbolType t);
+        void        setOperators();
+        void        setPrintMethods();
+        void        setRules();
+        void        summaryDebug();
+        void        test(String text,String name);
+}
+
+external Types extends BaseHash
+{
+BaseHash	nameTable;
+char        **nameList;
+int			listLength,
+            typeCount,
+			typeDebug,
+            typesReset;
+CharSet      typesSet;
+
+	Types();
+    int         add(String name);
+    int         getNameIndex(String name);
+	SymbolType	getType(String s);
+	String		nameAt(int index);
+	void		reset();
+    void        resetIsFlagged();
+	void		setNameList();
+	overload
+		[]	getType
+		+=	add
+		;
+}
+

@@ -1,0 +1,169 @@
+/*******************************************************************************
+    devDirectives — scratch workspace for incant development directives
+    Not for repo. Hand-edited workspace for trying directive shapes.
+
+    2026-05-28: Four candidate functions for incant directive `replace` support.
+    Sketch lives at Groups/docs/incant-directive-replace-sketch-2026-05-28.md.
+
+    Each function is wrapped in a tok directive block anchored at a distinct
+    match-line in GroupActions.rtn. Note: tok directives splice STATEMENTS into
+    method bodies (Tawk.g:122 `Directivise : line = Line+`, Line = Statement |
+    use-stmt | label). A top-level `extern GroupItem ...` function declaration
+    is not a Line. So the literal experiment of `tok GroupActions.rtn
+    devDirectives` is expected to fail at parse time — that failure is itself
+    informative about where the tok directive grammar admits these functions
+    and where it doesn't.
+
+    Names per Tony's call (2026-05-28):
+        applyReplaceDirective → ReplaceDirective
+        spliceReplaceAtAnchor → ReplaceAtAnchor
+        matchSpanInLines, statementMatches — unchanged
+*******************************************************************************/
+
+#globals
+
+/*******************************************************************************
+    statementMatches — equivalence test between two statement GroupItems.
+    v1: top-level only via GroupItem.matches (GroupItem.twk:699).
+    v2: recursive AST walk (open design question).
+*******************************************************************************/
+restoreLocalFields "if !recurseSTAK.length" before active
+    extern int statementMatches(GroupItem a,GroupItem b)
+    {
+        return a.matches(b);
+    }
+#;
+
+/*******************************************************************************
+    matchSpanInLines — walk targetLines looking for the first member that
+    starts a span structurally equal to fromBlock.Lines. Returns that
+    member, or null.
+*******************************************************************************/
+processCode "if !processing" before active
+    extern GroupItem matchSpanInLines(GroupItem targetLines,GroupItem fromBlock)
+    {
+    GroupItem   fromLines = fromBlock.getLabelGroup("Lines");
+    GroupItem   firstFrom;
+    GroupItem   candidate;
+    GroupItem   tWalk;
+    GroupItem   fWalk;
+        if !fromLines || !fromLines.groupList   return null;
+        firstFrom = fromLines.firstInList;
+        candidate = targetLines.firstInList;
+        while candidate {
+            if statementMatches(candidate,firstFrom) {
+                tWalk = candidate.nextInParent;
+                fWalk = firstFrom.nextInParent;
+                while fWalk && tWalk && statementMatches(tWalk,fWalk) {
+                    tWalk = tWalk.nextInParent;
+                    fWalk = fWalk.nextInParent; }
+                if !fWalk   return candidate; }
+            candidate = candidate.nextInParent; }
+        return null;
+    }
+#;
+
+/*******************************************************************************
+    ReplaceAtAnchor — detach the matched span from targetLines, splice in
+    toBlock.Lines members at the same position. toBlock may be null (delete).
+    Open: depends on an `insertAfter(prior,new)` primitive on GroupItem;
+    fall back via reverse-iter-and-front-insert if insertAfter doesn't
+    exist (verify in GroupItem.twk before relying on it).
+*******************************************************************************/
+runAction "if !processCode" before active
+    extern void ReplaceAtAnchor(GroupItem targetLines,GroupItem anchor,
+                                GroupItem fromBlock,GroupItem toBlock)
+    {
+    GroupItem   fromLines = fromBlock.getLabelGroup("Lines");
+    GroupItem   toLines;
+    GroupItem   spanWalk;
+    GroupItem   adjacent;
+    GroupItem   priorAnchor = anchor.priorInParent;
+    int         spanLength = fromLines.listLength;
+    int         i;
+        spanWalk = anchor;
+        for i = 0 to spanLength - 1 {
+            if !spanWalk  break;
+            adjacent = spanWalk.nextInParent;
+            spanWalk.parent = null;
+            spanWalk = adjacent; }
+        if toBlock {
+            toLines = toBlock.getLabelGroup("Lines");
+            if toLines && toLines.groupList {
+                spanWalk = toLines.lastInList;
+                while spanWalk {
+                    adjacent = spanWalk.priorInParent;
+                    spanWalk.parent = null;
+                    if priorAnchor   priorAnchor.insertAfter(spanWalk);
+                    else             targetLines.insertGroup(spanWalk);
+                    spanWalk = adjacent; } } }
+    }
+#;
+
+/*******************************************************************************
+    ReplaceDirective — orchestrator. Parallel to applyDirectives (Instruct.rtn)
+    but does match-and-swap rather than splice-into-end. Idempotent via the
+    target's DiRs registry. Routes here from opReplace's DiR-prefix hook
+    (the proposed 3-line addition to opReplace, paralleling the opPlusEQ
+    DiR hook landed 2026-05-28).
+*******************************************************************************/
+processFlags "if item" before active
+    extern GroupItem ReplaceDirective(GroupItem argument,GroupItem target)
+    {
+    GroupItem   grup;
+    GroupItem   DiRs;
+    GroupItem   from;
+    GroupItem   to;
+    GroupItem   anchor;
+    GroupItem   targetLines;
+        if argument.isLIST
+            while grup = argument.prior(grup)
+                ReplaceDirective(grup,target);
+        else {
+            DiRs = target["DiRs"];
+            if !DiRs {
+                DiRs = target += "DiRs";
+                DiRs.noPrint = true; }
+            if DiRs[argument.tag]   return target;
+            DiRs += argument;
+
+            if !target["BlocK"]     processCode(target);
+            processCode(argument);
+            from = argument["from"];
+            if !from {
+                cerr "Replace directive missing 'from':",argument.tag:;
+                return target; }
+            to = argument["to"];
+
+            targetLines = target["BlocK"].getLabelGroup("Lines");
+            if !targetLines    return target;
+            anchor = matchSpanInLines(targetLines,from);
+            if !anchor {
+                cerr "Replace directive could not match 'from' in target:",target.tag:;
+                return target; }
+
+            ReplaceAtAnchor(targetLines,anchor,from,to);
+        }
+        return target;
+    }
+#;
+
+/*******************************************************************************
+    Not yet pasted as directive: the 3-line DiR hook on opReplace itself,
+    which routes `targetAction :+ DiRReplaceThing` here. Sketch only:
+
+        extern GroupItem opReplace(GroupItem argument,GroupItem target)
+        {
+        GroupItem   grup;
+            if !compare(head(argument.tag,3),"DiR")
+                return ReplaceDirective(argument,target);
+            if argument.isLIST
+                while grup = argument.prior(grup)
+                    opReplace(grup,target);
+            else    target.replace(argument);
+            return target;
+        }
+
+    That edit lands in Instruct.rtn alongside the function moves, when the
+    sketch graduates from devDirectives scratch to durable source.
+*******************************************************************************/

@@ -4,7 +4,7 @@
 #include "KeyMap.h"
 #include "DoubleLinkList.h"
 #include "DoubleLink.h"
-#include "PLGset.h"
+#include "CharSet.h"
 #include "KeyTableItem.h"
 #include "KeyTable.h"
 
@@ -19,7 +19,7 @@ KeyTable::KeyTable()
 	keyValueList = 0;
 	name = 0;
 	letterMaps = new DoubleLinkList();
-	keySet = new PLGset();
+	keySet = new CharSet();
 }
 
 KeyTable::KeyTable(char *n)
@@ -33,7 +33,7 @@ KeyTable::KeyTable(char *n)
 	keyValueList = 0;
 	name = n;
 	letterMaps = new DoubleLinkList();
-	keySet = new PLGset();
+	keySet = new CharSet();
 	keySet->name = n;
 }
 

@@ -291,13 +291,13 @@ union
 
 external Groups extends PLGparse
 {
-PLGset	operateSet;
-PLGset	alphaSet;
-PLGset	hexSet;
-PLGset	nameSet;
-PLGset	notSpace;
-PLGset	pathOpSet;
-PLGset	curveOpSet;
+CharSet	operateSet;
+CharSet	alphaSet;
+CharSet	hexSet;
+CharSet	nameSet;
+CharSet	notSpace;
+CharSet	pathOpSet;
+CharSet	curveOpSet;
 int	curving;
 Stylish         style;
 GroupItem		currentColor,

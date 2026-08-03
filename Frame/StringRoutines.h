@@ -1,12 +1,12 @@
-class PLGset;
+class CharSet;
 class Buffer;
 class StringRoutines
 {
 public:
 static int debugIndent;
 };
-extern "C" char *alignLeft(char *text, int length);
-extern "C" char *alignRight(char *text, int length);
+extern "C" char *alignLEFT(char *text, int length);
+extern "C" char *alignRIGHT(char *text, int length);
 extern "C" int bitCount(unsigned long bits);
 extern "C" int booleanIsSet(unsigned char *item, int wordOffset, int bitOffset);
 extern "C" int buttonIsSet(unsigned char *item, int wordOffset, int bitOffset, int length, int amount);
@@ -21,7 +21,7 @@ extern "C" char *copyString(char *input);
 extern "C" char *getStringFromFile(char *inputFile);
 extern "C" char *headToChar(char *input, char match);
 extern "C" char *headToCount(char *text, int count);
-extern "C" char *headToSet(char *input, PLGset *matchSet);
+extern "C" char *headToSet(char *input, CharSet *matchSet);
 extern "C" char *headToString(char *input, char *match);
 extern "C" void indent(int indentify, char *indenter, Buffer *indentBuffer);
 extern "C" void setBoolean(unsigned char *item, int wordOffset, int bitOffset, int value);

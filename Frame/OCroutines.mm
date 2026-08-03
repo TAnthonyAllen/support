@@ -18,7 +18,7 @@ NSData 			*data = 0;
 	if ( request )
 		if ( data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error] )
 			{
-			buffer->appendString((char*)[data bytes]);
+			buffer->appendString((char*)[data bytes],0,0);
 			return 1;
 			}
 	::fprintf(stderr,"%s\n",::toString([error localizedDescription]));

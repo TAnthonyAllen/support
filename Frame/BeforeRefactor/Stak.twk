@@ -6,12 +6,12 @@ include frameIncludes
 *****************************************************************************/
 class Stak
 {
+int		length,
+		size;
 void	**start,
 		**end,
         **entry,
 		**fifo;
-int		length,
-		size;
 
 /*****************************************************************************
 	Constructors
@@ -43,23 +43,6 @@ void clear()
 	fifo	=
 	end		= start;
 	*end	= 0;
-}
-
-/*****************************************************************************
-	dQ is like pop but in fifo order. Note, if you switch back and forth
-	between pop and dQ (don't come crying if it fucks up).
-*****************************************************************************/
-void *dQ()
-{
-void	*top;
-	if length
-		{
-		length--;
-		top = *fifo;
-		*fifo++ = 0;
-		}
-    if !length entry = null;
-	return top;
 }
 
 /*****************************************************************************
@@ -141,6 +124,16 @@ long offset = fifo - start;
 	end		= start + length;
 	*end	= 0;
     entry   = null;
+}
+
+/*****************************************************************************
+	Uses resize but sets the size == length + 1 first leaving a full stack
+    and presumably releasing any excess
+*****************************************************************************/
+void shrink()
+{
+	size	= length + 1;
+    resize();
 }
 
 /*****************************************************************************

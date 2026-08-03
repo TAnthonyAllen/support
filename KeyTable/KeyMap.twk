@@ -6,7 +6,7 @@ include frameIncludes
 class KeyMap
 {
 char			letter;
-PLGset			follow;
+CharSet			follow;
 DoubleLinkList	entries;
 int				length;		// All entries will have keys this long
 

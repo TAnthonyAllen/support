@@ -121,8 +121,8 @@ int result;
 }
 
 /**************************************************************************
-    A wrapper for strncmp that handles null arguments. If left is less
-    than right returns -1, equal returns 0, greater than 1
+    A wrapper for strncmp that handles null arguments and works on a stream
+    argument. If left less than right returns -1, equal returns 0, greater than 1
 **************************************************************************/
 extern int compareToStream(String left, String right)
 {
@@ -157,6 +157,7 @@ char	**text, **atText;
 			length += (int)strlen(*atText);
 			atText++;
 			}
+        else cerr "StringRoutines: concat failed reading arg list":;
 		}
     va_end(list);
     atResult	=
@@ -171,9 +172,21 @@ char	**text, **atText;
 }
 
 /*******************************************************************************
+	Returns true if text passed in contains the character passed in.
+*******************************************************************************/
+extern int containsCharacter(String text, char c)
+{
+String  atText = text;
+    while *atText
+        if *atText == c return true;
+        else atText++;
+    return false;
+}
+
+/*******************************************************************************
 	Returns true if text passed in contains the substring passed in.
 *******************************************************************************/
-int contains(String text,String substring)
+extern int containsString(String text,String substring)
 {
 String  atText = text;
 int     length = (int)strlen(substring);
@@ -307,7 +320,7 @@ int     length;
 extern String headToCount(String text,int count)
 {
 int length = (int)strlen(text);
-    if length > count
+    if length > count && count > 0
         {
         String	buffer = calloc(count + 1,sizeof(char));
         if text && *text    strncpy(buffer,text,(size_t)count);
@@ -320,7 +333,7 @@ int length = (int)strlen(text);
     Returns the first part of input up to the first character that matches
     the the character set passed in
 **************************************************************************/
-extern String headToSet(String input,PLGset matchSet)
+extern String headToSet(String input,CharSet matchSet)
 {
 String	atInput;
 int     length;
@@ -359,6 +372,29 @@ String	atInput, result;
 		return result;
 		}
 	return null;
+}
+
+/*****************************************************************************
+    Writes out indent (often used in debugging directives). Note: this appears
+    at the end of this code file so that the print(beffer) command does not
+    pooch subsequent print code.
+*****************************************************************************/
+extern void indent(int indentify,String indenter,Buffer indentBuffer)
+{
+int i = indentify > 0 ? indentify : 0,
+    indentLength;
+    if i == 0       return;
+    if !indenter    indenter = "\t";
+    indentLength    = (int)strlen(indenter);
+String  indenting   = calloc(1,indentify * indentLength + 1);
+String  atText      = indenting;
+    while i-- > 0
+        {
+        strcpy(atText,indenter);
+        atText += indentLength;
+        }
+    if !indentBuffer    print() indenting;
+    else                print(indentBuffer) indenting;
 }
 
 /*****************************************************************************
@@ -406,7 +442,7 @@ unsigned long   *atWord = (unsigned long*)atItem,
 /*******************************************************************************
 	Returns true if text passed in is numeric.
 *******************************************************************************/
-int stringIsNumeric(String text)
+extern int stringIsNumeric(String text)
 {
 String  atText = text;
 int     hasDecimalPoint;
@@ -530,20 +566,6 @@ String  beg = out;
             }
     *out = '\0';
     return beg;
-}
-
-/*****************************************************************************
-    Writes out indent (often used in debugging directives). Note: this appears
-    at the end of this code file so that the print(beffer) command does not
-    pooch subsequent print code.
-*****************************************************************************/
-extern void indent(int indentify,String indenter,Buffer indentBuffer)
-{
-int i = indentify;
-    if !indenter indenter = "\t";
-    if !indentBuffer
-        while i-- > 0   print() indenter;
-    else while i-- > 0  print(indentBuffer) indenter;
 }
 
 class StringRoutines

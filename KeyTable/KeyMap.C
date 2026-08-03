@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "DoubleLinkList.h"
 #include "DoubleLink.h"
-#include "PLGset.h"
+#include "CharSet.h"
 #include "KeyTableItem.h"
 #include "KeyMap.h"
 
@@ -11,7 +11,7 @@ KeyMap::KeyMap(char l)
 {
 	length = 0;
 	letter = l;
-	follow = new PLGset();
+	follow = new CharSet();
 	entries = new DoubleLinkList();
 }
 

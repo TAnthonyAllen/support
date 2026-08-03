@@ -26,6 +26,7 @@ external	NSAffineTransform
 			NSEvent
 			NSFont
 			NSFontDescriptor
+            NSFontDescriptorSymbolicTraits
 			NSFontManager
             NSGradient
 			NSGraphicsContext
@@ -91,6 +92,8 @@ external    NSObject Cocoa/Cocoa.h local OC proper
     id                  performSelector(SEL s);
     void                performSelectorOnMainThread(SEL s,id withObject, waitUntil);
     int                 respondsToSelector(SEL s);
+    unsigned int        NSBoldFontMask;
+    unsigned int        NSItalicFontMask;
     alias
         Application     NSApplication
         TextString      NSAttributedString
@@ -140,6 +143,7 @@ external    NSObject Cocoa/Cocoa.h local OC proper
         Shadow          NSShadow
         Size            NSSize
         StyleMask       NSWindowStyleMask
+        SymbolicTraits  NSFontDescriptorSymbolicTraits
         Text            NSText
         TextField       NSTextField
         TextCell        NSTextFieldCell
@@ -334,15 +338,16 @@ external Cell extends Object
 	int					isSelectable();
 	void				setAlignment(int i);
     void                setLineBreakMode(int i);
+    void                setUsesSingleLineMode(int i);
 	NSString			stringValue();
 	alias
-		align			setAlignment
+		setAlign        setAlignment
 		draw			drawWithFrame
 		edit			editWithFrame
 		getEditable		isEditable
 		getSelectable	isSelectable
 		init			initTextCell
-		singleLine		usesSingleLineMode
+		setSingleLine   setUsesSingleLineMode
 		getString		stringValue
 		;
 }
@@ -476,8 +481,8 @@ external Font extends Object
 }
 external FontData extends Object
 {
-	FontData	fontDescriptorWithFamily(NSString s);
-	FontData	fontDescriptorWithSize(double d);
+	FontData	    fontDescriptorWithFamily(NSString s);
+	FontData	    fontDescriptorWithSize(double d);
 	alias
 		withFamily	fontDescriptorWithFamily
 		withSize	fontDescriptorWithSize

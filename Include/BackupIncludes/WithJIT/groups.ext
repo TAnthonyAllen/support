@@ -1,0 +1,652 @@
+
+external mysql.h
+{
+	typedef MYSQL;
+	typedef MYSQL_ROW;
+	typedef MYSQL_FIELD
+		{
+		String		name,
+					table,
+					db;
+		};
+	typedef MYSQL_RES;
+	
+	long		mysql_affected_rows(MYSQL m);
+	int			mysql_autocommit(MYSQL m,int mode);
+	void		mysql_close(MYSQL m);
+	String		mysql_error(MYSQL m);
+	MYSQL_FIELD	mysql_fetch_field(MYSQL_RES r);
+	int*		mysql_fetch_lengths(MYSQL_RES r);
+	MYSQL_ROW	mysql_fetch_row(MYSQL_RES r);
+	void		mysql_free_result(MYSQL_RES r);
+	MYSQL		mysql_init(MYSQL m);
+	int			mysql_num_fields(MYSQL_RES r);
+	long		mysql_num_rows(MYSQL_RES r);
+	int			mysql_query(MYSQL m,String s);
+	MYSQL		mysql_real_connect(MYSQL m,String host,String user,String passwd,String DB,int port,String sock,int flag);
+	MYSQL_RES	mysql_store_result(MYSQL m);
+}
+
+external sqlite.h
+{
+	typedef		sqlite3;
+	int			sqlite3_close(sqlite3 *db);
+	int			sqlite3_exec(sqlite3 *db,String s,int &cb(void*,int,char**,char**),void *v,char **e);
+	void		sqlite3_free(String s);
+	int			sqlite3_open(String s,sqlite3 **db);
+	alias
+		dbClose		sqlite3_close
+		dbExec		sqlite3_exec
+		dbFree		sqlite3_free
+		dbOpen		sqlite3_open
+		;
+}
+
+external ParseXML
+external GroupItem
+external GroupRegistry
+external Tawk
+
+external BotClient OC
+{
+ParseXML    parser;
+GroupItem   item;
+    String      get();
+    int         run(String text);
+}
+
+external BotServer OC
+{
+    id          botProxy;
+    void        runServer(String text,double duration);
+    void        runClient(String server,String filename);
+}
+
+external ConnectM
+{
+String		host,
+            user,
+            password,
+            DB,
+            socket;
+int			port;
+boolean
+            debug
+            ;
+
+	ConnectM();
+	void		close();
+	int			connect();
+	void		getData(String s,GroupRegistry r);
+	void		getMembers(String s,GroupItem g);
+	int			query(String s);
+}
+
+external ConnectLite
+{
+String		name;
+sqlite3		*database;
+int			&callback(void *n,int columns,char **value,char **label);
+boolean
+            debug
+            ;
+
+	ConnectLite(String s);
+	void		close();
+	int			connect();
+	int			exec(String s);
+	void		getData(String s,GroupRegistry r);
+	void		getMembers(String s,GroupItem g);
+	void		query(String s,void *d,int &cb(void*,int,char**,char**));
+	alias
+		Connect		ConnectLite
+		;
+}
+
+external DateParser extends PLGparse
+{
+    PLGitem         parseMDY(PLGitem item);
+    PLGitem         parseYMD(PLGitem item);
+	PLGitem         run(String s);
+}
+
+external Grope
+{
+Connect			connector;
+	Grope();
+	Grope(String s);
+	void			createTables();
+	void			expand(GroupItem source,GroupItem attribute);
+	GroupItem		find(String t,String n);
+	GroupRegistry	load(String name);
+	void			load(GroupItem item);
+}
+
+external GroupItem C addClassNameToMethods
+{
+#autoGetSet
+String          tag;
+GroupItem       parent;
+BitMAP          attributes,
+                members;
+void            *other;
+GroupRegistry   registry;
+unsigned long   itemIndex;
+ParseXML        parser;
+String          gText;
+int             index;
+int             offset;
+union
+    int         gCount;
+    GroupItem   gGroup;
+    PLGitem     gItem;
+    BitMAP      gMap;
+    double      gNumber;
+    void        *gPointer;
+    PLGrgx      gRegex;
+    ;
+void        &method(GroupItem);
+boolean
+        fLAG
+        cdata
+        compareTags
+        copied
+        copyOnAdd
+        data:4[isCount isGroup isItem hasMap isNumber isString isDate isPointer isRegex]
+        deferred
+        deleted
+        descending
+        doNotChangeParent
+        doNotIndex
+        dotdot
+        expanded
+        hasActions
+        hasList
+        hasListener
+        hasMacro
+        hasRegex
+        indented
+        indexed
+        isAny
+        isAlternate
+        isAttribute
+        isClosed
+        isComment
+        isMacro
+        isMapped
+        isOption:3[star plus question bang]
+        isPercent
+        isRegistry
+        isShell
+        isSingleton
+        isStored
+        isTarget
+        keyAction
+        loaded
+        modified
+        mustIndent
+        noAnchor
+        noDuplicates
+        noMerge
+        noPrint
+        noTag
+        reacts
+        released
+        rightClick
+        track
+        ;
+static int    deferMaps;
+static Tawk tawkParser;
+	alias
+			count				gCount
+            group               gGroup
+            hasMaximum          expanded
+            hasMinimum          indented
+			item				gItem
+			map					gMap
+			number				gNumber
+			pointer				gPointer
+            regex               gRegex
+            text                gText
+			value				data
+			;
+	overload
+            ()      method
+			[]		getAttribute
+			[]=		addAttribute
+            %       getAttribute
+            %=      addAsAttribute
+            /       getMember
+            /*      getWhatever
+            /=      add
+			+=		add
+			-=		removeMember
+            -=*     removeMembersOf
+            %-=     removeAttribute
+            &=      intersectWith
+			;
+    void            addAsAttribute(GroupItem item);
+	GroupItem		addAttrDouble(String n,double v);
+    GroupItem       addAttrGroup( String n,GroupItem v );
+	GroupItem		addAttrInt(String n,int v);
+	GroupItem		addAttrItem(String n,PLGitem v);
+    void            addAttrMap(BitMAP map);
+	GroupItem		addAttrString(String n,String v);
+	GroupItem		addAttrValue(String n,void *v);
+    void            addAttributesOf(GroupItem group);
+	void			addBody(PLGitem i);
+	GroupItem		addGroup(GroupItem g);
+	void			addMap(BitMAP map);
+	void			addMembersOf(GroupItem group);
+	GroupItem		addString(String n);
+	BitMAP			buildMap(int flag);
+    void            clear();
+    void            clearList();
+	int				compareMask(GroupItem item,GroupItem mask);
+	int				compare(GroupItem item);
+    GroupItem       copyAttributes(int attributeFlag);
+    GroupItem		copy();
+    void            dumpAttribute(int indent);
+	void			dumpDetail(int indent,int level);
+    GroupItem       filter(GroupItem item);
+	GroupItem		find(String name);
+    GroupItem       findAttribute(String name);
+    GroupItem       findParent(String name);
+    GroupItem       first(String name);
+    GroupItem       firstMember();
+	GroupItem		get(String name);
+	GroupItem		getAttribute(String name);
+	void			getMacro();
+	GroupItem		getMember(String name);
+	String			getTagXML();
+	char			getChar();
+	int				getCount();
+    int             getDataType();
+    GroupItem       getGroup();
+	PLGitem			getItem();
+    DoubleLinkList  getList();
+	BitMAP			getMap();
+	double			getNumber();
+	void			*getPointer();
+    PLGrgx          getRegex();
+	String			getText();
+    GroupItem       getWhatever(String name);
+    void            groupBy(GroupItem mask);
+	void			indent(Buffer b);
+    int             indexInParent();
+	int				indexMatches(GroupItem group);
+    void            intersectWith(GroupItem item);
+	GroupItem		itemAt(int index);
+	void			listenTo(GroupItem group);
+    GroupItem       loadDirectory();
+    void            mapAttributes();
+    GroupItem       mapContents(String name);
+	int             matches(GroupItem target);
+	int				maximum();
+    GroupItem       memberAt(int offset);
+	void			merge(GroupItem group);
+    void            mergeAttributes(GroupItem group,int mergeFlag);
+    void            mergeIfFound(String name);
+	int				minimum();
+	GroupItem		nextAttribute(GroupItem *&group);
+	GroupItem		nextBlock();
+	GroupItem		nextMember(GroupItem *&group);
+    int             notRecursive(GroupItem group);
+    void            printData(String name);
+	GroupItem		priorBlock();
+	GroupItem		priorMember(GroupItem *&group);
+	void			registerIn(GroupRegistry type);
+    void            release(GroupItem stash);
+	void			removeAttribute(GroupItem group);
+	void			removeMember(GroupItem group);
+    void            removeMembersOf(GroupItem item);
+    GroupItem       replace();
+    void            replaceWith(GroupItem item);
+    void            resetHierarchy();
+    String          resolvedTag();
+    int             saveToAttributedFile();
+    int             saveToFile(String filename);
+	unsigned long	setBitIndex();
+	void			setCount(int i);
+    void            setGroup(GroupItem g);
+	void			setItem(PLGitem i);
+	void			setMap(BitMAP i);
+	void			setMethod(void &m(GroupItem));
+    void            setMethodRG(GroupItem &m(GroupItem));
+	void			setNumber(double d);
+    void            setParent(GroupItem item);
+	void			setPointer(void *v);
+    void            setRegex(PLGrgx v);
+	void			setText(String s);
+	void			setGroupContent(GroupItem item);
+	void            sortByAttribute(String mask);
+	void            sortByMask(GroupItem mask);
+	GroupItem		**toArray();
+	GroupItem		**toArrayFromMap(BitMAP map);
+	void			toBuffer(Buffer b);
+	DoubleLinkList	toList();
+	String			toString();
+	void			updateListeners();
+    GroupItem       walk(GroupItem *item);
+	String			wrap(String text);
+	String			wrapItem(PLGitem item);
+    String          wrapValue();
+	void			writeBody(Buffer b);
+	void			writeTagXML(Buffer b);
+	alias
+            Group               GroupItem
+            add                 addGroup
+            add                 addString
+            add                 addMap
+            addAttribute        addAttrDouble
+            addAttribute        addAttrGroup
+            addAttribute        addAttrInt
+            addAttribute        addAttrItem
+            addAttribute        addAttrString
+            addAttribute        addAttrValue
+            compare             compareMask
+            copy                copyAttributes
+            dump                dumpDetail(0,1)
+            get                 itemAt
+            getDate             getItem
+            mergeAttributes     mergeAttributes(mergeFlag=0)
+            /*****************************************************************
+                next (and nextTrait):
+                Iterator over members of the calling group. Uses the GroupItem
+                group field as the iterator variable, so this method should
+                only be used with groups that do not have a value. Basically,
+                it is a wrapper for nextMember but supplying its own group as
+                the referenced parameter. To initialize the iterator set the
+                group field to null before calling this method.
+            *****************************************************************/
+            next                nextMember(gGroup)
+            nextTrait           nextAttribute(gGroup)
+			new					itemFactory
+            release             release(stash=0)
+            save                saveToAttributedFile
+            save                saveToFile
+            sort                sortByAttribute
+            sort                sortByMask
+            toArray             toArrayFromMap
+            wrap                wrapItem
+            ;
+}
+
+external GroupList
+{
+GroupItem		**boddy,
+                **end,
+                block;
+int				length,
+                size;
+DoubleLinkList	tapeList;
+Tape			groupTape,
+                mapTape,
+                mapLinkTape;
+
+	GroupList(int i);
+	void			add(Tape tape);
+	void			dump();
+    void            dumpTapeStatus();
+	GroupItem		get(int index);
+	BitMAP			getMap(int bit);
+	void			remove(GroupItem group);
+	void			reset();
+	overload
+		[]		get
+		+=		add
+		;
+}
+
+external GroupRegistry extends BaseHash
+{
+String				type;
+GroupItem			registryItem;
+boolean
+			dataLoaded
+            doNotDuplicate
+			grouped
+            hasMethods
+            isBaseRegistry
+            loadAsAttributes
+			loadByValue
+            loadComponents
+			loadFromData
+			loadLazy
+            mapped
+			noAttributes
+            noMerging
+            tagged
+			;
+static BaseHash		registries;
+static CharSet		mustQuoteSet;
+    overload
+            /   get
+            []	get
+            +=	add
+            -=	remove
+            ;
+	GroupRegistry(String c);
+	GroupItem		add(GroupItem item);
+	GroupItem		addAsValue(GroupItem item);
+    void            clear();
+	void			dump();
+	void			dump(int l);
+	GroupItem		get(int i);
+	GroupItem		get(PLGitem item);
+	GroupItem		get(String s);
+    void            load();
+    GroupItem       next(GroupItem item);
+    void            resetOptions();
+    void            save();
+}
+
+external GroupSet extends GroupItem
+{
+Buffer				errors,
+                    select;
+    overload
+            []	attribute
+            []=	addAttribute
+            +=	add
+            -=	remove
+            ;
+	GroupSet(String s);
+	String		build();
+}
+
+external ParseXML extends PLGparse
+{
+GroupItem       currentBlock;
+GroupRegistry   currentRegistry;
+GroupItem       ancestor,
+                block,
+                field,
+                jitInclude,
+                lastSelect,
+                list,
+                outerBlock,
+                record,
+                releaseStash;
+GroupRegistry   fieldRegistry,
+                monthRegistry,
+                yearRegistry;
+PLGitem         jitHeader,
+                testItem;
+Buffer          scratch;
+String          outputFile,
+                skip,
+                setName;
+char            delimiter,
+                endRecord,
+                outputDelimit,
+                outputEnd;
+int             groupItems,
+                indentCount,
+                openTags
+                recordNumber;
+CharSet          cdataSet,
+                notSpace,
+                spaces;
+Stak            blockStack,
+                endTags,
+                mergeStack;
+BaseHash        baseRegistryList,
+                fileList,
+                searchList;
+ParseXML        pathParser;
+DateParser      dateParser;
+GroupList       groupList;
+boolean
+                jsonType:3[isText isBlock isRepeat]
+                complexPath
+                doneWithHeading
+                doNotExpandMacros
+                droppedAnchor
+                firstTag
+                hasHeading
+                hasOnRecord
+                ignoreComments
+                ignoreNoPrint
+                ignoreSkip
+                isRigorous
+                isThreaded
+                commanding
+                noBlankAttributes
+                noCDATA
+                noLineByLine
+                numberValues
+                settingPath
+                targetSet
+                trimLeadingSpace
+                useStash
+                ;
+CharSet    alphaSet;
+CharSet    anchorSet;
+CharSet    bodySet;
+CharSet    commentSet;
+CharSet    dateSet;
+CharSet    delimitSet;
+CharSet    fieldSet;
+CharSet    nameSet;
+CharSet    notSpace;
+CharSet    singleQuote;
+CharSet    spaces;
+CharSet    tagSet;
+CharSet    textSet;
+KeyTable Registering;
+KeyTable Flag;
+KeyTable CommandAction;
+
+	String          despace(String s);
+    void            dumpSearchList();
+    void            filterBy(GroupItem group);
+    GroupItem       getBlock(PLGitem item);
+	GroupRegistry   getRegistry(String c);
+    GroupRegistry   getRegistry(GroupItem group);
+    String          getText();
+    int             hasTarget(GroupItem path);
+    void            includeFile(String filename);
+	void            indentText(String s,Buffer b);
+    void            initializeKeyWords();
+    void            initializeSetTable();
+    GroupItem       initItem();
+    PLGitem         isURL(String text);
+	GroupItem       itemFactory();
+	GroupItem       itemFactory(String s);
+    GroupItem       itemFactory(String c,GroupItem g);
+	GroupItem       itemFactory(PLGitem item);
+	GroupItem       itemFactory(String s,void *v);
+	GroupItem       itemFactory(String s,String v);
+	GroupItem       itemFactory(GroupItem g);
+	GroupItem       loadDelimited(GroupItem specs);
+    void            loadFieldSpecs(GroupItem specs);
+    GroupItem       loadJSON(GroupItem specs);
+    GroupItem       locate(String name);
+    GroupItem       locate(PLGitem item);
+    GroupItem       locate(GroupItem item);
+	void            makeShell();
+    GroupItem       parseFile(String s);
+    void            parseMacro(GroupItem macro,String text);
+    String          parseStatements(String code);
+    GroupItem       parseString(String path,String tag);
+    void            popState();
+    void            printAttributes(GroupItem group,Stak list);
+    void            processDelimitField(PLGitem item);
+	void            processMerge(GroupItem block);
+    void            processPath(GroupItem item);
+    void            processSourceByPath(GroupItem path,GroupItem item);
+	GroupItem       processTag(PLGitem o);
+    void            pushState();
+    void            reset();
+	PLGitem         run(String s);
+	PLGitem         run(String rule,String text);
+    void            searchListAdd(GroupRegistry registry);
+    void            setAncestry();
+	PLGitem         trimEnd(PLGitem item);
+	void            writeList(String file);
+    alias
+        parseString     parseString(tag="StartXML")
+        ;
+}
+
+external Instance
+external ParseXML.h
+{
+    GroupItem       locateGroup(GroupItem item,String text);
+    Instance        getGroupInstance(String text);
+}
+
+external PathIterator
+{
+#autoGetSet
+GroupItem   initialPath,
+            initialBlock,
+            iteratePath,
+            iterateBlock,
+            target,
+            targetPath;
+Stak        iterateStack;
+boolean
+    debugPath:2[debugBlock debugAll]
+    endPath
+    hitBottom
+    pathError:3[methodFailed noAttributes notDeepEnough noMatch]
+    ;
+    PathIterator(GroupItem p,GroupItem s);
+    int             attributesMatch();
+    void            checkForActions(GroupItem path);
+    void            displayError();
+    GroupItem       next();
+    void            setInitialPath(GroupItem path);
+    void            setInitialBlock(GroupItem source);
+    GroupItem       walkPath();
+}
+
+external Splitter
+{
+ParseXML		**splits;
+PLGitem			input;
+int				count;
+	Splitter(int i);
+	void			cleanup(GroupItem b,GroupItem match);
+	void			dump();
+	GroupItem		findMatchingBlock(GroupItem b,String name);
+	PLGitem			getEndItem(String text,int size);
+	void			handleEndTags(GroupItem block);
+	GroupItem		map(GroupList list);
+	void			matchEndTags(GroupItem block,PLGitem stuff);
+	void			parse();
+	GroupItem		run(String filename);
+	int				split(String filename);
+	GroupItem		unsplit();
+    void            useLocalLinkTape(GroupList list);
+}
+
+external
+{
+	void			add(BitMAP map,GroupItem item);
+	void			append(Buffer buffer,GroupItem item);
+	String			bitString(long source);
+    void            jIT(GroupItem item);
+}

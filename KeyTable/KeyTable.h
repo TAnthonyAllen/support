@@ -1,6 +1,6 @@
 class DoubleLinkList;
 class KeyTableItem;
-class PLGset;
+class CharSet;
 class DoubleLink;
 /*******************************************************************************
 	A class that contains a trinary tree for indexing key fields
@@ -22,7 +22,7 @@ KeyTableItem *current;
 KeyTableItem *first;
 KeyTableItem *last;
 void **keyValueList;
-PLGset *keySet;
+CharSet *keySet;
 KeyTable();
 KeyTable(char *n);
 int add(char *key);

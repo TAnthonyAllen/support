@@ -5,14 +5,14 @@
 #include <stdarg.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#include "PLGset.h"
+#include "CharSet.h"
 #include "Buffer.h"
 #include "StringRoutines.h"
 
 /**************************************************************************
     Return a new string aligned left w/length passed in padded w/blanks
 **************************************************************************/
-extern "C" char *alignLeft(char *text, int length)
+extern "C" char *alignLEFT(char *text, int length)
 {
 int 	textLength = (int)::strlen(text);
 	if ( textLength >= length )
@@ -32,7 +32,7 @@ char 	*atText = aligned + textLength;
 /**************************************************************************
     Return a new string aligned right w/length passed in padded w/blanks
 **************************************************************************/
-extern "C" char *alignRight(char *text, int length)
+extern "C" char *alignRIGHT(char *text, int length)
 {
 int 	textLength = (int)::strlen(text);
 	if ( textLength >= length )
@@ -184,6 +184,7 @@ char 		**atText = 0;
 			length += (int)::strlen(*atText);
 			atText++;
 			}
+		else	::fprintf(stderr,"StringRoutines: concat failed reading arg list\n");
 		}
 	::va_end(list);
 	atResult = result = (char*)::calloc(length + 1,sizeof(char*));
@@ -363,7 +364,7 @@ int 	length = (int)::strlen(text);
     Returns the first part of input up to the first character that matches
     the the character set passed in
 **************************************************************************/
-extern "C" char *headToSet(char *input, PLGset *matchSet)
+extern "C" char *headToSet(char *input, CharSet *matchSet)
 {
 char 	*atInput = 0;
 int 	length = 0;
@@ -427,7 +428,7 @@ char 	*atText = indenting;
 		}
 	if ( !indentBuffer )
 		::printf("%s",indenting);
-	else	indentBuffer->appendString(indenting);
+	else	indentBuffer->appendString(indenting,0,0);
 }
 
 /*****************************************************************************
