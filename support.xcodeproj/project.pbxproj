@@ -22,7 +22,6 @@
 		9CFDD2B55E7A6BC1C98E7934 /* Tape.C in Sources */ = {isa = PBXBuildFile; fileRef = 0464BD1D26F8328282A8B788 /* Tape.C */; };
 		9DE2FECF256F5D3079D894BA /* Hasher.C in Sources */ = {isa = PBXBuildFile; fileRef = EF7FA78652BC2AC039A30923 /* Hasher.C */; };
 		A26F5EB3C6C496F7A5B06213 /* TapeSegment.C in Sources */ = {isa = PBXBuildFile; fileRef = 9EF4B1CAC9047DA1B0E51C3A /* TapeSegment.C */; };
-		AD02AC26333FEA0609C37845 /* Stack.C in Sources */ = {isa = PBXBuildFile; fileRef = 99B94B3E585CC60BCE6628BC /* Stack.C */; };
 		AD82AC0AA0D4072A21925C97 /* BitMAP.C in Sources */ = {isa = PBXBuildFile; fileRef = A9A0B4058434E93DB8FAF9E7 /* BitMAP.C */; };
 		B357F68429425AE34B864C03 /* CharSet.C in Sources */ = {isa = PBXBuildFile; fileRef = 8C9AB19C624931DEF6A60091 /* CharSet.C */; };
 		C7C69AFA155A53059FB93726 /* PLGset.C in Sources */ = {isa = PBXBuildFile; fileRef = 1AD49DE2BF3BCE56151B1472 /* PLGset.C */; };
@@ -81,7 +80,6 @@
 		8C9AB19C624931DEF6A60091 /* CharSet.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CharSet.C; sourceTree = "<group>"; };
 		8FE31A1E6FD5B353E4BE8220 /* URLservice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLservice.h; sourceTree = "<group>"; };
 		97F53B90D14C3CC50EE480CC /* OCroutines.twk */ = {isa = PBXFileReference; path = OCroutines.twk; sourceTree = "<group>"; };
-		99B94B3E585CC60BCE6628BC /* Stack.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Stack.C; sourceTree = "<group>"; };
 		9C0DBD77EE96E0B58D8E969E /* DoubleLinkList.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DoubleLinkList.C; sourceTree = "<group>"; };
 		9EF4B1CAC9047DA1B0E51C3A /* TapeSegment.C */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TapeSegment.C; sourceTree = "<group>"; };
 		A02771912650A47BCE4909E5 /* BaseEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseEntry.h; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 				DA0F60703A383E8DDD16A30A /* SearchTree.h */,
 				DBC493F85EAAC9C7C90AA594 /* SearchTree.twk */,
 				A84A5E12E55FA33D076140DC /* SimpleList.twk */,
-				99B94B3E585CC60BCE6628BC /* Stack.C */,
 				13109ADECDC98EAF66BD7F9A /* Stack.h */,
 				CFEE6BF154CA16151EE72AB2 /* Stak.C */,
 				A6DF487690D5C80540731F81 /* Stak.h */,
@@ -335,7 +332,6 @@
 				DF4E17D5527E89AD619F1349 /* SearchNode.C in Sources */,
 				EE60FD27B0E1E11858D133AF /* SearchTree.C in Sources */,
 				50822568D015850BF1C8ADCB /* Segment.C in Sources */,
-				AD02AC26333FEA0609C37845 /* Stack.C in Sources */,
 				851CE8E2A68B4E884C5CDB4B /* Stak.C in Sources */,
 				94DD652A85293497E335CB38 /* StringRoutines.C in Sources */,
 				9CFDD2B55E7A6BC1C98E7934 /* Tape.C in Sources */,

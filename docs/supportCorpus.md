@@ -275,7 +275,27 @@ prose. Where a count is *not* trustworthy, the claim says so rather than quoting
   Source read `Frame/URLservice.twk`. 2026-08-03.
 - **asOf**: 2026-08-03
 
-### CLAIM SUP-8 — ⚠ `Stack.C` vs `Stak.twk`: the near-collision is real, and it already produced false positives in this very census
+### CLAIM SUP-8 — ⚠ `Stack.C` vs `Stak.twk` — ✅ **THE COLLISION IS DELETED 2026-08-03**
+
+- ✅ **RULING (Tony, 2026-08-03): `Stack.C` is a spent temporary, same can as `Buffer.rvsd`.**
+  Removed: `Frame/Stack.C`, `Frame/Stack.h`, **and its 4 entries in
+  `support.xcodeproj/project.pbxproj`** — it was wired into the Sources build phase, so a
+  file-only delete would have broken that project. Verified after: incant rebuilt **BUILD
+  SUCCEEDED**, jitLadder 83 exit 0, `oneTest` exit 0, `pop.sh` 32 green.
+
+  ✅ **The near-collision this claim exists to warn about is now GONE BY CONSTRUCTION** — there is
+  no `Stack` left to misgrep against `Stak`. The warning is kept as the reasoning trail.
+
+  ⚠ **ONE THING DELIBERATELY NOT DONE, and it is flagged rather than swept:** `Include/frame`
+  still carries `external Stack` and `external StackItem` blocks (lines 4, 426, 434). They are
+  **inert** — a declaration with no definition and, per this corpus, **zero callers** — so they
+  break nothing. They were left because `Include/frame` is **shared with PLG and TAWK**, whose
+  builds cannot be tested from here, and because that file is a bear-trap #16 hand-sync target
+  where *this corpus itself* found an anchored grep missing 26 of 33 declarations. **Removing them
+  is a separate, cross-project act needing a build of the other two projects.**
+
+- **text (as raised)**: the near-collision was real, and it already produced false positives in
+  this very census
 
 - **text**: **Two different classes, one letter apart, both live in `Frame/`.**
   - `Stak` (`.twk`, 147 lines) — the resizing `void**` stack, **165 TRACKED references**,
@@ -593,7 +613,23 @@ the same day and executed by Clod, since it mutates the repo the minion only rea
   `ls -la /Users/anthony/Dropbox/data/InProcess/Include/frame` → resolves. 2026-08-03.
 - **asOf**: 2026-08-03
 
-### CLAIM SUP-19 — `Frame/Buffer.rvsd` is an unreviewed alternate revision of the TASK 2 headliner
+### CLAIM SUP-19 — `Frame/Buffer.rvsd` — ✅ **RULED SPENT AND DELETED 2026-08-03**
+
+- ✅ **RULING (Tony, 2026-08-03):** *"I make those files and forget them after incorporating
+  whatever I wanted to incorporate."* A **spent temporary**, not a live alternate. **Deleted**
+  (`Frame/Buffer.rvsd`), along with `Frame/Stack.C` and `Frame/Stack.h` under the same word.
+
+  **No tarball — deliberately, and the ruling permits it** (*"tarball optional at Clod's
+  discretion"*). The file was **tracked** as of the floor snapshot, so git is a complete copy:
+  `git -C ~/data/support show 690dc59:Frame/Buffer.rvsd`. Attic-ing something *ruled spent* would
+  contradict the very rule the ruling established — **attic is for uncertain, not for spent.**
+
+  ⚠ **THIS UNBLOCKS TASK 2 AND WAS HALF THE POINT:** with `.rvsd` ruled spent, **the Buffer base
+  TASK 2 builds on is unambiguous — what is in the tree is the truth.** This claim was the open
+  question sitting directly in TASK 2's path; it is now closed rather than carried.
+
+- **text (as raised)**: `Frame/Buffer.rvsd` was an unreviewed alternate revision of the TASK 2
+  headliner
 
 - **text**: `Frame/Buffer.rvsd` (10,370 bytes, dated 2026-05-08) was **untracked** until
   the TASK 0 snapshot. It is a substantially reworked `Buffer.twk`: `diff Buffer.twk
