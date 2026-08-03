@@ -508,12 +508,41 @@ prose. Where a count is *not* trustworthy, the claim says so rather than quoting
   `Include/frame`. 2026-08-03.
 - **asOf**: 2026-08-03
 
-### CLAIM SUP-17 — `Frame/BeforeRefactor/` is an exact mirror of the entire census unit
+### CLAIM SUP-17 — `Frame/BeforeRefactor/` was an exact mirror of the entire census unit — ✅ **RULED AND ARCHIVED 2026-08-03**
 
-*(the charter's one permitted claim on this directory — recording the ambiguity, not resolving it)*
+*(raised by this minion as the charter's one permitted claim on the directory; ruled by Tony
+the same day and executed by Clod, since it mutates the repo the minion only reads)*
 
-- **text**: It exists, it is **not gitignored** (now committed at the floor SHA), and it
-  awaits Tony's ruling on whether it is archaeology like `Aside/` or live.
+- ✅ **RULING (Tony, 2026-08-03): archaeology going stale. Tarred, stashed, deleted.**
+
+  ```
+  ~/data/attic/support-BeforeRefactor-b9aae1a-2026-08-03.tar.gz          36058 bytes
+  ~/data/attic/support-BeforeRefactor-b9aae1a-2026-08-03.MANIFEST.txt    24 files, sha256 each
+  ```
+
+  **Stash is `~/data/attic/` — deliberately OUTSIDE the support repo**, so the tarball is
+  not a binary blob in git and **cannot be re-censused**. `~/data` symlinks to
+  `Dropbox/data`, so it is backed up.
+
+  **Cut against git history:** source commit `b9aae1a` recorded in the tarball name *and*
+  in the manifest, along with the floor SHA `690dc59` (content byte-identical in both —
+  the corpus commit did not touch it). **All 24 files were tracked at deletion, so git is
+  still a full second copy**; the tarball is convenience, not the only one. Recovery
+  commands are in the manifest.
+
+  **Verified before deleting** — the tarball was extracted to a scratch dir, `diff -r`
+  against the original reported **identical**, and all **24 manifest hashes verified
+  against the extracted copy** (not against the original, which would have proved
+  nothing). *An archive nobody extracted is a claim, not a backup.*
+
+  ✅ **The operational consequence below is now CLOSED BY CONSTRUCTION**, which was the
+  point of the ruling: `find ~/data/support -name 'Buffer.twk'` returns **1**, not 2. A
+  future census cannot silently double, because there is nothing left to double against —
+  the `grep -v '/Frame/BeforeRefactor/'` filters in this corpus are now belt-and-braces
+  rather than load-bearing.
+
+- **text (as raised)**: It existed, was **not gitignored** (committed at the floor SHA), and
+  awaited Tony's ruling on whether it was archaeology like `Aside/` or live.
 
   ⚠ **It is 24 files, not the 5 the charter's margin note describes.** It holds a
   **name-for-name copy of all 21 census `.twk`** — `diff <(ls BeforeRefactor/*.twk) <(ls
@@ -529,8 +558,11 @@ prose. Where a count is *not* trustworthy, the claim says so rather than quoting
   census must do the same. A doubled count here would read as healthy usage.
 
   Not resolved by this minion. Flagged to Tony (`ipc/support-to-clod.md` SEQ 1, Q2) with
-  the note that the ruling covers 5x more material than it appeared to.
-- **confidence**: `inferred`
+  the note that the ruling covers 5x more material than it appeared to. **That flag is what
+  produced the ruling the same day** — and the "5x more material" line is why it was ruled
+  rather than deferred.
+- **confidence**: `verified` (the ruling and the archive were run; the mirror measurement
+  that prompted them remains `inferred`, being a set of `ls`/`diff` reads)
 - **provenance**: `ls Frame/BeforeRefactor/*.twk | wc -l` → 21; `ls *.rtn | wc -l` → 3;
   `ls | wc -l` → 24; `diff <(ls BeforeRefactor/*.twk|xargs -n1 basename) <(ls Frame/*.twk|xargs -n1 basename)`
   → no differences. Dirty count from `git status --porcelain` before the TASK 0 commit.
