@@ -12,8 +12,8 @@ domain     : ~/data/support — the shared C++/TAWK support classes consumed by
 lastBaked  : 2026-08-03   (round 2 — TASK 2 PART A: Buffer compress/decompress)
 floor      : ~/data/support @ 690dc59ce36f41b86d7f88865f83d58a4b4dd642
              (round 1's census floor — SUP-1..SUP-27 still key to it)
-round 2    : ~/data/support @ 1f9f9bf  (the tree round 2 started from, after
-             Tony's BeforeRefactor and spent-temporaries rulings landed)
+round 2    : started from ~/data/support @ 1f9f9bf (after Tony's BeforeRefactor
+             and spent-temporaries rulings landed); PART A landed at 31d611b
 ```
 
 ⚠ **ROUND 2 IS THE FIRST ROUND THAT CHANGED SOURCE.** SUP-1..SUP-27 are recon and key
