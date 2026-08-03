@@ -29,6 +29,8 @@ void appendLong(long l, char *format, int width);
 void appendString(char *text, char *format, int width);
 void backupToMark();
 int closeFile();
+int compress();
+int decompress();
 void deleteFromBuffer(int count);
 void extend(int len);
 int findInBuffer(char *needle);

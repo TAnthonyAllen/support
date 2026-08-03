@@ -214,6 +214,310 @@ int	success;
 }
 
 /*****************************************************************************
+    compress -- replace the buffer content with a self-describing, printable,
+    NUL-free encoding of exactly the same bytes. decompress is its inverse.
+
+    WHY PRINTABLE AND NOT RAW BINARY. Buffer is a string buffer: string(),
+    toString(), tail() and appendString all assume the content carries no
+    embedded zero byte, so a raw binary payload would leave the object in a
+    state where its own accessors lie about it. The encoded form uses only
+    A-Z a-z 0-9 - _ for its payload and digits and colons for its header, so
+    it survives every Buffer accessor, every text envelope, and a URL query,
+    with no escaping anywhere.
+
+    WIRE FORM   BZ1:<mode>:<rawLen>:<payLen>:<payload>
+        mode        z = LZSS packed, s = stored verbatim when packing lost
+        rawLen      byte count of the ORIGINAL content
+        payLen      byte count of the payload BEFORE armour
+        payload     URL-safe base64, alphabet A-Z a-z 0-9 - _ , unpadded
+
+    Reads start..current verbatim, so an embedded zero byte round trips.
+    Clears any mark. Returns 1 on success, 0 with a message on failure.
+*****************************************************************************/
+int compress()
+{
+char    b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+String  raw,
+        packed,
+        armour,
+        payload,
+        header;
+int     *head,
+        *prev;
+int     rawLen  = length(),
+        packedLen,
+        payLen,
+        armourLen,
+        at,
+        outAt,
+        flagAt,
+        flagBit,
+        winStart,
+        maxRun,
+        bestRun,
+        bestOff,
+        probe,
+        cand,
+        run,
+        code,
+        rest,
+        trio,
+        hash,
+        i;
+char    mode;
+
+    if rawLen < 0   rawLen = 0;
+    raw = (String)malloc(rawLen + 2);
+    if rawLen   memcpy(raw,start,(size_t)rawLen);
+    raw[rawLen] = 0;
+
+    packed  = (String)malloc(rawLen + rawLen / 8 + 32);
+    head    = (int*)malloc(4096 * sizeof(int));
+    prev    = (int*)malloc((rawLen + 2) * sizeof(int));
+    for ( i = 0; i < 4096; i++ )
+        head[i] = -1;
+
+    at      = 0;
+    outAt   = 0;
+    flagAt  = 0;
+    flagBit = 8;
+    while at < rawLen {
+        if flagBit == 8 {
+            flagAt          = outAt;
+            packed[outAt++] = 0;
+            flagBit         = 0; }
+        bestRun     = 0;
+        bestOff     = 0;
+        maxRun      = rawLen - at;
+        if maxRun > 18  maxRun = 18;
+        winStart    = at - 4096;
+        if winStart < 0 winStart = 0;
+        if maxRun >= 3 {
+            hash    = ((raw[at] & 0xFF) << 4) ^ ((raw[at + 1] & 0xFF) << 2) ^ (raw[at + 2] & 0xFF);
+            hash   &= 4095;
+            cand    = head[hash];
+            probe   = 0;
+            while cand >= winStart && probe < 64 {
+                run = 0;
+                while run < maxRun && raw[cand + run] == raw[at + run]
+                    run++;
+                if run > bestRun {
+                    bestRun = run;
+                    bestOff = at - cand; }
+                if bestRun >= maxRun    break;
+                cand    = prev[cand];
+                probe++; }}
+        if bestRun >= 3 {
+            code            = ((bestOff - 1) << 4) | (bestRun - 3);
+            packed[outAt++] = (char)((code >> 8) & 0xFF);
+            packed[outAt++] = (char)(code & 0xFF);
+            run             = bestRun; }
+        else {
+            packed[flagAt]  = (char)((packed[flagAt] & 0xFF) | (1 << flagBit));
+            packed[outAt++] = raw[at];
+            run             = 1; }
+        i = 0;
+        while i < run {
+            if at + i + 2 < rawLen {
+                hash        = ((raw[at + i] & 0xFF) << 4) ^ ((raw[at + i + 1] & 0xFF) << 2) ^ (raw[at + i + 2] & 0xFF);
+                hash       &= 4095;
+                prev[at + i]  = head[hash];
+                head[hash]    = at + i; }
+            i++; }
+        at      += run;
+        flagBit++; }
+    packedLen = outAt;
+
+    if packedLen < rawLen {
+        mode    = 'z';
+        payload = packed;
+        payLen  = packedLen; }
+    else {
+        mode    = 's';
+        payload = raw;
+        payLen  = rawLen; }
+
+    rest        = payLen % 3;
+    armourLen   = (payLen / 3) * 4;
+    if rest     armourLen += rest + 1;
+    armour      = (String)malloc(armourLen + 8);
+    i           = 0;
+    outAt       = 0;
+    while i + 2 < payLen {
+        trio            = ((payload[i] & 0xFF) << 16) | ((payload[i + 1] & 0xFF) << 8) | (payload[i + 2] & 0xFF);
+        armour[outAt++] = b64[(trio >> 18) & 63];
+        armour[outAt++] = b64[(trio >> 12) & 63];
+        armour[outAt++] = b64[(trio >> 6) & 63];
+        armour[outAt++] = b64[trio & 63];
+        i += 3; }
+    if rest == 1 {
+        trio            = (payload[i] & 0xFF) << 16;
+        armour[outAt++] = b64[(trio >> 18) & 63];
+        armour[outAt++] = b64[(trio >> 12) & 63]; }
+    or rest == 2 {
+        trio            = ((payload[i] & 0xFF) << 16) | ((payload[i + 1] & 0xFF) << 8);
+        armour[outAt++] = b64[(trio >> 18) & 63];
+        armour[outAt++] = b64[(trio >> 12) & 63];
+        armour[outAt++] = b64[(trio >> 6) & 63]; }
+    armour[outAt] = 0;
+
+    header = (String)malloc(64);
+    sprintf(header,"BZ1:%c:%d:%d:",mode,rawLen,payLen);
+    reset();
+    markIsSet = false;
+    appendString(header,0,0);
+    if armourLen    appendString(armour,0,0);
+
+    free(raw);
+    free(packed);
+    free(armour);
+    free(header);
+    free(head);
+    free(prev);
+    return true;
+}
+
+/*****************************************************************************
+    decompress -- exact inverse of compress. Parses the BZ1 header, un-armours
+    the payload, unpacks it, and replaces the buffer content with the original
+    bytes, verbatim, including any embedded zero byte.
+
+    Refuses anything that is not a BZ1 stream rather than guessing, so calling
+    it on ordinary content is a diagnosed no-op and not a corruption. Clears
+    any mark. Returns 1 on success, 0 with a message on failure.
+*****************************************************************************/
+int decompress()
+{
+String  scan,
+        packed,
+        raw;
+int     rawLen,
+        payLen,
+        outAt,
+        bits,
+        nbits,
+        digit,
+        at,
+        from,
+        flags,
+        flagBit,
+        code,
+        off,
+        run,
+        ok,
+        i;
+char    mode,
+        c;
+
+    if length() < 10 || strncmp(start,"BZ1:",(size_t)4) {
+        cerr "Buffer decompress: content is not a BZ1 stream":;
+        return false; }
+    scan    = start + 4;
+    mode    = *scan++;
+    if mode != 'z' && mode != 's' {
+        cerr "Buffer decompress: unknown mode":;
+        return false; }
+    if *scan++ != ':' {
+        cerr "Buffer decompress: malformed header at mode":;
+        return false; }
+    rawLen  = 0;
+    while *scan >= '0' && *scan <= '9' {
+        rawLen = rawLen * 10 + (*scan - '0');
+        scan++; }
+    if *scan++ != ':' {
+        cerr "Buffer decompress: malformed header at rawLen":;
+        return false; }
+    payLen  = 0;
+    while *scan >= '0' && *scan <= '9' {
+        payLen = payLen * 10 + (*scan - '0');
+        scan++; }
+    if *scan++ != ':' {
+        cerr "Buffer decompress: malformed header at payLen":;
+        return false; }
+    if rawLen < 0 || payLen < 0 {
+        cerr "Buffer decompress: header length out of range":;
+        return false; }
+
+    packed  = (String)malloc(payLen + 8);
+    outAt   = 0;
+    bits    = 0;
+    nbits   = 0;
+    ok      = 1;
+    while scan < current && ok {
+        c = *scan++;
+        if c >= 'A' && c <= 'Z'     digit = c - 'A';
+        or c >= 'a' && c <= 'z'     digit = c - 'a' + 26;
+        or c >= '0' && c <= '9'     digit = c - '0' + 52;
+        or c == '-'                 digit = 62;
+        or c == '_'                 digit = 63;
+        else {
+            cerr "Buffer decompress: bad payload character":;
+            ok = 0; }
+        if ok {
+            bits    = ((bits << 6) | digit) & 0xFFFFFF;
+            nbits  += 6;
+            if nbits >= 8 {
+                nbits -= 8;
+                if outAt < payLen   packed[outAt] = (char)((bits >> nbits) & 0xFF);
+                outAt++; }}}
+    if ok && outAt != payLen {
+        cerr "Buffer decompress: payload length mismatch":;
+        ok = 0; }
+    if !ok {
+        free(packed);
+        return false; }
+
+    raw     = (String)malloc(rawLen + 2);
+    if mode == 's' {
+        if payLen != rawLen ok = 0;
+        or rawLen           memcpy(raw,packed,(size_t)rawLen); }
+    else {
+        at      = 0;
+        i       = 0;
+        flags   = 0;
+        flagBit = 8;
+        while at < rawLen && ok {
+            if flagBit == 8 {
+                if i >= payLen  ok = 0;
+                else {
+                    flags   = packed[i++] & 0xFF;
+                    flagBit = 0; }}
+            if ok {
+                if ( flags & (1 << flagBit) ) {
+                    if i >= payLen  ok = 0;
+                    else            raw[at++] = packed[i++]; }
+                else {
+                    if i + 1 >= payLen  ok = 0;
+                    else {
+                        code    = ((packed[i] & 0xFF) << 8) | (packed[i + 1] & 0xFF);
+                        i      += 2;
+                        off     = (code >> 4) + 1;
+                        run     = (code & 15) + 3;
+                        if off > at || at + run > rawLen    ok = 0;
+                        else {
+                            from = at - off;
+                            while run-- > 0
+                                raw[at++] = raw[from++]; }}}
+                flagBit++; }}}
+    if !ok {
+        cerr "Buffer decompress: corrupt payload":;
+        free(packed);
+        free(raw);
+        return false; }
+
+    reset();
+    markIsSet = false;
+    extend(rawLen + 2);
+    if rawLen   memcpy(start,raw,(size_t)rawLen);
+    current     = start + rawLen;
+    *current    = 0;
+    roomLeft    = (int)(end - current);
+    free(packed);
+    free(raw);
+    return true;
+}
+
+/*****************************************************************************
     Delete number of characters from buffer. When markIsSet, deletes count
     chars starting at mark (left-shifts content after mark left by count);
     mark stays at the same absolute position so that what was at mark+count

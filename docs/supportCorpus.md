@@ -9,9 +9,18 @@ minion     : Support Minion
 domain     : ~/data/support — the shared C++/TAWK support classes consumed by
              PLG, TAWK and Incant. Census unit is the 21 Frame/*.twk plus the
              two C-only entries BaseEntry.C and Stack.C.
-lastBaked  : 2026-08-03   (round 1 — recon only, TASK 0 + TASK 1)
+lastBaked  : 2026-08-03   (round 2 — TASK 2 PART A: Buffer compress/decompress)
 floor      : ~/data/support @ 690dc59ce36f41b86d7f88865f83d58a4b4dd642
+             (round 1's census floor — SUP-1..SUP-27 still key to it)
+round 2    : ~/data/support @ 1f9f9bf  (the tree round 2 started from, after
+             Tony's BeforeRefactor and spent-temporaries rulings landed)
 ```
+
+⚠ **ROUND 2 IS THE FIRST ROUND THAT CHANGED SOURCE.** SUP-1..SUP-27 are recon and key
+to the round-1 floor. SUP-28 onward describe an **edit** to `Frame/Buffer.twk` and key to
+round 2's commit. The distinction matters because round 1's claims were graded `inferred`
+almost throughout, and round 2's are the corpus's first `verified` claims *about the code*
+rather than about the process — they rest on an observed run, not a grep.
 
 **EVERY CLAIM BELOW KEYS TO THAT FLOOR SHA.** It is the TASK 0 snapshot: the working
 tree committed verbatim, content marked UNREVIEWED, no edits in the commit. An `asOf`
@@ -846,6 +855,219 @@ rule 3, and this census produced a live example of it rather than a hypothetical
 
 ---
 
+# ROUND 2 — TASK 2 PART A: BUFFER COMPRESS / DECOMPRESS
+
+*The first round that changed source. Everything below rests on an observed run of
+`bufferPop/bufferPop.sh`, not on a grep, which is why it carries this corpus' first
+`verified` claims about behaviour.*
+
+### CLAIM SUP-28 — `compress` / `decompress` are a self-inverse pair on Buffer, POP'd in isolation
+
+- **text**: `Buffer::compress()` and `Buffer::decompress()` land as **two new methods and
+  nothing else** — no new ivar, no bitfield shift, so the `groups.ext` + `tokall` toll the
+  charter warns about is **not** owed. The `.h` diff is exactly two lines:
+  `int compress();` and `int decompress();`. Buffer's field list is byte-identical before
+  and after, which is what makes the tokenizer's blast path (`shorten` → `testContainer`)
+  untouched by construction rather than by inspection.
+
+  The pair round-trips **byte-identically** on all eight fixtures, including:
+
+  | fixture | bytes | mode | compressed | note |
+  |---|---|---|---|---|
+  | `empty` | 0 | s | 10 | the charter's empty case → `BZ1:s:0:0:` |
+  | `one` | 1 | s | 12 | one-byte edge |
+  | `hello` | 5 | s | 17 | header dominates |
+  | `edge` | 19 | z | 17 | one past the 18-byte max match |
+  | `bytes` | 256 | s | 356 | **all 256 byte values, so the zero byte head on** |
+  | `text` | 2 048 | z | 398 | 19% |
+  | `random` | 65 536 | s | 87 400 | LCG stream, incompressible |
+  | `large` | 262 144 | z | 46 005 | the charter's large case, 17% |
+
+  ⚠ **The `bytes` row is the load-bearing one and it is not decoration.** `length()` is
+  pointer arithmetic, so a Buffer *can* hold a zero byte, but no Buffer accessor can put
+  one there (`appendChar` rejects `c == 0`) — and `getFile` (`Groups/Commands.rtn:236`)
+  reads with `read()` and sets `current = start + length`, so **a Buffer loaded from a file
+  can carry any byte at all**. A pair that round-tripped only NUL-free content would pass
+  every string-shaped fixture and lose data on the first binary file the registry archives.
+  The fixture writes the bytes through direct field assignment for exactly that reason: the
+  byte-exactness claim is worthless if the fixture cannot express a byte the API cannot.
+
+  Also asserted, by value: `decompress` on non-BZ1 content **refuses and changes nothing**
+  (returns 0, content intact) rather than guessing; both halves clear the mark (it points
+  into content that no longer exists); and the pair **composes** — compress twice,
+  decompress twice, original bytes back.
+- **confidence**: `verified` — 66 checks, exit 0, output captured.
+- **provenance**: `sh ~/data/support/bufferPop/bufferPop.sh` → `bufferPOP PASSED -- 66
+  checks, 0 failures`, exit status taken directly from the harness (not through a pipe).
+  `.h` diff: `diff Buffer.h.before Frame/Buffer.h` → `31a32,33 > int compress(); > int
+  decompress();` and nothing else. 2026-08-03.
+- **asOf**: 2026-08-03
+
+### CLAIM SUP-29 — the encoded form needs no escaping in any envelope, and that is the property TASK 2 PART B rests on
+
+- **text**: The wire form is
+
+  ```
+  BZ1:<mode>:<rawLen>:<payLen>:<payload>
+      mode      z = LZSS packed (4096 window, 3..18 match), s = stored verbatim
+      rawLen    byte count of the ORIGINAL content
+      payLen    byte count of the payload BEFORE armour
+      payload   URL-safe base64, alphabet A-Z a-z 0-9 - _ , unpadded
+  ```
+
+  so **the entire compressed form draws only from `A-Z a-z 0-9 : - _`** — no NUL, no
+  newline, no space, no quote, no backslash, no `/`, no `+`, no `=`. The POP asserts this
+  per fixture (`<tag>.alphabet = 1`) rather than assuming it.
+
+  ⚠ **This is a decision, not a happy accident, and the reason is Buffer itself.**
+  `string()`, `toString()`, `tail()` and `appendString` all assume no embedded zero byte.
+  A raw-binary compressed payload would leave the object in a state where **its own
+  accessors lie about it** — the class would still compile, still link, and quietly
+  truncate at the first NUL. Armouring costs 4/3 on the payload and buys a compressed
+  Buffer that is still a well-formed Buffer.
+
+  **The consequence for PART B**: a compressed buffer is a **single unquoted word**. Every
+  format question that would otherwise have to be answered — how to quote, how to escape a
+  newline inside a file's contents, what to do about a `"` in the source being archived —
+  **does not arise**. That is why the format proposal (channel SEQ 2) is short.
+
+  ⚠ **The honest cost, stated as a ceiling and not hidden**: stored mode still armours, so
+  **incompressible input EXPANDS** — `random` 65 536 → 87 400 (133%), `bytes` 256 → 356
+  (139%), `hello` 5 → 17 (340%). The guarantee is *"never worse than 4/3 plus a ~12-byte
+  header"*, not *"smaller"*. Text is where it pays: 17–19%. The `mode` character exists so
+  a third mode (escape-only, for incompressible **text**, ~1.02x) can be added later
+  without a format break; it is not built.
+- **confidence**: `verified`
+- **provenance**: the `<tag>.alphabet` and `<tag>.mode` rows of the run above, plus the
+  printed `<tag>.pct` table. `Frame/Buffer.twk` `compress`/`decompress` read directly.
+  2026-08-03.
+- **asOf**: 2026-08-03
+
+### CLAIM SUP-30 — ⚠ tok MANGLES AN UNINITIALISED LOCAL ARRAY, and the result does not compile
+
+- **text**: In a `.twk` method body, `char dec[256];` — a local array with **no
+  initialiser** — is generated as
+
+  ```c
+  char 	dec[] = 0;
+  ```
+
+  which is not valid C++ and fails at the compile step, not at `tok` (which exits **0**).
+  An array **with** an initialiser is fine, except that **tok also drops the declared
+  size**: `char tbl[65] = "ABC…"` becomes `char tbl[] = "ABC…"`. Harmless for a string
+  initialiser, and would not be harmless for a partially-initialised numeric table.
+
+  Same family as bear-trap #24 (tok source is not incant source and the failure surfaces
+  elsewhere), except this one surfaces in the *compiler* rather than in a wiped extern
+  block. It is cheap to avoid once known: `Frame/StringRoutines.twk:535`'s `urlDecode`
+  writes all 256 entries out longhand, which is the existing workaround in the tree, and
+  the alternative taken here was to **drop the table entirely** and decode base64
+  arithmetically (`c - 'A'`, `c - 'a' + 26`, …), which needs no array at all.
+
+  ⚠ **It was found by a throwaway probe, not by the failing build**, and that is the
+  transferable part. A 40-line `Probe.twk` exercising every construct the real method was
+  going to need — `int *` locals, `break`, `continue`, `1 << n` inside an `if`, an
+  initialised char array, an uninitialised one — cost two minutes and turned what would
+  have been an opaque compile error inside a 300-line method into one obvious line.
+  **Probe the generator before writing the code, not after.**
+- **confidence**: `verified` — observed in a run of `tok Probe.twk`, output read.
+- **provenance**: probe file with `char tbl[65] = "…"; char dec[256];` → `tok Probe.twk`
+  exit 0, generated `Probe.C` containing `char 	tbl[] = "…"` and `char 	dec[] = 0;`.
+  2026-08-03.
+- **asOf**: 2026-08-03
+
+### CLAIM SUP-31 — the Incant fleet is unmoved, and the claim is non-vacuous because the binary was REBUILT
+
+- **text**: `jitLadder/ladder.sh` → **83 checks, exit 0**. `genLadder/pop.sh` → **32 green,
+  exit 1** (the two documented deliberately-unpinned reds, `census.target` and `oneTest
+  baseline`). Diffing the before and after logs, **the only line that differs in either is
+  RULE H1's own binary echo** — every check row is byte-identical.
+
+  ⚠ **The rebuild is the whole point of the claim.** `~/bin/incant` is a prebuilt binary;
+  the Groups target compiles `Frame/Buffer.C` (6 `Buffer.C in Sources` entries in
+  `TOK.xcodeproj`). Running the fleet against the **old** binary would have produced the
+  same two green results while proving *nothing at all* about a Buffer change — a perfect
+  RULE H1 failure, and one that reports as success. So incant was rebuilt first
+  (`xcodebuild -project TOK.xcodeproj -scheme Groups -configuration Debug`, **BUILD
+  SUCCEEDED**, 0 errors), the new symbols confirmed present with `nm -C` (`Buffer::compress()`,
+  `Buffer::decompress()`), and *then* the fleet was run.
+
+  **A fleet check that cannot fail is not a fleet check.** The binary moved
+  (1 218 816 → 1 219 088 bytes, sha `fda3fc0…` → `fbbf85b…`) and every row held.
+- **confidence**: `verified`
+- **provenance**: `xcodebuild … build` exit 0, `grep -c 'error:'` → 0;
+  `nm -C "$(readlink ~/bin/incant)" | grep 'Buffer::compress\|Buffer::decompress'` → both `T`;
+  `sh jitLadder/ladder.sh` exit 0; `sh genLadder/pop.sh` exit 1 with `grep -c '^  ok'` → 32;
+  `diff` of the before/after logs of both → one line each, the H1 binary echo.
+  Groups working tree byte-identical before and after (`git status --porcelain` diff empty).
+  2026-08-03.
+- **asOf**: 2026-08-03
+
+### CLAIM SUP-32 — `bufferPop` is a harness and carries H1–H5, including a demonstrated red
+
+- **text**: `~/data/support/bufferPop/` holds `bufferPop.C` (measures) and `bufferPop.sh`
+  (asserts). The split is deliberate: the driver prints every quantity unconditionally as a
+  `VAL name = value` line and asserts nothing, so **no check can pass by a line going
+  missing** (H4). The harness echoes its sources and its binary (H1) and additionally
+  **retoks `Buffer.twk` into a scratch directory and diffs**, so a `Frame/Buffer.C` that
+  has drifted from its `.twk` is *reported* rather than silently measured. It caps every
+  run at `POPCAP` (default 90s) with sleep-and-kill, mapping 137 → 124 and reporting a
+  timeout **by name, never as a diff** (H5). It checks the driver's sentinel **first and by
+  name** before reading any other line (H2). Ratios are asserted as **bounds**, never as
+  byte counts, because an exact count would go red every time the packer is tuned and say
+  nothing about whether the pair is still an inverse (H3).
+
+  ⚠ **The instrument was proven able to go RED, in three ways, before it was trusted.**
+  A harness that has only ever been green is not evidence:
+  1. sentinel removed → `FAIL SENTINEL ABSENT`, nothing below it read, exit 1;
+  2. byte-exactness broken → 8 `identical = 0` rows named individually, exit 1;
+  3. driver made to hang with `POPCAP=3` → `FAIL TIMEOUT`, reported by name, exit 1.
+
+  The driver was restored byte-identically after each (sha `47aae48…` before and after).
+  ⚠ And one of those three runs re-taught the standing rule the hard way: the first
+  negative was read through `| tail -8`, which reported `exit=0` — **the exit status of
+  `tail`**. Every subsequent status was taken directly.
+- **confidence**: `verified`
+- **provenance**: the three negative runs above, each with its harness exit status taken
+  directly; `shasum bufferPop.C` before and after → identical; final green run
+  `bufferPOP PASSED -- 66 checks, 0 failures`, exit 0. 2026-08-03.
+- **asOf**: 2026-08-03
+
+### OPEN SUP-33 — the registry wire format is proposed and NOT ruled; PART B did not start
+
+- **the question**: what format does the registry print action render, such that it reads
+  back in?
+- **established**: the charter requires the ruling *before* implementation, so nothing was
+  built. The proposal is in `Groups/ipc/support-to-clod.md` **SEQ 2**. Two premises for it
+  were checked and both hold: `getFile` (`Groups/Commands.rtn:236`) is a **pure byte read**
+  — `pushInput` was removed from it (`Groups/TODO.md:591`), so it no longer parses what it
+  loads — and a compressed buffer is a single unquoted word (SUP-29), which removes the
+  quoting and escaping questions entirely.
+- **not established**: the format itself, and the shape of the current incant print path
+  for a buffer field (deliberately not reconnoitred past the two premises above — that is
+  PART B work and would be running ahead of the ruling).
+- **blocks**: all of TASK 2 PART B, which is the load-bearing round-trip POP.
+- **cost**: one ruling from Tony.
+
+### OPEN SUP-34 — `Include/frame`'s `external Buffer` mirror does not declare the new pair
+
+- **the question**: when do `compress`/`decompress` get added to the TAWK-side mirror?
+- **established**: `Include/frame`'s `external Buffer` block (SUP-14, SUP-15) does **not**
+  list them. Nothing needs them yet: PART A is POP'd in isolation against `Buffer.C`
+  directly, and the incant build succeeded without them, because the `.h` is generated from
+  the `.twk` class body and the mirror only matters for **other** files calling the method.
+- **not established**: nothing. This is deliberately deferred work, named so it is not
+  discovered at PART B build time.
+- **blocks**: any incant or TAWK source calling `buf.compress()` — i.e. PART B.
+- **why it was NOT done now**: `Include/frame` is shared with PLG and TAWK, whose builds
+  cannot be tested from here, and it is a bear-trap #16 hand-sync target. The addition is
+  purely additive (two method declarations, no ivar, no layout change) and is expected to
+  be safe — but the round's blast radius was deliberately held to `Frame/Buffer.{twk,C,h}`
+  plus a new POP directory, on the same reasoning that left SUP-8's inert `external Stack`
+  blocks in place. **It is owed, and it is one edit.**
+
+---
+
 ## SOURCES
 
 - `~/data/support` @ **`690dc59ce36f41b86d7f88865f83d58a4b4dd642`** (TASK 0 floor
@@ -860,14 +1082,24 @@ rule 3, and this census produced a live example of it rather than a hypothetical
   and supplies the intent behind the SUP-11 strikethrough
 - `Groups/docs/kantCorpus.md` — for SUP-22 only
 
+**Round 2 additionally:**
+
+- `~/data/support/Frame/Buffer.{twk,C,h}` — **changed** this round (two new methods)
+- `~/data/support/bufferPop/{bufferPop.C,bufferPop.sh}` — **new** this round, the harness
+- `Groups/Commands.rtn:236` (`getFile`) and `Groups/TODO.md:591` — the two PART B premises
+- `Groups/jitLadder/ladder.sh`, `Groups/genLadder/pop.sh` — run, not modified
+- `InProcess/TOK/TOK.xcodeproj` — built (Groups scheme, Debug), not modified
+
 ## SCOUTS
 
 | id | mission | status | landed |
 |---|---|---|---|
 | round-1 | TASK 0 (floor snapshot) + TASK 1 (recon census) | absorbed | 2026-08-03 |
+| round-2 | TASK 2 **PART A** (Buffer compress/decompress + POP); PART B proposed, not built | absorbed | 2026-08-03 |
 
-*TASK 2 (Buffer compress + registry) and TASK 3 (Display) were **not** started — round 1
-was scoped to TASK 0 + TASK 1 only.*
+*TASK 2 **PART B** (the registry) is **proposed and gated** — the format ruling is owed by
+Tony before any of it is implemented (OPEN SUP-33, channel SEQ 2). TASK 3 (Display) has not
+been started.*
 
 ---
 
@@ -887,4 +1119,24 @@ Five things this round would tell its successor:
 5. **Four questions are parked** in `Groups/ipc/support-to-clod.md` SEQ 1 (scope,
    `BeforeRefactor`, querier, kant). Read Clod's reply in `ipc/clod-to-support.md` before
    assuming this corpus' scope choices were ratified — **they were recommended, not
-   approved.**
+   approved.** *(Round 2: Q1 ruled — **WIDE is authoritative**, and the read scope is
+   formally `~/data/support` plus all of InProcess. Q2 ruled and executed. Q3 answered: no
+   querier was owed in round 1; **round 2 built `bufferPop` instead, which is a harness and
+   carries H1–H5 in full (SUP-32)** — a corpus querier is still unbuilt. Q4 relayed.)*
+
+**Round 2 adds three, and the first one is the one that would have cost the most:**
+
+6. **A fleet check against a stale binary is not a fleet check.** `~/bin/incant` compiles
+   `Frame/Buffer.C`, so *any* change here needs `xcodebuild -project TOK.xcodeproj -scheme
+   Groups` **before** the ladders are run, or both ladders go green while proving nothing
+   (SUP-31). This is RULE H1 arriving in the support sandbox, where the "binary under test"
+   is two repositories away from the file being edited.
+7. **Probe the generator before writing the code.** A 40-line throwaway `.twk` exercising
+   every construct the real method needed found tok mangling an uninitialised local array
+   into `char dec[] = 0;` — two minutes, versus an opaque compile error inside a 300-line
+   method (SUP-30).
+8. **`Frame/Buffer.C` and `Frame/Buffer.h` reproduce byte-identically from
+   `Frame/Buffer.twk`** under a bare `tok Buffer.twk` run from `Frame/` — measured before
+   and after the edit, and `bufferPop.sh` now asserts it on every run. So for Buffer, the
+   `.twk` really is the source of truth and there is no hidden hand-edit. **Do not assume
+   this holds for the other 20 census files; nobody has checked.**
