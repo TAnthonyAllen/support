@@ -467,6 +467,8 @@ external GroupRules.h
     extern void         jitInlinePush(GroupItem action);
     extern void         jitInlinePop();
     extern void         jitPrintArm();
+    extern int          jitNodeInFlight();
+    extern void         jitPrintNode(GroupItem FormaT);
     extern void         jitPrintList(GroupItem ExpressioN,GroupItem FormaT);
     extern void         jitPrintOpen(GroupItem input);
     extern void         jitPrintProbe(GroupItem node,int phase);
