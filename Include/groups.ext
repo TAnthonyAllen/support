@@ -459,6 +459,11 @@ external GroupRules.h
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitCompare(GroupItem argument,GroupItem target,int op);
+    extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
+    extern Buffer       jitPrintBegin(GroupItem input);
+    extern void         jitPrintOpen(GroupItem input);
+    extern void         jitPrintItem(GroupItem token,GroupItem FormaT,int hasValue);
+    extern void         jitPrintClose(GroupItem input);
     extern int          jitEmitContinue();
     extern void         jitEmitIterate(GroupItem input);
     extern GroupItem    jitFieldMethod(GroupItem field);
