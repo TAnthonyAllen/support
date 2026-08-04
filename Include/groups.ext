@@ -463,6 +463,7 @@ external GroupRules.h
     extern Buffer       jitPrintBegin(GroupItem input);
     extern int          jitEmitBareRead(GroupItem token);
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
+    extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
     extern void         jitPrintArm();
     extern void         jitPrintList(GroupItem ExpressioN,GroupItem FormaT);
     extern void         jitPrintOpen(GroupItem input);
@@ -519,7 +520,7 @@ external GroupRules.h
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
     extern GroupItem    opCerr(GroupItem target,Buffer buffer);
     extern GroupItem    opCout(GroupItem target,Buffer buffer);
-    extern int          jitEmitSelfCall(GroupItem action);
+    extern int          jitEmitSelfCall(GroupItem argument,GroupItem action);
     extern GroupItem    arrondir(GroupItem field);
     extern GroupItem    locateManier();
     extern int          manyKant(GroupItem manier,GroupItem node);
