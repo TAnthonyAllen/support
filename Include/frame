@@ -63,6 +63,8 @@ String		file,
     void    appendLong(long l,String format,int width);
     void    backupToMark();
     int     closeFile();
+    int     compress();
+    int     decompress();
     void    deleteFromBuffer(int count);
     int     findInBuffer(String needle);
     String  getMarkedString();
