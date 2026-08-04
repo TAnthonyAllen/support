@@ -462,6 +462,7 @@ external GroupRules.h
     extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
     extern Buffer       jitPrintBegin(GroupItem input);
     extern void         jitPrintOpen(GroupItem input);
+    extern void         jitPrintProbe(GroupItem node,int phase);
     extern void         jitPrintItem(GroupItem token,GroupItem FormaT,int hasValue);
     extern void         jitPrintClose(GroupItem input);
     extern int          jitEmitContinue();
