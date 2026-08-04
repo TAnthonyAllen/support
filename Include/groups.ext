@@ -464,6 +464,8 @@ external GroupRules.h
     extern int          jitEmitBareRead(GroupItem token);
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
+    extern void         jitInlinePush(GroupItem action);
+    extern void         jitInlinePop();
     extern void         jitPrintArm();
     extern void         jitPrintList(GroupItem ExpressioN,GroupItem FormaT);
     extern void         jitPrintOpen(GroupItem input);
