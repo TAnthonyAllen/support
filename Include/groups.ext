@@ -344,6 +344,7 @@ external GroupRules
                 divertOutput,
                 falseResult,
                 inDENT,
+                labelNO,
                 lastREF,
                 lastStatement,
                 generator,
