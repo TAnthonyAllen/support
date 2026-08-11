@@ -493,6 +493,8 @@ external GroupRules.h
     extern void         modify(GroupItem field,String modifier);
     extern GroupItem    opAddAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opAND(GroupItem argument,GroupItem target);
+    extern int          truthOf(GroupItem field);
+    extern GroupItem    runShortCircuit(GroupItem field);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
     extern GroupItem    opCopyList(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
