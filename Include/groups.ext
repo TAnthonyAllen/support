@@ -704,6 +704,8 @@ external RuleStuff.h
     extern GroupItem     parseRuleMethod(GroupItem input);
     extern GroupItem     parseTermCount(GroupItem input);
     extern int           countRuleTerms(GroupItem rule);
+    extern int           kantDoor(GroupItem rule, GroupItem code);
+    extern int           kantDoored(GroupItem rule);
     extern int           unresolvedTerms(GroupItem rule);
     extern GroupItem     planTerm(GroupItem term, int index);
     extern GroupItem     planRule(GroupItem rule);
