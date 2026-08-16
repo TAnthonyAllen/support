@@ -51,7 +51,8 @@ external string.h local
 	int		strcat(String s1,String s2);
 	int		strcmp(String s1,String s2);
 	String	strcpy(String s1,String s2);
-	long    strlen(String s);
+    String	strdup(String s);
+    long    strlen(String s);
 	int		strncmp(String s1,String s2,int i);
 	String	strncpy(String s1,String s2,int i);
     String  strtok(String s1,String s2);

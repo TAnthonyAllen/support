@@ -552,8 +552,10 @@ external GroupRules.h
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
+    extern GroupItem    runRuleAction(GroupItem field);
     extern void         saveLocalFields(GroupItem action);
     extern int          setCompiledMethod(GroupItem block,String name);
+    extern GroupItem    setParse(GroupItem field);
     extern int          materialiseTerms(GroupItem rule);
     extern int          materialiseRegistry(GroupItem registry);
     extern GroupItem    iterBind(GroupItem iter, GroupItem container);
@@ -639,6 +641,7 @@ int         kount,
             termCount;
 RuleStuff   parentStuff;
 int         &testMatch(GroupItem);
+GroupItem   &actionMethod(GroupItem);
 GroupItem   &parseMethod(GroupItem);
 int         &jitMethod();
 boolean
