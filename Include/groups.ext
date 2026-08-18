@@ -49,6 +49,7 @@ union
     GroupItem       &gMethod(GroupItem);
     GroupItem       &gOp(GroupItem,GroupItem&);
     ;
+GroupItem       &gJitEmitter(GroupItem,GroupItem);
 union
     String          gText;
     void            *gPointer;
@@ -126,6 +127,7 @@ boolean bools {
         count				gCount
         group               gGroup
         item				gItem
+        jitEmitter          gJitEmitter
         method              gMethod
         number				gNumber
         object              gObject
@@ -274,6 +276,7 @@ boolean GroupOptions {
 	void			setNumber(double d);
     void            setObject(Object v);
     void            setOperat(void *m);
+    void            setJitEmitter(void *m);
 	void			setPointer(void *v);
     void            setRegex(PLGrgx v);
     void            setRStuff(RuleStuff stuff);
@@ -439,6 +442,7 @@ external GroupRules.h
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
+    extern GroupItem    compile(GroupItem field);
     extern GroupItem    cOPY(GroupItem field);
     extern GroupItem    copyOf(GroupItem grup);
     extern String       dataType(GroupItem input);
@@ -458,7 +462,19 @@ external GroupRules.h
     extern GroupItem    guard(GroupItem field);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
+    extern GroupItem    showBody(GroupItem field);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
+    extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitEQ(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitGE(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitGT(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitLE(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitLT(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitNE(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitSub(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitMul(GroupItem argument,GroupItem target);
+    extern GroupItem    jitEmitter(GroupItem input);
     extern GroupItem    jitEmitCompare(GroupItem argument,GroupItem target,int op);
     extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
     extern Buffer       jitPrintBegin(GroupItem input);
