@@ -115,7 +115,8 @@ boolean bools {
     negate
     recursive
     reversePrint
-    tokened } flags;
+    tokened
+    hasNewParse } flags;
 
     GroupBody();
     GroupBody(String s);
@@ -208,6 +209,7 @@ boolean GroupOptions {
     void            addRuleStuff();
 	GroupItem		addString(String n);
     void            append(GroupItem grup);
+    void            captureSpan(RuleStuff stuff);
     void            clear();
     void            clearData();
     void            clearList();
@@ -351,7 +353,9 @@ external GroupRules
                 lastREF,
                 lastStatement,
                 generator,
+                maxLimit,
                 printSPACE,
+                repeatLimit,
                 ruleSkipSet,
                 searchList,
                 setupFILE,
@@ -407,6 +411,8 @@ external GroupRules
 
 external GroupRules.h
 {
+    extern int          reportMaxLimit(GroupItem field);
+    extern int          reportRepeatLimit(GroupItem rule,int kounted,int limit);
     extern GroupItem    aCTionANYtoken(GroupItem input);
     extern GroupItem    aCTionBlocK(GroupItem input);
     extern GroupItem    aCTionBraced(GroupItem input);
@@ -463,6 +469,12 @@ external GroupRules.h
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    showBody(GroupItem field);
+    extern GroupItem    storeBody(GroupItem rule);
+    extern GroupItem    storedBody(GroupItem rule);
+    extern GroupItem    activateBody(GroupItem rule);
+    extern GroupItem    compileStored(GroupItem rule);
+    extern GroupItem    activateAll(GroupItem ignored);
+    extern GroupItem    bodyCensus(GroupItem ignored);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
@@ -653,6 +665,7 @@ GroupItem   label,
             rule;
 int         kount,
             max,
+            maxRepeat,
             min,
             termCount;
 RuleStuff   parentStuff;
@@ -703,6 +716,10 @@ external RuleStuff.h
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
     extern int          lit(GroupItem field, String str);
+    extern int          parkParse(GroupItem rule, String name);
+    extern GroupItem    fireNewParse(GroupItem rule);
+    extern int          litTo(GroupItem field, GroupItem into, String str, String slot);
+    extern GroupItem    ctProbe(GroupItem term);
     extern int          litOption(GroupItem field, GroupItem into, String str);
     extern int          inGuard(GroupItem field, String chars, char ch);
     extern GroupItem    leaveRule(GroupItem rule, GroupItem into, GroupItem label, String from, int ok);
