@@ -116,7 +116,8 @@ boolean bools {
     recursive
     reversePrint
     tokened
-    hasNewParse } flags;
+    hasNewParse
+    hasTraits } flags;
 
     GroupBody();
     GroupBody(String s);
