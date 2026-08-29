@@ -585,6 +585,7 @@ external GroupRules.h
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
     extern GroupItem    evictAction(GroupItem field);
+    extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
     extern GroupItem    runRuleAction(GroupItem field);
     extern void         saveLocalFields(GroupItem action);
     extern int          setCompiledMethod(GroupItem block,String name);
