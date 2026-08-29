@@ -567,6 +567,7 @@ external GroupRules.h
     extern GroupItem    opSetGroup(GroupItem argument,GroupItem target);
     extern GroupItem    opSetTag(GroupItem argument,GroupItem target);
     extern GroupItem    opString(GroupItem target,Buffer buffer);
+    extern GroupItem    parseRule(GroupItem field);
     extern void         printField(GroupItem field,String format,Buffer buffer);
     extern GroupItem    printToBuffer(GroupItem bufferField);
     extern GroupItem    processAction(GroupItem field);
