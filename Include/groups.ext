@@ -257,6 +257,8 @@ boolean GroupOptions {
     GroupItem       nextGroup(GroupItem grup);
 	GroupItem		nextMember(GroupItem current);
     GroupItem       definingRule();
+    void            establishFrame(GroupItem parentLabel);
+    GroupItem       frameParent(GroupItem holder);
     GroupItem       parse(RuleStuff pStuff);
     GroupItem       pop();
     void            prepend(GroupItem grup);
