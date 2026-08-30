@@ -531,6 +531,7 @@ external GroupRules.h
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
     extern GroupItem    opDivEQ(GroupItem result);
+    extern GroupItem    opDeref(GroupItem result);
     extern GroupItem    opDot(GroupItem argument,GroupItem target);
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
     extern GroupItem    opEnd(GroupItem argument,GroupItem target);
