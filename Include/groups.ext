@@ -243,6 +243,8 @@ boolean GroupOptions {
 	void			*getPointer();
     PLGrgx          getRegex();
     Stak            getStak();
+    RuleStuff       getRStuff();
+    RuleStuff       ensureRStuff();
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       insertGroup(GroupItem grup);
