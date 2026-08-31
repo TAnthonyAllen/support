@@ -237,6 +237,7 @@ boolean GroupOptions {
     int             getDataType();
     GroupItem       getGroup();
     PLGset          getGuard();
+    PLGset          ensureGuard();
 	PLGitem			getItem();
 	double			getNumber();
     Object          getObject();
