@@ -613,7 +613,6 @@ external GroupRules.h
     extern GroupItem    stopParsingInput(GroupItem input);
     extern GroupItem    testing(GroupItem item);
     extern GroupItem    tokenInSet(String input,PLGset endSet);
-    extern GroupItem    tokenize(GroupItem label);
     extern void         unMark(GroupItem bufField);
     extern GroupItem    unWrap(GroupItem result);
     extern GroupItem    wrapDot(GroupItem argument);
