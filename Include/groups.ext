@@ -530,7 +530,7 @@ external GroupRules.h
     extern int          truthOf(GroupItem field);
     extern GroupItem    runShortCircuit(GroupItem field);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
-    extern GroupItem    opCopyList(GroupItem argument,GroupItem target);
+    extern GroupItem    opAddPointer(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
     extern GroupItem    opDivEQ(GroupItem result);
