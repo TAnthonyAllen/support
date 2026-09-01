@@ -475,6 +475,7 @@ external GroupRules.h
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    showBody(GroupItem field);
+    extern GroupItem    addrOf(GroupItem field);
     extern GroupItem    storeBody(GroupItem rule);
     extern GroupItem    storedBody(GroupItem rule);
     extern GroupItem    activateBody(GroupItem rule);
