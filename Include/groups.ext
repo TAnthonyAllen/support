@@ -672,6 +672,7 @@ GroupItem   label,
             onFail,
             onGroup,
             parentLabel,
+            frameArg,
             sourceLine,
             rule;
 int         kount,
