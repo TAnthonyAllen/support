@@ -502,6 +502,7 @@ external GroupRules.h
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
     extern GroupItem    chanReport(GroupItem input);
+    extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    jitAssignNodeRT(GroupItem source,GroupItem target);
     extern GroupItem    jitDerefRT(GroupItem operand);
     extern int          jitEmitDeref(GroupItem operand);
