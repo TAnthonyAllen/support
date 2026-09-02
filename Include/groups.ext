@@ -501,6 +501,7 @@ external GroupRules.h
     extern int          jitEmitBareRead(GroupItem token);
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
+    extern GroupItem    chanReport(GroupItem input);
     extern GroupItem    jitDerefRT(GroupItem operand);
     extern int          jitEmitDeref(GroupItem operand);
     extern void         jitInlinePush(GroupItem action);
