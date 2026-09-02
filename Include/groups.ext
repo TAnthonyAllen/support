@@ -220,6 +220,7 @@ boolean GroupOptions {
     void            copyListTo(GroupItem grup);
     void            dispatch();
     GroupItem       dQ();
+    void            embedRule(GroupItem g);
     GroupItem       findAttribute(String name);
     GroupItem       findParent(String name);
     GroupItem       firstComponent(String name);
