@@ -503,6 +503,7 @@ external GroupRules.h
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
     extern GroupItem    chanReport(GroupItem input);
     extern int          assignFieldCore(GroupItem source,GroupItem target);
+    extern GroupItem    jitPrintNodeRT(GroupItem node,GroupItem FormaT,Buffer buffer);
     extern GroupItem    jitAssignNodeRT(GroupItem source,GroupItem target);
     extern GroupItem    jitDerefRT(GroupItem operand);
     extern int          jitEmitDeref(GroupItem operand);
