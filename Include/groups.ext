@@ -607,7 +607,6 @@ external GroupRules.h
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    rEGISTER(GroupItem item);
     extern GroupItem    resetField(GroupItem argument);
-    extern GroupItem    resolveList(GroupItem input);
     extern void         restoreLocalFields(GroupItem action);
     extern GroupItem    ruleMethod(GroupItem group);
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
