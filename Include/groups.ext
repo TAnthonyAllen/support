@@ -29,6 +29,24 @@ external Bytecode.h
     extern GroupItem    runStoreField(GroupItem instr);
 }
 
+external measure.h
+{
+    extern GroupItem    addrOf(GroupItem field);
+    extern int          auditMissingRules(GroupItem registry);
+    extern int          auditMissingTerms(GroupItem registry);
+    extern GroupItem    auditRStuff(GroupItem argument);
+    extern int          auditSpurious(GroupItem registry);
+    extern int          auditUnconsumed(GroupItem registry);
+    extern GroupItem    bodyCensus(GroupItem ignored);
+    extern GroupItem    canonOf(GroupItem argument);
+    extern GroupItem    evictAction(GroupItem field);
+    extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
+    extern int          labelMinters(GroupItem rule);
+    extern GroupItem    parseClassify(GroupItem field);
+    extern GroupItem    probeNode(GroupItem argument);
+    extern GroupItem    showBody(GroupItem field);
+}
+
 external GroupList
 {
 GroupItem       firstInList,
@@ -475,14 +493,11 @@ external GroupRules.h
     extern GroupItem    guard(GroupItem field);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
-    extern GroupItem    showBody(GroupItem field);
-    extern GroupItem    addrOf(GroupItem field);
     extern GroupItem    storeBody(GroupItem rule);
     extern GroupItem    storedBody(GroupItem rule);
     extern GroupItem    activateBody(GroupItem rule);
     extern GroupItem    compileStored(GroupItem rule);
     extern GroupItem    activateAll(GroupItem ignored);
-    extern GroupItem    bodyCensus(GroupItem ignored);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
@@ -598,8 +613,6 @@ external GroupRules.h
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
-    extern GroupItem    evictAction(GroupItem field);
-    extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
     extern GroupItem    runRuleAction(GroupItem field);
     extern void         saveLocalFields(GroupItem action);
     extern int          setCompiledMethod(GroupItem block,String name);
@@ -609,10 +622,6 @@ external GroupRules.h
     extern GroupItem    iterBind(GroupItem iter, GroupItem container);
     extern int          iterSpins(GroupItem iter, int reset);
     extern GroupItem    iterAdvance(GroupItem iter, int forward);
-    extern int          auditMissingRules(GroupItem registry);
-    extern int          auditMissingTerms(GroupItem registry);
-    extern int          auditSpurious(GroupItem registry);
-    extern GroupItem    auditRStuff(GroupItem argument);
     extern GroupItem    setInternalType(GroupItem grup);
     extern void         setLimits(GroupItem rule,GroupItem limits);
     extern GroupItem    setMark(GroupItem argument);
