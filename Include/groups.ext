@@ -39,6 +39,7 @@ external measure.h
     extern int          auditUnconsumed(GroupItem registry);
     extern GroupItem    bodyCensus(GroupItem ignored);
     extern GroupItem    canonOf(GroupItem argument);
+    extern GroupItem    chanReport(GroupItem input);
     extern GroupItem    evictAction(GroupItem field);
     extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
     extern int          labelMinters(GroupItem rule);
@@ -518,7 +519,6 @@ external GroupRules.h
     extern int          jitEmitBareRead(GroupItem token);
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
-    extern GroupItem    chanReport(GroupItem input);
     extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    jitPrintNodeRT(GroupItem node,GroupItem FormaT,Buffer buffer);
     extern GroupItem    jitAssignNodeRT(GroupItem source,GroupItem target);
