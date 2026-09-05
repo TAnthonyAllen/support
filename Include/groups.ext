@@ -525,7 +525,7 @@ external GroupRules.h
     extern GroupItem    jitDerefRT(GroupItem operand);
     extern int          jitEmitDeref(GroupItem operand);
     extern void         jitInlinePush(GroupItem action);
-    extern void         jitInlinePop();
+    extern void         jitInlinePop(GroupItem resultNode);
     extern void         jitPrintArm();
     extern int          jitNodeInFlight();
     extern void         jitPrintNode(GroupItem FormaT);
@@ -558,7 +558,7 @@ external GroupRules.h
     extern GroupItem    opAddPointer(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
-    extern GroupItem    opDivEQ(GroupItem result);
+    extern GroupItem    opDivEQ(GroupItem argument,GroupItem target);
     extern GroupItem    frameStak(GroupItem action);
     extern GroupItem    frameFind(GroupItem action);
     extern GroupItem    opDeref(GroupItem result);
