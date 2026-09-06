@@ -608,6 +608,7 @@ external GroupRules.h
     extern int          processCode(GroupItem field);
     extern GroupItem    processFlags(GroupItem input);
     extern GroupItem    quoted(GroupItem input);
+    extern GroupItem    refuse(GroupItem subject,String why);
     extern GroupItem    rEGISTER(GroupItem item);
     extern GroupItem    resetField(GroupItem argument);
     extern void         restoreLocalFields(GroupItem action);
