@@ -410,6 +410,7 @@ external GroupRules
                 stringBUFFER,
                 toBUFFER;
     boolean
+            compiling
             debugAllRules
             debugGuards
             defining
@@ -450,6 +451,7 @@ external GroupRules.h
     extern GroupItem    aCTionCodE(GroupItem rule);
     extern GroupItem    aCTionDEBUG(GroupItem input);
     extern GroupItem    aCTionDefinE(GroupItem input);
+    extern GroupItem    aCTionDelimText(GroupItem input);
     extern GroupItem    aCTionDO(GroupItem input);
     extern GroupItem    aCTionExpressioN(GroupItem input);
     extern GroupItem    aCTionFailed(GroupItem input);
@@ -511,6 +513,7 @@ external GroupRules.h
     extern GroupItem    jitEmitLE(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitLT(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitNE(GroupItem argument,GroupItem target);
+    extern int          jitEmitReturn();
     extern GroupItem    jitEmitSub(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitMul(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitter(GroupItem input);
@@ -523,6 +526,7 @@ external GroupRules.h
     extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    jitPrintNodeRT(GroupItem node,GroupItem FormaT,Buffer buffer);
     extern GroupItem    jitAssignNodeRT(GroupItem source,GroupItem target);
+    extern int          jitDegrade(String what, GroupItem node);
     extern GroupItem    jitDerefRT(GroupItem operand);
     extern int          jitEmitDeref(GroupItem operand);
     extern void         jitInlinePush(GroupItem action);
