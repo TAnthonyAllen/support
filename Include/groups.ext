@@ -266,6 +266,7 @@ boolean GroupOptions {
     Stak            getStak();
     RuleStuff       getRStuff();
     RuleStuff       ensureRStuff();
+    void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote);
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       insertGroup(GroupItem grup);
