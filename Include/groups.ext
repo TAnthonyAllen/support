@@ -43,6 +43,9 @@ external measure.h
     extern GroupItem    evictAction(GroupItem field);
     extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
     extern int          labelMinters(GroupItem rule);
+    extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
+    extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
+    extern GroupItem    measureParentProbe(GroupItem field);
     extern GroupItem    parseClassify(GroupItem field);
     extern GroupItem    probeNode(GroupItem argument);
     extern GroupItem    showBody(GroupItem field);
