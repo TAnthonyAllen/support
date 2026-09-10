@@ -46,6 +46,7 @@ external measure.h
     extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
     extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
     extern GroupItem    measureParentProbe(GroupItem field);
+    extern GroupItem    measureRuleDispatch(GroupItem op,GroupItem target,GroupItem arg);
     extern GroupItem    parseClassify(GroupItem field);
     extern GroupItem    probeNode(GroupItem argument);
     extern GroupItem    showBody(GroupItem field);
