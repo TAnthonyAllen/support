@@ -43,6 +43,7 @@ external measure.h
     extern GroupItem    evictAction(GroupItem field);
     extern GroupItem    frameProbe(GroupItem field,GroupItem rule);
     extern int          labelMinters(GroupItem rule);
+    extern GroupItem    measureBlockResult(GroupItem input,GroupItem result,int stopped);
     extern GroupItem    measureDotOperands(GroupItem argument,GroupItem target);
     extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
     extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
