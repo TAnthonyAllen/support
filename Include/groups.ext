@@ -508,6 +508,7 @@ external GroupRules.h
     extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleSubscript(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleUnary(GroupItem xpress,GroupItem unary,GroupItem ANYtoken);
+    extern int          unaryIsAccess(GroupItem unary);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    storeBody(GroupItem rule);
