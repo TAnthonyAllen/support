@@ -504,6 +504,9 @@ external GroupRules.h
     extern GroupItem    getMarkLineAt(GroupItem argument);
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
+    extern int          hasRepeatClass(String modifier);
+    extern int          modifierIsRepeat(String modifier);
+    extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
     extern GroupItem    handleCall(GroupItem xpress,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleSubscript(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
