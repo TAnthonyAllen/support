@@ -503,6 +503,10 @@ external GroupRules.h
     extern GroupItem    getMarkLineAt(GroupItem argument);
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
+    extern GroupItem    handleCall(GroupItem xpress,GroupItem ANYtoken,GroupItem InvokeArg);
+    extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
+    extern GroupItem    handleSubscript(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
+    extern GroupItem    handleUnary(GroupItem xpress,GroupItem unary,GroupItem ANYtoken);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    storeBody(GroupItem rule);
