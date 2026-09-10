@@ -507,6 +507,8 @@ external GroupRules.h
     extern GroupItem    guard(GroupItem field);
     extern int          hasRepeatClass(String modifier);
     extern int          modifierIsRepeat(String modifier);
+    extern int          opIsOR(GroupItem op);
+    extern int          opIsShortCircuit(GroupItem op);
     extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
     extern GroupItem    handleCall(GroupItem xpress,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
