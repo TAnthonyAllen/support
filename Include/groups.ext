@@ -143,6 +143,7 @@ boolean bools {
     reversePrint
     tokened
     hasNewParse
+    parseWalked
     hasTraits } flags;
 
     GroupBody();
@@ -249,10 +250,12 @@ boolean GroupOptions {
     void            embedRule(GroupItem g);
     GroupItem       findAttribute(String name);
     GroupItem       findParent(String name);
+    void            fireLabelMethod(RuleStuff stuff);
     GroupItem       firstComponent(String name);
     GroupItem       followingEntry();
     GroupItem       get(String name);
     GroupItem       get(int offset);
+    GroupItem       getActionMethod();
 	GroupItem		getAttribute(String name);
     GroupItem       getFromList(String name);
     GroupItem       getLabelGroup(String name);
@@ -300,6 +303,7 @@ boolean GroupOptions {
     GroupItem       remove(String name);
     GroupItem       replace(GroupItem argument);
     String          resolvedTag();
+    void            setActionMethod();
     void            setBuffer(Buffer b);
     void            setCharacter(char c);
     void            setCharacterSet(PLGset set);
@@ -385,6 +389,7 @@ external GroupRules
                 inDENT,
                 labelNO,
                 lastREF,
+                lastRule,
                 lastStatement,
                 generator,
                 maxLimit,
@@ -484,10 +489,16 @@ external GroupRules.h
     extern GroupItem    aCTionUnaryXP(GroupItem input);
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
+    extern GroupItem    activateAll(GroupItem ignored);
+    extern GroupItem    activateBody(GroupItem rule);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
+    extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
+    extern GroupItem    arrondir(GroupItem field);
+    extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    compile(GroupItem field);
+    extern GroupItem    compileStored(GroupItem rule);
     extern GroupItem    cOPY(GroupItem field);
     extern GroupItem    copyOf(GroupItem grup);
     extern String       dataType(GroupItem input);
@@ -497,7 +508,10 @@ external GroupRules.h
     extern void         debugTokens(int entries);
     extern void         dispatcher(void* stuff);
     extern GroupItem    dumpContents(GroupItem stuff);
+    extern GroupItem    exitFromParse(GroupItem result);
     extern GroupItem    fAIL(GroupItem input);
+    extern GroupItem    frameStak(GroupItem action);
+    extern GroupItem    frameFind(GroupItem action);
     extern GroupItem    generateCode(GroupItem field);
     extern GroupItem    genXP(GroupItem input);
     extern String       getDebugText(String input,int length);
@@ -506,22 +520,15 @@ external GroupRules.h
     extern GroupItem    getType(GroupItem field);
     extern GroupItem    guard(GroupItem field);
     extern int          hasRepeatClass(String modifier);
-    extern int          modifierIsRepeat(String modifier);
-    extern int          opIsOR(GroupItem op);
-    extern int          opIsShortCircuit(GroupItem op);
-    extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
     extern GroupItem    handleCall(GroupItem xpress,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleSubscript(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleUnary(GroupItem xpress,GroupItem unary,GroupItem ANYtoken);
-    extern int          unaryIsAccess(GroupItem unary);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
-    extern GroupItem    storeBody(GroupItem rule);
-    extern GroupItem    storedBody(GroupItem rule);
-    extern GroupItem    activateBody(GroupItem rule);
-    extern GroupItem    compileStored(GroupItem rule);
-    extern GroupItem    activateAll(GroupItem ignored);
+    extern GroupItem    iterBind(GroupItem iter, GroupItem container);
+    extern int          iterSpins(GroupItem iter, int reset);
+    extern GroupItem    iterAdvance(GroupItem iter, int forward);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
@@ -532,16 +539,15 @@ external GroupRules.h
     extern GroupItem    jitEmitLT(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitNE(GroupItem argument,GroupItem target);
     extern int          jitEmitReturn();
+    extern int          jitEmitSelfCall(GroupItem argument,GroupItem action);
     extern GroupItem    jitEmitSub(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitMul(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitter(GroupItem input);
     extern GroupItem    jitEmitCompare(GroupItem argument,GroupItem target,int op);
-    extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
     extern Buffer       jitPrintBegin(GroupItem input);
     extern int          jitEmitBareRead(GroupItem token);
     extern GroupItem    jitEmitDot(GroupItem argument,GroupItem target,GroupItem resultNode);
     extern GroupItem    jitBindArgRT(GroupItem argument,GroupItem field);
-    extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    jitPrintNodeRT(GroupItem node,GroupItem FormaT,Buffer buffer);
     extern GroupItem    jitAssignNodeRT(GroupItem source,GroupItem target);
     extern int          jitDegrade(String what, GroupItem node);
@@ -566,24 +572,27 @@ external GroupRules.h
     extern GroupItem    jitSeedField(GroupItem token);
     extern GroupItem    jitSeedLiteral(GroupItem token);
     extern GroupItem    listenTo(GroupItem group);
-    extern GroupItem    markWindow(GroupItem input);
     extern GroupItem    loadDirectory(GroupItem input);
     extern GroupItem    loadInputFromFile(GroupItem input);
     extern void         loadRegistryFromString(String name,String content);
+    extern GroupItem    locateManier();
     extern GroupItem    makeDataType(GroupItem target,GroupItem argument);
     extern GroupItem    makeNew(GroupItem input);
+    extern int          manyKant(GroupItem manier,GroupItem node);
+    extern GroupItem    manyMode(GroupItem argument);
+    extern GroupItem    markWindow(GroupItem input);
+    extern int          materialiseTerms(GroupItem rule);
+    extern int          materialiseRegistry(GroupItem registry);
     extern void         modify(GroupItem field,String modifier);
+    extern int          modifierIsRepeat(String modifier);
+    extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
     extern GroupItem    opAddAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opAND(GroupItem argument,GroupItem target);
-    extern int          truthOf(GroupItem field);
-    extern GroupItem    runShortCircuit(GroupItem field);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
     extern GroupItem    opAddPointer(GroupItem argument,GroupItem target);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
     extern GroupItem    opDivEQ(GroupItem argument,GroupItem target);
-    extern GroupItem    frameStak(GroupItem action);
-    extern GroupItem    frameFind(GroupItem action);
     extern GroupItem    opDeref(GroupItem result);
     extern GroupItem    opDot(GroupItem argument,GroupItem target);
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
@@ -593,6 +602,8 @@ external GroupRules.h
     extern GroupItem    opGE(GroupItem argument,GroupItem target);
     extern GroupItem    opGT(GroupItem argument,GroupItem target);
     extern GroupItem    opIN(GroupItem argument,GroupItem target);
+    extern int          opIsOR(GroupItem op);
+    extern int          opIsShortCircuit(GroupItem op);
     extern GroupItem    opLastREF(GroupItem result);
     extern GroupItem    opLE(GroupItem argument,GroupItem target);
     extern GroupItem    opLT(GroupItem argument,GroupItem target);
@@ -612,18 +623,21 @@ external GroupRules.h
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
     extern GroupItem    opCerr(GroupItem target,Buffer buffer);
     extern GroupItem    opCout(GroupItem target,Buffer buffer);
-    extern int          jitEmitSelfCall(GroupItem argument,GroupItem action);
-    extern GroupItem    arrondir(GroupItem field);
-    extern GroupItem    locateManier();
-    extern int          manyKant(GroupItem manier,GroupItem node);
-    extern GroupItem    manyMode(GroupItem argument);
     extern GroupItem    opReplaceAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opReplaceMember(GroupItem argument,GroupItem target);
     extern GroupItem    opRem(GroupItem argument,GroupItem target);
     extern GroupItem    opSetGroup(GroupItem argument,GroupItem target);
     extern GroupItem    opSetTag(GroupItem argument,GroupItem target);
     extern GroupItem    opString(GroupItem target,Buffer buffer);
+    extern GroupItem    parseAction(GroupItem field);
+    extern GroupItem    parseAny(GroupItem field);
+    extern GroupItem    parseCharacter(GroupItem field);
+    extern GroupItem    parseCondition(GroupItem field);
+    extern GroupItem    parseContainer(GroupItem field);
     extern GroupItem    parseRule(GroupItem field);
+    extern GroupItem    parseSet(GroupItem field);
+    extern GroupItem    parseString(GroupItem field);
+    extern GroupItem    parseUpTo(GroupItem field);
     extern void         printField(GroupItem field,String format,Buffer buffer);
     extern GroupItem    printToBuffer(GroupItem bufferField);
     extern GroupItem    processAction(GroupItem field);
@@ -638,23 +652,22 @@ external GroupRules.h
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
-    extern GroupItem    runRuleAction(GroupItem field);
+    extern GroupItem    runShortCircuit(GroupItem field);
     extern void         saveLocalFields(GroupItem action);
     extern int          setCompiledMethod(GroupItem block,String name);
     extern GroupItem    setParse(GroupItem field);
-    extern int          materialiseTerms(GroupItem rule);
-    extern int          materialiseRegistry(GroupItem registry);
-    extern GroupItem    iterBind(GroupItem iter, GroupItem container);
-    extern int          iterSpins(GroupItem iter, int reset);
-    extern GroupItem    iterAdvance(GroupItem iter, int forward);
     extern GroupItem    setInternalType(GroupItem grup);
     extern void         setLimits(GroupItem rule,GroupItem limits);
     extern GroupItem    setMark(GroupItem argument);
     extern GroupItem    setRuleAction(GroupItem block);
     extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
+    extern GroupItem    storeBody(GroupItem rule);
+    extern GroupItem    storedBody(GroupItem rule);
     extern GroupItem    testing(GroupItem item);
     extern GroupItem    tokenInSet(String input,PLGset endSet);
+    extern int          truthOf(GroupItem field);
+    extern int          unaryIsAccess(GroupItem unary);
     extern void         unMark(GroupItem bufField);
     extern GroupItem    unWrap(GroupItem result);
     extern GroupItem    wrapDot(GroupItem argument);
