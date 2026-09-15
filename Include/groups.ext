@@ -323,6 +323,7 @@ boolean GroupOptions {
     void            setJitEmitter(void *m);
 	void			setPointer(void *v);
     void            setRegex(PLGrgx v);
+    void            setParseAction(GroupItem &m(GroupItem));
     void            setRStuff(RuleStuff stuff);
     void            setStak(Stak s);
 	void			setText(String s);
