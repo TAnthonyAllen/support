@@ -307,7 +307,7 @@ boolean GroupOptions {
     GroupItem       remove(String name);
     GroupItem       replace(GroupItem argument);
     String          resolvedTag();
-    void            setActionMethod();
+    void            setActions();
     void            setBuffer(Buffer b);
     void            setCharacter(char c);
     void            setCharacterSet(PLGset set);
