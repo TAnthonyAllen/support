@@ -53,6 +53,7 @@ external measure.h
     extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
     extern GroupItem    measureParentProbe(GroupItem field);
     extern GroupItem    measureRuleDispatch(GroupItem op,GroupItem target,GroupItem arg);
+    extern GroupItem    measureStopCaller(GroupItem caller);
     extern GroupItem    measureTokenArm(String arm,GroupItem ANYtoken,GroupItem InvokeArg,GroupItem unary);
     extern GroupItem    parseClassify(GroupItem field);
     extern GroupItem    probeNode(GroupItem argument);
