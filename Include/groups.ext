@@ -667,6 +667,7 @@ external GroupRules.h
     extern GroupItem    setRuleAction(GroupItem block);
     extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
+    extern void         reportRunAbandoned(String fileName);
     extern GroupItem    storeBody(GroupItem rule);
     extern GroupItem    storedBody(GroupItem rule);
     extern GroupItem    testing(GroupItem item);
