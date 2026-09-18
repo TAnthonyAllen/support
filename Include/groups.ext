@@ -315,7 +315,7 @@ boolean GroupOptions {
     void            setCharacterSet(PLGset set);
 	void			setContent(GroupItem item);
 	void			setCount(int i);
-    int             setDebug();
+    void            setDebug();
     void            setGroup(GroupItem g);
 	void			setItem(PLGitem i);
 	void			setMap(BitMAP i);
