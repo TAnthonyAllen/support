@@ -243,6 +243,13 @@ boolean GroupOptions {
     void            addRuleStuff();
 	GroupItem		addString(String n);
     void            append(GroupItem grup);
+    GroupItem       actionBlocK();
+    GroupItem       actionBody();
+    GroupItem       attachBlocK(GroupItem blocK);
+    GroupItem       actionHolder();
+    GroupItem       parseBlocK();
+    GroupItem       parseBody();
+    GroupItem       parseHolder();
     void            captureSpan(RuleStuff stuff);
     void            clear();
     void            clearData();
@@ -648,7 +655,7 @@ external GroupRules.h
     extern void         printField(GroupItem field,String format,Buffer buffer);
     extern GroupItem    printToBuffer(GroupItem bufferField);
     extern GroupItem    processAction(GroupItem field);
-    extern int          processCode(GroupItem field);
+    extern int          processCode(GroupItem field,GroupItem holder);
     extern GroupItem    processFlags(GroupItem input);
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    refuse(GroupItem subject,String why);
