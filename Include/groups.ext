@@ -49,6 +49,8 @@ external measure.h
     extern GroupItem    measureFireLabelEntry(GroupItem field);
     extern GroupItem    measureFireLabelFork(GroupItem field,GroupItem myLabel);
     extern GroupItem    measureFrameProbe(GroupItem field,GroupItem rule);
+    extern GroupItem    measureMarkArm(GroupItem driveNode);
+    extern GroupItem    measureMarkPoint(String where);
     extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
     extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
     extern GroupItem    measureParentProbe(GroupItem field);
