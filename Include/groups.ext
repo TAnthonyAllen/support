@@ -263,6 +263,7 @@ boolean GroupOptions {
     void            copyListTo(GroupItem grup);
     void            dispatch();
     GroupItem       dQ();
+    void            embedAttribute(GroupItem g);
     void            embedRule(GroupItem g);
     GroupItem       findAttribute(String name);
     GroupItem       findParent(String name);
