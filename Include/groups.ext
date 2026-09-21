@@ -663,6 +663,8 @@ external GroupRules.h
     extern GroupItem    processFlags(GroupItem input);
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    refuse(GroupItem subject,String why);
+    extern GroupItem    runLeafParse(GroupItem field);
+    extern void         installParseMethod(GroupItem field);
     extern GroupItem    rEGISTER(GroupItem item);
     extern GroupItem    resetField(GroupItem argument);
     extern void         restoreLocalFields(GroupItem action);
