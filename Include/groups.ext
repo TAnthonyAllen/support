@@ -430,6 +430,7 @@ external GroupRules
                 inputSTAK;
     int         chanBinds,
                 chanSame,
+                inputFloor,
                 refused,
                 lastIndent,
                 rulesParsed,
