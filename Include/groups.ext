@@ -846,6 +846,7 @@ external RuleStuff.h
     extern GroupItem     ruleOrRefuse(String name, String who);
     extern GroupItem     traceParse(GroupItem argument);
     extern GroupItem     dupTermRefusal(GroupItem rule);
+    extern GroupItem     dupCensus(GroupItem argument);
     extern GroupItem     demoRprime(GroupItem argument);
     extern int           showTree(GroupItem node, String pad);
     extern GroupItem     treeOf(GroupItem argument);
