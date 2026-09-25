@@ -282,7 +282,7 @@ boolean GroupOptions {
 	char			getCharacter();
     PLGset          getCharacterSet();
 	int				getCount();
-    int             getDataType();
+    String          getDataType();
     GroupItem       getGroup();
     PLGset          getGuard();
     PLGset          ensureGuard();
@@ -521,7 +521,6 @@ external GroupRules.h
     extern GroupItem    compileStored(GroupItem rule);
     extern GroupItem    cOPY(GroupItem field);
     extern GroupItem    copyOf(GroupItem grup);
-    extern String       dataType(GroupItem input);
     extern GroupItem    debugOnGuard(GroupItem group);
     extern void         debugRuleNamed(String name);
     extern void         debugText(GroupItem debugStuff,int flag);
