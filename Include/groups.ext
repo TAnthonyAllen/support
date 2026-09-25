@@ -254,6 +254,7 @@ boolean GroupOptions {
     GroupItem       parseBody();
     GroupItem       parseHolder();
     void            captureSpan(RuleStuff stuff);
+    GroupItem       checkOP(GroupItem op);
     void            clear();
     void            clearData();
     void            clearList();
