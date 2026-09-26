@@ -532,6 +532,7 @@ external GroupRules.h
     extern void         debugText(GroupItem debugStuff,int flag);
     extern void         debugTokens(int entries);
     extern void         dispatcher(void* stuff);
+    extern int          driveFloorLabel(RuleStuff stuff,GroupItem label);
     extern GroupItem    dumpContents(GroupItem stuff);
     extern GroupItem    exitFromParse(GroupItem result);
     extern GroupItem    fAIL(GroupItem input);
