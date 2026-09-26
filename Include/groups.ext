@@ -801,7 +801,6 @@ external RuleStuff.h
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
     extern GroupItem    parseR(GroupItem term, GroupItem into);
-    extern GroupItem    parseGeneric(GroupItem into, String ruleName);
     extern GroupItem     locateRule(String name);
     extern GroupItem     traceParse(GroupItem argument);
     extern GroupItem     dupTermRefusal(GroupItem rule);
