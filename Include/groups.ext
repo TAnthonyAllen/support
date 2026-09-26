@@ -36,7 +36,6 @@ external measure.h
     extern int          auditMissingTerms(GroupItem registry);
     extern GroupItem    auditRStuff(GroupItem argument);
     extern int          auditSpurious(GroupItem registry);
-    extern int          auditUnconsumed(GroupItem registry);
     extern GroupItem    bodyCensus(GroupItem ignored);
     extern GroupItem    canonOf(GroupItem argument);
     extern GroupItem    chanReport(GroupItem input);
@@ -515,8 +514,6 @@ external GroupRules.h
     extern GroupItem    aCTionUnaryXP(GroupItem input);
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
-    extern GroupItem    activateAll(GroupItem ignored);
-    extern GroupItem    activateBody(GroupItem rule);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
     extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
     extern GroupItem    arrondir(GroupItem field);
@@ -524,7 +521,6 @@ external GroupRules.h
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    compile(GroupItem field);
-    extern GroupItem    compileStored(GroupItem rule);
     extern GroupItem    cOPY(GroupItem field);
     extern GroupItem    copyOf(GroupItem grup);
     extern GroupItem    debugOnGuard(GroupItem group);
@@ -601,11 +597,8 @@ external GroupRules.h
     extern GroupItem    loadDirectory(GroupItem input);
     extern GroupItem    loadInputFromFile(GroupItem input);
     extern void         loadRegistryFromString(String name,String content);
-    extern GroupItem    locateManier();
     extern GroupItem    makeDataType(GroupItem target,GroupItem argument);
     extern GroupItem    makeNew(GroupItem input);
-    extern int          manyKant(GroupItem manier,GroupItem node);
-    extern GroupItem    manyMode(GroupItem argument);
     extern GroupItem    markWindow(GroupItem input);
     extern int          materialiseTerms(GroupItem rule);
     extern int          materialiseRegistry(GroupItem registry);
@@ -691,8 +684,6 @@ external GroupRules.h
     extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
     extern void         reportRunAbandoned(String fileName);
-    extern GroupItem    storeBody(GroupItem rule);
-    extern GroupItem    storedBody(GroupItem rule);
     extern GroupItem    testing(GroupItem item);
     extern GroupItem    tokenInSet(String input,PLGset endSet);
     extern int          truthOf(GroupItem field);
@@ -761,8 +752,7 @@ GroupItem   label,
 int         kount,
             max,
             maxRepeat,
-            min,
-            termCount;
+            min;
 RuleStuff   parentStuff;
 int         &testMatch(GroupItem);
 GroupItem   &actionMethod(GroupItem);
@@ -810,44 +800,9 @@ external RuleStuff.h
     extern int          testSet(GroupItem field);
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
-    extern int          lit(GroupItem field, String str);
-    extern int          parkParse(GroupItem rule, String name);
-    extern int          litTo(GroupItem field, GroupItem into, String str, String slot);
-    extern GroupItem    ctProbe(GroupItem term);
-    extern int          litOption(GroupItem field, GroupItem into, String str);
-    extern int          inGuard(GroupItem field, String chars, char ch);
-    extern GroupItem    leaveRule(GroupItem rule, GroupItem into, GroupItem label, String from, int ok);
-    extern GroupItem    leaveAlt(GroupItem rule, String from, int ok);
     extern GroupItem    parseR(GroupItem term, GroupItem into);
-    extern int          manyJSONblockFields(GroupItem label, GroupItem term);
-    extern int          manyJSONlistItems(GroupItem label, GroupItem term);
-    extern GroupItem    parseJSONblock(GroupItem rule);
-    extern GroupItem    parseJSONfield(GroupItem rule);
-    extern GroupItem    parseJSONvalue(GroupItem rule);
-    extern GroupItem    parseJSONtoken(GroupItem rule);
     extern GroupItem    parseGeneric(GroupItem into, String ruleName);
-    extern GroupItem    parseJSONitem(GroupItem rule);
-    extern GroupItem    parseJSONlist(GroupItem rule);
-    extern GroupItem    parseJSONarray(GroupItem rule);
-    extern GroupItem     genParse(GroupItem argument);
-    extern GroupItem     dumpRuleTerms(GroupItem argument);
-    extern GroupItem     parseRuleMethod(GroupItem input);
-    extern GroupItem     parseTermCount(GroupItem input);
-    extern int           countRuleTerms(GroupItem rule);
-    extern int           unresolvedTerms(GroupItem rule);
-    extern GroupItem     planTerm(GroupItem term, int index);
-    extern GroupItem     planRule(GroupItem rule);
-    extern int           printPlan(GroupItem plan, String pad);
-    extern GroupItem     dumpRulePlans(GroupItem argument);
-    extern GroupItem     dumpSpellings(GroupItem argument);
-    extern GroupItem     locateSpeller();
-    extern GroupItem     spellMode(GroupItem argument);
-    extern String        spellKant(GroupItem speller, GroupItem node, String sink);
-    extern String        emitLeaf(GroupItem node, String local, String sink);
-    extern int           emitMany(GroupItem node);
-    extern GroupItem     emitPlan(GroupItem plan);
     extern GroupItem     locateRule(String name);
-    extern GroupItem     ruleOrRefuse(String name, String who);
     extern GroupItem     traceParse(GroupItem argument);
     extern GroupItem     dupTermRefusal(GroupItem rule);
     extern GroupItem     dupCensus(GroupItem argument);
