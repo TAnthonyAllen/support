@@ -812,7 +812,6 @@ external RuleStuff.h
     extern int          testUpTo(GroupItem field);
     extern int          lit(GroupItem field, String str);
     extern int          parkParse(GroupItem rule, String name);
-    extern GroupItem    fireNewParse(GroupItem rule);
     extern int          litTo(GroupItem field, GroupItem into, String str, String slot);
     extern GroupItem    ctProbe(GroupItem term);
     extern int          litOption(GroupItem field, GroupItem into, String str);
@@ -835,8 +834,6 @@ external RuleStuff.h
     extern GroupItem     parseRuleMethod(GroupItem input);
     extern GroupItem     parseTermCount(GroupItem input);
     extern int           countRuleTerms(GroupItem rule);
-    extern int           kantDoor(GroupItem rule, GroupItem code);
-    extern int           kantDoored(GroupItem rule);
     extern int           unresolvedTerms(GroupItem rule);
     extern GroupItem     planTerm(GroupItem term, int index);
     extern GroupItem     planRule(GroupItem rule);
@@ -857,15 +854,6 @@ external RuleStuff.h
     extern GroupItem     demoRprime(GroupItem argument);
     extern int           showTree(GroupItem node, String pad);
     extern GroupItem     treeOf(GroupItem argument);
-    extern GroupItem     parseScafA(GroupItem rule);
-    extern GroupItem     parseScafB(GroupItem rule);
-    extern int           manyScafC1(GroupItem label, GroupItem term);
-    extern GroupItem     parseScafC(GroupItem rule);
-    extern GroupItem     parseScafE(GroupItem rule);
-    extern GroupItem     parseScafF(GroupItem rule);
-    extern GroupItem     parseScafI(GroupItem rule);
-    extern GroupItem     parseScafALT(GroupItem rule);
-    extern GroupItem     parseScafOUT(GroupItem rule);
 }
 
 external Stylish
