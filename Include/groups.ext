@@ -681,7 +681,6 @@ external GroupRules.h
     extern int          setCompiledMethod(GroupItem block,String name);
     extern GroupItem    setParse(GroupItem field);
     extern GroupItem    setInternalType(GroupItem grup);
-    extern void         setLimits(GroupItem rule,GroupItem limits);
     extern GroupItem    setMark(GroupItem argument);
     extern GroupItem    setRuleAction(GroupItem block);
     extern int          statementMatches(GroupItem a,GroupItem b);
@@ -772,7 +771,6 @@ boolean
     isOK
     isOption
     isTarget
-    limitsSet
     modPercent
     modPointer
     modUnGuarded
