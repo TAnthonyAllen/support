@@ -83,6 +83,7 @@ GroupStak       stakked;
 external GroupBody
 {
 String          tag;
+GroupList       propList;
 GroupList       groupList;
 GroupItem       registry;
 PLGset          guardSet;
@@ -135,7 +136,6 @@ boolean bools {
     hasListeners
     hasMembers
     isArgument
-    isAssign
     isCondition
     isIndexed
     isInitialized
@@ -147,14 +147,10 @@ boolean bools {
     isPointer
     isShortcut
     isSingleton
-    isToggle
     isUnary
     isVirtual
     isWindow
-    isXP
     mergeOn
-    negate
-    recursive
     reversePrint
     tokened
     hasNewParse
@@ -248,6 +244,10 @@ boolean GroupOptions {
     GroupItem(GroupItem grup);
 	GroupItem		addGroup(GroupItem g);
     GroupItem       addAttribute(GroupItem group);
+    GroupItem       addProperty(GroupItem grup);
+    GroupItem       getProperty(String name);
+    GroupItem       nextProperty(GroupItem entry);
+    int             removeProperty(GroupItem grup);
     GroupItem       addMember(GroupItem group);
     void            addRuleStuff();
 	GroupItem		addString(String n);
