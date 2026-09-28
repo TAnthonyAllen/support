@@ -304,6 +304,7 @@ boolean GroupOptions {
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       insertGroup(GroupItem grup);
+    int             isRuleTerm();
     int             isUnGuarded();
     void            makeRegistry();
     int             matches(GroupItem arg);
@@ -779,6 +780,7 @@ boolean
     noSkip
     notifyFail
     overTo:2[upTo upToOver]
+    ruleTerm
     sukcess
     ;
     RuleStuff(GroupItem grup);
