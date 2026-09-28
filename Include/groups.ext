@@ -304,6 +304,7 @@ boolean GroupOptions {
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       insertGroup(GroupItem grup);
+    int             isUnGuarded();
     void            makeRegistry();
     int             matches(GroupItem arg);
 	String          matches(String &target);
@@ -772,6 +773,9 @@ boolean
     isOption
     isTarget
     limitsSet
+    modPercent
+    modPointer
+    modUnGuarded
     noAdvance
     noLabel
     noSkip
