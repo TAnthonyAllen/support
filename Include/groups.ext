@@ -83,7 +83,7 @@ GroupStak       stakked;
 external GroupBody
 {
 String          tag;
-GroupList       propList;
+GroupList       propertyList;
 GroupList       groupList;
 GroupItem       registry;
 PLGset          guardSet;
