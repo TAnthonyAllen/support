@@ -230,6 +230,7 @@ external GroupItem
 {
 #autoGetSet
 GroupBody       groupBody;
+GroupItem       ruleOf;
 GroupItem	    parent,
                 nextInParent,
                 priorInParent;
