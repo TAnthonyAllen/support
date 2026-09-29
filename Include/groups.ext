@@ -304,6 +304,7 @@ boolean GroupOptions {
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       insertGroup(GroupItem grup);
+    GroupItem       instanceRule();
     int             isRuleTerm();
     int             isUnGuarded();
     void            makeRegistry();
