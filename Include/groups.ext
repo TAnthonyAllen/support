@@ -769,7 +769,6 @@ boolean
     followed
     guardOK
     guardFAIL
-    hasMacro
     inProcess
     isOK
     isOption
