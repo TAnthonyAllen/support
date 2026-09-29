@@ -610,6 +610,7 @@ external GroupRules.h
     extern int          modifierIsRepeat(String modifier);
     extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
     extern GroupItem    opAddAttribute(GroupItem argument,GroupItem target);
+    extern GroupItem    opAddProperty(GroupItem argument,GroupItem target);
     extern GroupItem    opAND(GroupItem argument,GroupItem target);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
     extern GroupItem    opAddPointer(GroupItem argument,GroupItem target);
@@ -621,6 +622,7 @@ external GroupRules.h
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
     extern GroupItem    opEnd(GroupItem argument,GroupItem target);
     extern GroupItem    opGetAttribute(GroupItem argument,GroupItem target);
+    extern GroupItem    opGetProperty(GroupItem argument,GroupItem target);
     extern GroupItem    opGetMember(GroupItem argument,GroupItem target);
     extern GroupItem    opGE(GroupItem argument,GroupItem target);
     extern GroupItem    opGT(GroupItem argument,GroupItem target);
