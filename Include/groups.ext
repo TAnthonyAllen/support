@@ -394,6 +394,14 @@ GroupItem   grok;
 
 external GroupRules
 {
+struct ParseActivation
+{
+    int             isFloor;
+    GroupItem       label;
+    void            *prev;
+    RuleStuff       stuff;
+}
+*gParseActive;
     String          atRuleMark;
     RuleStuff       ruleSTUFF;
     GroupItem
@@ -534,6 +542,7 @@ external GroupRules.h
     extern void         dispatcher(void* stuff);
     extern int          driveFloorLabel(RuleStuff stuff,GroupItem label);
     extern GroupItem    dumpContents(GroupItem stuff);
+    extern GroupItem    enclosingFace(GroupItem field);
     extern GroupItem    exitFromParse(GroupItem result);
     extern GroupItem    fAIL(GroupItem input);
     extern GroupItem    frameStak(GroupItem action);
