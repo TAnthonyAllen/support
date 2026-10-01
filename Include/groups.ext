@@ -392,13 +392,15 @@ GroupItem   grok;
     GroupItem   bootstrapper();
 }
 
+external struct ParseActivation no.h
+
 external GroupRules
 {
 struct ParseActivation
 {
     int             isFloor;
     GroupItem       label;
-    void            *prev;
+    ParseActivation *prev;
     RuleStuff       stuff;
 }
 *gParseActive;
