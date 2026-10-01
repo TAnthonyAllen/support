@@ -63,7 +63,7 @@ external measure.h
     extern GroupItem    measureRuleDispatch(GroupItem op,GroupItem target,GroupItem arg);
     extern GroupItem    measureRuleDoor(GroupItem field,GroupItem rule);
     extern GroupItem    measureStopCaller(GroupItem caller);
-    extern GroupItem    measureTargetAgree(RuleStuff stuff,int computed);
+    extern GroupItem    measureTargetAgree(RuleStuff stuff,int computed,GroupItem field);
     extern GroupItem    measureTokenArm(String arm,GroupItem ANYtoken,GroupItem InvokeArg,GroupItem unary);
     extern GroupItem    parseClassify(GroupItem field);
     extern GroupItem    probeNode(GroupItem argument);
@@ -799,9 +799,9 @@ boolean
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
     int             checkInput(GroupItem field);
-    GroupItem       followingMember();
-    void            getWhatFollows();
-    void            setTestMatch();
+    GroupItem       followingMember(GroupItem field);
+    void            getWhatFollows(GroupItem field);
+    void            setTestMatch(GroupItem field);
 }
 
 external RuleStuff.h
@@ -811,11 +811,11 @@ external RuleStuff.h
     extern int          setMacroValue(GroupItem field);
     extern int          testAction(GroupItem field);
     extern int          testAny(GroupItem field);
-    extern int          testAttributes(RuleStuff stuff);
+    extern int          testAttributes(RuleStuff stuff,GroupItem field);
     extern int          testCharacter(GroupItem field);
     extern int          testCondition(GroupItem field);
     extern int          testContainer(GroupItem field);
-    extern int          testOptions(RuleStuff stuff);
+    extern int          testOptions(RuleStuff stuff,GroupItem field);
     extern int          testSet(GroupItem field);
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
