@@ -798,7 +798,7 @@ boolean
     ;
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
-    int             checkInput();
+    int             checkInput(GroupItem field);
     GroupItem       followingMember();
     void            getWhatFollows();
     void            setTestMatch();
