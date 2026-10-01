@@ -765,8 +765,7 @@ GroupItem   label,
             onFail,
             onGroup,
             parentLabel,
-            sourceLine,
-            owner;
+            sourceLine;
 int         kount,
             max,
             maxRepeat,
