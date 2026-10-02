@@ -608,7 +608,6 @@ external GroupRules.h
     extern GroupItem    opSetTag(GroupItem argument,GroupItem target);
     extern GroupItem    opString(GroupItem target,Buffer buffer);
     extern GroupItem    parseAction(GroupItem field);
-    extern GroupItem    parseAny(GroupItem field);
     extern GroupItem    parseCharacter(GroupItem field);
     extern GroupItem    parseCondition(GroupItem field);
     extern GroupItem    parseContainer(GroupItem field);
