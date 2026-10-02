@@ -771,7 +771,6 @@ int         kount,
             max,
             maxRepeat,
             min;
-RuleStuff   parentStuff;
 int         &testMatch(GroupItem);
 GroupItem   &actionMethod(GroupItem);
 GroupItem   &parseMethod(GroupItem);
