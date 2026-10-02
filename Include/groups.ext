@@ -1,6 +1,5 @@
 
 external GroupStak
-external Bytecode
 external GroupItem
 external RuleStuff
 external PLGset
@@ -12,22 +11,6 @@ external Object
 external Stak
 external Layout OC
 external Stylish
-
-external Bytecode.h
-{
-    extern GroupItem    opStackOf(GroupItem instr);
-    extern GroupItem    runBR(GroupItem instr);
-    extern GroupItem    runBRZ(GroupItem instr);
-    extern GroupItem    runCall(GroupItem instr);
-    extern GroupItem    runGT(GroupItem instr);
-    extern GroupItem    runLE(GroupItem instr);
-    extern GroupItem    runMultiply(GroupItem instr);
-    extern GroupItem    runPlus(GroupItem instr);
-    extern GroupItem    runPushField(GroupItem instr);
-    extern GroupItem    runPushLit(GroupItem instr);
-    extern GroupItem    runRET(GroupItem instr);
-    extern GroupItem    runStoreField(GroupItem instr);
-}
 
 external measure.h
 {
@@ -399,7 +382,6 @@ struct ParseActivation
                 currentRegistry,
                 debugJunk,
                 baseRegistryList,
-                bcOPs,
                 commands,
                 files,
                 grokking,
@@ -415,7 +397,6 @@ struct ParseActivation
                 labelNO,
                 lastREF,
                 lastStatement,
-                generator,
                 maxLimit,
                 printSPACE,
                 repeatLimit,
@@ -455,7 +436,6 @@ struct ParseActivation
             defining
             divertToRule
             endParse
-            generating
             ignoreThis
             ignoreNoPrint
             ignoreNoRoom
@@ -531,7 +511,6 @@ external GroupRules.h
     extern GroupItem    fAIL(GroupItem input);
     extern GroupItem    frameStak(GroupItem action);
     extern GroupItem    frameFind(GroupItem action);
-    extern GroupItem    generateCode(GroupItem field);
     extern String       getDebugText(String input,int length);
     extern GroupItem    getFile(GroupItem filing);
     extern GroupItem    getMarkLineAt(GroupItem argument);
@@ -542,8 +521,6 @@ external GroupRules.h
     extern GroupItem    handleDot(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleSubscript(GroupItem xpress,GroupItem unary,GroupItem ANYtoken,GroupItem InvokeArg);
     extern GroupItem    handleUnary(GroupItem xpress,GroupItem unary,GroupItem ANYtoken);
-    extern GroupItem    interpretBC(GroupItem argument);
-    extern GroupItem    interpretMethod(GroupItem input);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
