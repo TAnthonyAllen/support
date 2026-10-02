@@ -183,9 +183,7 @@ GroupItem       base,
                 selection;
 Path            layoutPath;
 Color           strokeColor,
-                textColor,
-                wallColor;
-Font            currentFont;
+                textColor;
 }
 
 external GroupDraw
@@ -227,7 +225,6 @@ boolean GroupOptions {
     GroupItem       nextProperty(GroupItem entry);
     int             removeProperty(GroupItem grup);
     GroupItem       addMember(GroupItem group);
-    void            addRuleStuff();
 	GroupItem		addString(String n);
     void            append(GroupItem grup);
     GroupItem       actionBlocK();
@@ -253,10 +250,8 @@ boolean GroupOptions {
     GroupItem       findParent(String name);
     void            fireLabelMethod(RuleStuff stuff);
     GroupItem       firstComponent(String name);
-    GroupItem       followingEntry();
     GroupItem       get(String name);
     GroupItem       get(int offset);
-    GroupItem       getActionMethod();
 	GroupItem		getAttribute(String name);
     GroupItem       getFromList(String name);
     GroupItem       getLabelGroup(String name);
@@ -329,21 +324,16 @@ boolean GroupOptions {
 	alias
             add                 addMember
             add                 addString
-            getDate             getItem
             mergeAttributes     mergeAttributes(mergeFlag=0)
             ;
 	overload
-            ()      run
             []      get
             %       getAttribute
-            +*      addArgument
             +%		addAttribute
             /       getMember
 			+=		add
             :+      replace
-            *=      addComponentsOf
 			-=		remove
-            &=      intersectWith
 			;
 }
 
@@ -444,7 +434,6 @@ struct ParseActivation
             isPRINTING
             isRELATIVE
             isRigorous
-            membering
             noSkipping
             parseTrace
             processingCode
@@ -710,9 +699,7 @@ String      ruleName;       // for debugging
 String      hereAt,
             failedAt;
 GroupItem   label,
-            onFail,
-            onGroup,
-            sourceLine;
+            onGroup;
 int         kount,
             max,
             maxRepeat,
@@ -722,14 +709,10 @@ GroupItem   &actionMethod(GroupItem);
 GroupItem   &parseMethod(GroupItem);
 int         &jitMethod(GroupItem);
 boolean
-    banged
-    doNothing
     followed
     guardOK
-    guardFAIL
     inProcess
     isOK
-    isOption
     isTarget
     modPercent
     modPointer
@@ -745,7 +728,6 @@ boolean
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
     int             checkInput(GroupItem field);
-    GroupItem       followingMember(GroupItem field);
     void            getWhatFollows(GroupItem field);
     void            setTestMatch(GroupItem field);
 }
@@ -782,17 +764,11 @@ Color       bgColor,
             strokeColor,
             textColor;
 Font        font;
-GroupItem   shadowBlur,
-            shadowOffset,
-            shadowX,
-            shadowY,
-            shadowColor;
 NumberFormatter formatter;
 boolean
         editable
         selected
         selectable
-        subbed
 		;
     Stylish(GroupItem item);
     Stylish(String name);
