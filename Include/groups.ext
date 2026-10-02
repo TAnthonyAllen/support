@@ -36,11 +36,8 @@ external measure.h
     extern int          auditMissingTerms(GroupItem registry);
     extern GroupItem    auditRStuff(GroupItem argument);
     extern int          auditSpurious(GroupItem registry);
-    extern GroupItem    bodyCensus(GroupItem ignored);
     extern GroupItem    canonOf(GroupItem argument);
     extern GroupItem    chanReport(GroupItem input);
-    extern GroupItem    evictAction(GroupItem field);
-    extern int          labelMinters(GroupItem rule);
     extern GroupItem    measureAdoption(GroupItem field,GroupItem handed,GroupItem adopted);
     extern GroupItem    measureAttachRepeat(RuleStuff stuff,GroupItem lab);
     extern GroupItem    measureBlockResult(GroupItem input,GroupItem result,int stopped);
@@ -52,7 +49,6 @@ external measure.h
     extern GroupItem    measureFireLabelFork(GroupItem field,GroupItem myLabel);
     extern GroupItem    measureFrameProbe(GroupItem field,GroupItem rule);
     extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
-    extern GroupItem    measureLabelProbe(GroupItem field,GroupItem myLabel,GroupItem into,GroupItem result,int yielded);
     extern GroupItem    measureLoopVerdict(GroupItem field);
     extern GroupItem    measureMarkArm(GroupItem driveNode);
     extern GroupItem    measureMarkPoint(String where);
@@ -218,9 +214,7 @@ Layout      layout;
 external GroupDraw.h
 {
     extern GroupItem blockContaining(GroupItem grup,Point p);
-    extern int containsPoint(GroupItem grup,Point p);
     extern Frame getFrame(GroupItem item);
-    extern TextView getTextView(GroupItem field);
     String toString(Point p);
     String toString(Frame f);
 }
@@ -255,7 +249,6 @@ boolean GroupOptions {
     void            append(GroupItem grup);
     GroupItem       actionBlocK();
     GroupItem       actionBody();
-    GroupItem       attachBlocK(GroupItem blocK);
     GroupItem       actionHolder();
     GroupItem       parseBlocK();
     GroupItem       parseBody();
@@ -291,20 +284,17 @@ boolean GroupOptions {
 	int				getCount();
     String          getDataType();
     GroupItem       getGroup();
-    PLGset          getGuard();
     PLGset          ensureGuard();
 	PLGitem			getItem();
 	double			getNumber();
     Object          getObject();
 	void			*getPointer();
-    PLGrgx          getRegex();
     Stak            getStak();
     RuleStuff       getRStuff();
     RuleStuff       ensureRStuff();
     void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote);
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
-    GroupItem       insertGroup(GroupItem grup);
     GroupItem       instanceRule();
     int             isRuleTerm();
     int             isUnGuarded();
@@ -313,12 +303,10 @@ boolean GroupOptions {
 	String          matches(String &target);
 	void			merge(GroupItem group);
     void            mergeAttributes(GroupItem group,int mergeFlag);
-    void            moveTo(GroupItem item);
     GroupItem       next(GroupItem current);
 	GroupItem		nextAttribute(GroupItem current);
     GroupItem       nextGroup(GroupItem grup);
 	GroupItem		nextMember(GroupItem current);
-    GroupItem       frameParent(GroupItem holder);
     GroupItem       parse(RuleStuff pStuff);
     GroupItem       pop();
     void            prepend(GroupItem grup);
@@ -338,7 +326,6 @@ boolean GroupOptions {
     void            setDebug();
     void            setGroup(GroupItem g);
 	void			setItem(PLGitem i);
-	void			setMap(BitMAP i);
     void            setMethod(GroupItem &m(GroupItem));
 	void			setNumber(double d);
     void            setObject(Object v);
@@ -353,7 +340,6 @@ boolean GroupOptions {
     void            setRuleStuff();
     void            setToken(String s,int length);
     void            sort(int &comparisor(GroupItem,GroupItem));
-    void            sortByAttribute(String attributeName);
     void            updateContentFlags();
 	void			updateListeners();
     GroupItem       walk(GroupItem item);
@@ -500,7 +486,6 @@ external GroupRules.h
     extern GroupItem    aCTionBlocK(GroupItem input);
     extern GroupItem    aCTionBraced(GroupItem input);
     extern GroupItem    aCTionBrancH(GroupItem input);
-    extern GroupItem    aCTionCheckFor(GroupItem input);
     extern GroupItem    aCTionCodE(GroupItem rule);
     extern GroupItem    aCTionDEBUG(GroupItem input);
     extern GroupItem    aCTionDefinE(GroupItem input);
@@ -526,22 +511,17 @@ external GroupRules.h
     extern GroupItem    aCTionTokenXP(GroupItem xpress);
     extern GroupItem    aCTionTraiT(GroupItem group);
     extern GroupItem    aCTionTraiTdata(GroupItem input);
-    extern GroupItem    aCTionUnaryXP(GroupItem input);
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
     extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
-    extern GroupItem    arrondir(GroupItem field);
     extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    compile(GroupItem field);
-    extern GroupItem    cOPY(GroupItem field);
     extern GroupItem    copyOf(GroupItem grup);
-    extern GroupItem    debugOnGuard(GroupItem group);
     extern void         debugRuleNamed(String name);
     extern void         debugText(GroupItem debugStuff,int flag);
-    extern void         debugTokens(int entries);
     extern void         dispatcher(void* stuff);
     extern int          driveFloorLabel(RuleStuff stuff,GroupItem label);
     extern GroupItem    dumpContents(GroupItem stuff);
@@ -552,7 +532,6 @@ external GroupRules.h
     extern GroupItem    frameStak(GroupItem action);
     extern GroupItem    frameFind(GroupItem action);
     extern GroupItem    generateCode(GroupItem field);
-    extern GroupItem    genXP(GroupItem input);
     extern String       getDebugText(String input,int length);
     extern GroupItem    getFile(GroupItem filing);
     extern GroupItem    getMarkLineAt(GroupItem argument);
@@ -565,9 +544,6 @@ external GroupRules.h
     extern GroupItem    handleUnary(GroupItem xpress,GroupItem unary,GroupItem ANYtoken);
     extern GroupItem    interpretBC(GroupItem argument);
     extern GroupItem    interpretMethod(GroupItem input);
-    extern GroupItem    iterBind(GroupItem iter, GroupItem container);
-    extern int          iterSpins(GroupItem iter, int reset);
-    extern GroupItem    iterAdvance(GroupItem iter, int forward);
     extern GroupItem    jitEmitBinary(GroupItem argument,GroupItem target,int op);
     extern GroupItem    jitEmitAdd(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitDiv(GroupItem argument,GroupItem target);
@@ -613,12 +589,10 @@ external GroupRules.h
     extern GroupItem    listenTo(GroupItem group);
     extern GroupItem    loadDirectory(GroupItem input);
     extern GroupItem    loadInputFromFile(GroupItem input);
-    extern void         loadRegistryFromString(String name,String content);
     extern GroupItem    makeDataType(GroupItem target,GroupItem argument);
     extern GroupItem    makeNew(GroupItem input);
     extern GroupItem    markWindow(GroupItem input);
     extern int          materialiseTerms(GroupItem rule);
-    extern int          materialiseRegistry(GroupItem registry);
     extern void         modify(GroupItem field,String modifier);
     extern int          modifierIsRepeat(String modifier);
     extern void         modifyClass(GroupItem field,String modifier,int wantRepeat);
@@ -699,16 +673,13 @@ external GroupRules.h
     extern GroupItem    setInternalType(GroupItem grup);
     extern GroupItem    setMark(GroupItem argument);
     extern GroupItem    setRuleAction(GroupItem block);
-    extern int          statementMatches(GroupItem a,GroupItem b);
     extern GroupItem    stopParsingInput(GroupItem input);
     extern void         reportRunAbandoned(String fileName);
     extern GroupItem    testing(GroupItem item);
-    extern GroupItem    tokenInSet(String input,PLGset endSet);
     extern int          truthOf(GroupItem field);
     extern int          unaryIsAccess(GroupItem unary);
     extern void         unMark(GroupItem bufField);
     extern GroupItem    unWrap(GroupItem result);
-    extern GroupItem    wrapDot(GroupItem argument);
     extern String       wrapped(GroupItem input);
 }
 
@@ -804,9 +775,6 @@ boolean
 
 external RuleStuff.h
 {
-    extern int          getInput();
-    extern int          hasNNPattributes(GroupItem field);
-    extern int          setMacroValue(GroupItem field);
     extern int          testAction(GroupItem field);
     extern int          testAny(GroupItem field);
     extern int          testAttributes(RuleStuff stuff,GroupItem field);
@@ -858,12 +826,9 @@ external Stylish.h
 {
     extern GroupItem    blockContaining(GroupItem base,Point p);
     extern int          contains(GroupItem field,Point p);
-    extern Color        getColorNamed(String name);
     extern Stylish      getStyle(GroupItem field);
     extern Frame        indentFrame(Frame f,double b);
-    extern Frame        indentFrameWH(Frame f,double w,double h);
     extern void         setColor(GroupItem field);
-    extern void         sHADOW(GroupItem item);
     extern void         setFont(GroupItem field);
     extern Stylish      makeStyleFor(GroupItem field);
 }
