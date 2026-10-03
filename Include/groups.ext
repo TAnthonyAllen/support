@@ -284,7 +284,7 @@ boolean GroupOptions {
 	GroupItem		nextAttribute(GroupItem current);
     GroupItem       nextGroup(GroupItem grup);
 	GroupItem		nextMember(GroupItem current);
-    GroupItem       parse(RuleStuff pStuff);
+    GroupItem       parse(RuleStuff pStuff, int guardPassed);
     GroupItem       pop();
     void            prepend(GroupItem grup);
     GroupItem       prior(GroupItem grup);
@@ -708,7 +708,6 @@ GroupItem   &parseMethod(GroupItem);
 int         &jitMethod(GroupItem);
 boolean
     followed
-    guardOK
     inProcess
     isOK
     isTarget
@@ -725,7 +724,7 @@ boolean
     ;
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
-    int             checkInput(GroupItem field);
+    int             checkInput(GroupItem field, int guardPassed);
     void            getWhatFollows(GroupItem field);
     void            setTestMatch(GroupItem field);
 }
