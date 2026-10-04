@@ -361,6 +361,7 @@ struct ParseActivation
     GroupItem       label;
     ParseActivation *prev;
     RuleStuff       stuff;
+    String          failPoint;
 }
 *gParseActive;
     String          atRuleMark;
@@ -694,8 +695,7 @@ Frame           frame;
 external RuleStuff
 {
 String      ruleName;       // for debugging
-String      hereAt,
-            failedAt;
+String      hereAt;
 GroupItem   label,
             onGroup;
 int         kount,
