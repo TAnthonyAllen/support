@@ -461,7 +461,7 @@ external GroupRules.h
     extern GroupItem    aCTionDelimText(GroupItem input);
     extern GroupItem    aCTionDO(GroupItem input);
     extern GroupItem    aCTionExpressioN(GroupItem input);
-    extern GroupItem    aCTionFailed(GroupItem input);
+    extern GroupItem    aCTionFailed(GroupItem input,String ownPoint);
     extern GroupItem    aCTionFOR(GroupItem input);
     extern GroupItem    aCTionIF(GroupItem input);
     extern GroupItem    aCTionNamE(GroupItem input);
