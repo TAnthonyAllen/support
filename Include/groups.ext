@@ -485,7 +485,6 @@ external GroupRules.h
     extern GroupItem    aCTionXpress(GroupItem input);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
     extern GroupItem    appendGroupValue(int value,GroupItem FormaT,Buffer buffer);
-    extern int          assignFieldCore(GroupItem source,GroupItem target);
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    compile(GroupItem field);
