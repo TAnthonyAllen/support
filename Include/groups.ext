@@ -133,7 +133,8 @@ boolean bools {
     tokened
     hasNewParse
     parseWalked
-    hasTraits } flags;
+    hasTraits
+    isAccessorProduct } flags;
 
     GroupBody();
     GroupBody(String s);
