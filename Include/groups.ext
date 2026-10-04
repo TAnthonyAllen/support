@@ -708,7 +708,6 @@ int         &jitMethod(GroupItem);
 boolean
     followed
     inProcess
-    isOK
     isTarget
     modPercent
     modPointer
