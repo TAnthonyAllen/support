@@ -269,7 +269,7 @@ boolean GroupOptions {
     Stak            getStak();
     RuleStuff       getRStuff();
     RuleStuff       ensureRStuff();
-    void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote);
+    void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote, GroupItem into);
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       instanceRule();
@@ -284,7 +284,7 @@ boolean GroupOptions {
 	GroupItem		nextAttribute(GroupItem current);
     GroupItem       nextGroup(GroupItem grup);
 	GroupItem		nextMember(GroupItem current);
-    GroupItem       parse(RuleStuff pStuff, int guardPassed);
+    GroupItem       parse(RuleStuff pStuff, int guardPassed, GroupItem into);
     GroupItem       pop();
     void            prepend(GroupItem grup);
     GroupItem       prior(GroupItem grup);
