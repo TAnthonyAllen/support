@@ -32,7 +32,7 @@ external measure.h
     extern GroupItem    measureFireLabelFork(GroupItem field,GroupItem myLabel);
     extern GroupItem    measureFrameProbe(GroupItem field,GroupItem rule);
     extern GroupItem    measureLabelMint(GroupItem field,GroupItem myLabel,GroupItem into);
-    extern GroupItem    measureLoopVerdict(GroupItem field);
+    extern GroupItem    measureLoopVerdict(GroupItem field,int timesMatched);
     extern GroupItem    measureMarkArm(GroupItem driveNode);
     extern GroupItem    measureMarkPoint(String where);
     extern GroupItem    measureOldFireFlag(GroupItem field,RuleStuff stuff);
@@ -698,8 +698,7 @@ String      ruleName;       // for debugging
 String      hereAt;
 GroupItem   label,
             onGroup;
-int         kount,
-            max,
+int         max,
             maxRepeat,
             min;
 int         &testMatch(GroupItem);
