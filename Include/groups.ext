@@ -572,7 +572,6 @@ external GroupRules.h
     extern GroupItem    opDeref(GroupItem result);
     extern GroupItem    opDot(GroupItem argument,GroupItem target);
     extern GroupItem    opEQ(GroupItem argument,GroupItem target);
-    extern GroupItem    opEnd(GroupItem argument,GroupItem target);
     extern GroupItem    opGetAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opGetProperty(GroupItem argument,GroupItem target);
     extern GroupItem    opGetMember(GroupItem argument,GroupItem target);
