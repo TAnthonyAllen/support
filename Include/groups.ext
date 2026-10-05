@@ -233,7 +233,7 @@ boolean GroupOptions {
     GroupItem       parseBlocK();
     GroupItem       parseBody();
     GroupItem       parseHolder();
-    void            captureSpan(RuleStuff stuff);
+    void            captureSpan(GroupItem spanLab, String spanAt);
     GroupItem       checkOP(GroupItem op);
     void            clear();
     void            clearData();
@@ -248,7 +248,7 @@ boolean GroupOptions {
     void            embedRule(GroupItem g);
     GroupItem       findAttribute(String name);
     GroupItem       findParent(String name);
-    void            fireLabelMethod(RuleStuff stuff);
+    GroupItem       fireLabelMethod(RuleStuff stuff, GroupItem fireLab, String fireAt);
     GroupItem       firstComponent(String name);
     GroupItem       get(String name);
     GroupItem       get(int offset);
@@ -270,7 +270,7 @@ boolean GroupOptions {
     Stak            getStak();
     RuleStuff       getRStuff();
     RuleStuff       ensureRStuff();
-    void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote, GroupItem into);
+    void            attachLabel(RuleStuff stuff, RuleStuff pStuff, int promote, GroupItem into, GroupItem lab);
     RuleStuff       getStuff(RuleStuff pStuff);
 	String			getText();
     GroupItem       instanceRule();
@@ -499,7 +499,7 @@ external GroupRules.h
     extern GroupItem    dumpContents(GroupItem stuff);
     extern GroupItem    enclosingFace(GroupItem field);
     extern RuleStuff    enclosingStuff(GroupItem askField,RuleStuff askStuff);
-    extern GroupItem    exitFromParse(GroupItem result);
+    extern GroupItem    exitFromParse(GroupItem field, int exitOK, String exitAt, GroupItem exitLab);
     extern GroupItem    fAIL(GroupItem input);
     extern GroupItem    frameStak(GroupItem action);
     extern GroupItem    frameFind(GroupItem action);
@@ -725,6 +725,8 @@ boolean
     ;
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
+    String          inputAt();
+    GroupItem       mintLabel(GroupItem field, GroupItem reuse);
     int             checkInput(GroupItem field, int guardPassed);
     void            getWhatFollows(GroupItem field);
     void            setTestMatch(GroupItem field);
@@ -742,6 +744,7 @@ external RuleStuff.h
     extern int          testSet(GroupItem field);
     extern int          testString(GroupItem field);
     extern int          testUpTo(GroupItem field);
+    extern int          upToMatch(GroupItem field, GroupItem upLab);
     extern GroupItem    parseR(GroupItem term, GroupItem into);
     extern GroupItem     locateRule(String name);
     extern GroupItem     traceParse(GroupItem argument);
