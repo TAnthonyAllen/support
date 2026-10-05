@@ -698,7 +698,6 @@ Frame           frame;
 external RuleStuff
 {
 String      ruleName;       // for debugging
-String      hereAt;
 GroupItem   label,
             onGroup;
 int         max,
@@ -726,7 +725,7 @@ boolean
     int             checkGuard(GroupItem field);
     String          inputAt();
     GroupItem       mintLabel(GroupItem field, GroupItem reuse);
-    int             checkInput(GroupItem field, int guardPassed);
+    int             checkInput(GroupItem field, int guardPassed, String inAt);
     void            getWhatFollows(GroupItem field);
     void            setTestMatch(GroupItem field);
 }
