@@ -497,6 +497,8 @@ external GroupRules.h
     extern void         debugText(GroupItem debugStuff,int flag);
     extern void         dispatcher(void* stuff);
     extern int          driveFloorLabel(RuleStuff stuff,GroupItem label);
+    extern GroupItem    recordLabel(RuleStuff s);
+    extern int          parkInRecord(RuleStuff s,GroupItem lab);
     extern GroupItem    dumpContents(GroupItem stuff);
     extern GroupItem    enclosingFace(GroupItem field);
     extern RuleStuff    enclosingStuff(GroupItem askField,RuleStuff askStuff);
@@ -699,8 +701,7 @@ Frame           frame;
 external RuleStuff
 {
 String      ruleName;       // for debugging
-GroupItem   label,
-            onGroup;
+GroupItem   onGroup;
 int         max,
             maxRepeat,
             min;
@@ -725,7 +726,7 @@ boolean
     RuleStuff(GroupItem grup);
     int             checkGuard(GroupItem field);
     String          inputAt();
-    GroupItem       mintLabel(GroupItem field, GroupItem reuse);
+    GroupItem       mintLabel(GroupItem field);
     int             checkInput(GroupItem field, int guardPassed, String inAt);
     void            getWhatFollows(GroupItem field);
     void            setTestMatch(GroupItem field);
