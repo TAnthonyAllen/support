@@ -38,6 +38,7 @@ external measure.h
     extern GroupItem    measureOldFireFlag(GroupItem field,int callOK);
     extern GroupItem    measureParentProbe(GroupItem field);
     extern GroupItem    measureParseClass(GroupItem field);
+    extern GroupItem    measureParseReturn(GroupItem field,GroupItem label);
     extern GroupItem    measureParseResult(GroupItem field,GroupItem result);
     extern GroupItem    measureRuleDispatch(GroupItem op,GroupItem target,GroupItem arg);
     extern GroupItem    measureRuleDoor(GroupItem field,GroupItem rule);
