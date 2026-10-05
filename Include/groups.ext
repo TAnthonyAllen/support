@@ -490,6 +490,7 @@ external GroupRules.h
     extern GroupItem    cLEAR(GroupItem input);
     extern int          closeFile(GroupItem bufField);
     extern GroupItem    compile(GroupItem field);
+    extern GroupItem    compileIn(GroupItem input);
     extern GroupItem    copyOf(GroupItem grup);
     extern void         debugRuleNamed(String name);
     extern void         debugText(GroupItem debugStuff,int flag);
