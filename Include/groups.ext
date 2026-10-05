@@ -359,7 +359,7 @@ struct ParseActivation
 {
     GroupItem       face;
     int             isFloor;
-    int             isCompile;
+    GroupItem       compileOwner;
     GroupItem       label;
     ParseActivation *prev;
     RuleStuff       stuff;
@@ -371,7 +371,6 @@ struct ParseActivation
     GroupItem
                 currentDefine,
                 currentMETHOD,
-                gCompileOwner,
                 currentRegistry,
                 debugJunk,
                 baseRegistryList,
@@ -446,6 +445,7 @@ struct ParseActivation
     GroupRules();
     String          checkSkip(String atContent);
     void            popInput();
+    GroupItem       floorOwner();
     int             inCompile();
     int             pushInput(GroupItem source);
 }
