@@ -359,6 +359,7 @@ struct ParseActivation
 {
     GroupItem       face;
     int             isFloor;
+    int             isCompile;
     GroupItem       label;
     ParseActivation *prev;
     RuleStuff       stuff;
@@ -438,7 +439,6 @@ struct ParseActivation
             isRigorous
             noSkipping
             parseTrace
-            processingCode
             showWarnings
             useDefaultSpace
             ;
@@ -446,6 +446,7 @@ struct ParseActivation
     GroupRules();
     String          checkSkip(String atContent);
     void            popInput();
+    int             inCompile();
     int             pushInput(GroupItem source);
 }
 
