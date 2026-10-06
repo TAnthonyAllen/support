@@ -358,12 +358,11 @@ external GroupRules
 {
 struct ParseActivation
 {
-    GroupItem       face;
+    GroupItem       instance;
     int             isFloor;
     GroupItem       compileOwner;
     GroupItem       label;
     ParseActivation *prev;
-    RuleStuff       stuff;
     String          failPoint;
 }
 *gParseActive;
@@ -448,6 +447,7 @@ struct ParseActivation
     void            popInput();
     GroupItem       floorOwner();
     int             inCompile();
+    RuleStuff       stuffOf(ParseActivation *rec);
     int             pushInput(GroupItem source);
 }
 
@@ -500,7 +500,7 @@ external GroupRules.h
     extern GroupItem    recordLabel(RuleStuff s);
     extern int          parkInRecord(RuleStuff s,GroupItem lab);
     extern GroupItem    dumpContents(GroupItem stuff);
-    extern GroupItem    enclosingFace(GroupItem field);
+    extern GroupItem    enclosingInstance(GroupItem field);
     extern RuleStuff    enclosingStuff(GroupItem askField,RuleStuff askStuff);
     extern GroupItem    exitFromParse(GroupItem field, int exitOK, String exitAt, GroupItem exitLab);
     extern GroupItem    fAIL(GroupItem input);
