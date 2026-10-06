@@ -72,6 +72,9 @@ union
     GroupItem       &gOp(GroupItem,GroupItem&);
     ;
 GroupItem       &gJitEmitter(GroupItem,GroupItem);
+int             &gTestMatch(GroupItem);
+GroupItem       &gParseMethod(GroupItem);
+int             &gJitMethod(GroupItem);
 union
     String          gText;
     void            *gPointer;
@@ -148,13 +151,16 @@ boolean bools {
         group               gGroup
         item				gItem
         jitEmitter          gJitEmitter
+        jitMethod           gJitMethod
         method              gMethod
         number				gNumber
         object              gObject
         operat              gOp
+        parseMethod         gParseMethod
         pointer				gPointer
         regex               gRegex
         stak                gStak
+        testMatch           gTestMatch
         text                gText
         ;
 }
@@ -628,7 +634,6 @@ external GroupRules.h
     extern GroupItem    quoted(GroupItem input);
     extern GroupItem    refuse(GroupItem subject,String why);
     extern GroupItem    runLeafParse(GroupItem field);
-    extern void         installParseMethod(GroupItem field);
     extern GroupItem    rEGISTER(GroupItem item);
     extern GroupItem    resetField(GroupItem argument);
     extern void         restoreLocalFields(GroupItem action);
@@ -705,9 +710,6 @@ GroupItem   onGroup;
 int         max,
             maxRepeat,
             min;
-int         &testMatch(GroupItem);
-GroupItem   &parseMethod(GroupItem);
-int         &jitMethod(GroupItem);
 boolean
     followed
     isTarget
