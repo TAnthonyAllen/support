@@ -85,6 +85,7 @@ external	stdlib.h local
 	void	exit( int i );
     double  fabs(double d);
 	void	free(void *v);
+    String  getenv(String name);
 	void	*malloc(int i);
 	void	*realloc(void *v,int i);
 	void	*reallocf(void *v,int i);
