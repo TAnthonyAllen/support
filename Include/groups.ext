@@ -642,6 +642,8 @@ external GroupRules.h
     extern GroupItem    ruleMethod(GroupItem group);
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
+    extern GroupItem    runOPdirect(GroupItem op,GroupItem target,GroupItem arg);
+    extern GroupItem    runOPslots(GroupItem op,GroupItem target,GroupItem arg);
     extern GroupItem    parseOnFloor(GroupItem rule);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
     extern GroupItem    runShortCircuit(GroupItem field);
