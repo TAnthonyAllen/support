@@ -579,6 +579,8 @@ external GroupRules.h
     extern GroupItem    opAND(GroupItem argument,GroupItem target);
     extern GroupItem    opAssign(GroupItem argument,GroupItem target);
     extern GroupItem    opAddPointer(GroupItem argument,GroupItem target);
+    extern GroupItem    opCerr(GroupItem target,Buffer buffer);
+    extern GroupItem    opCout(GroupItem target,Buffer buffer);
     extern GroupItem    opDebug(GroupItem result);
     extern GroupItem    opDiv(GroupItem argument,GroupItem target);
     extern GroupItem    opDivEQ(GroupItem argument,GroupItem target);
@@ -612,8 +614,6 @@ external GroupRules.h
     extern GroupItem    opPlusPlus(GroupItem result);
     extern GroupItem    opPointer(GroupItem field);
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
-    extern GroupItem    opCerr(GroupItem target,Buffer buffer);
-    extern GroupItem    opCout(GroupItem target,Buffer buffer);
     extern GroupItem    opReplaceAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opReplaceMember(GroupItem argument,GroupItem target);
     extern GroupItem    opRem(GroupItem argument,GroupItem target);
@@ -659,6 +659,7 @@ external GroupRules.h
     extern GroupItem    stopParsingInput(GroupItem input);
     extern void         reportRunAbandoned(String fileName);
     extern GroupItem    testing(GroupItem item);
+    extern GroupItem    testOP(GroupItem field);
     extern int          truthOf(GroupItem field);
     extern int          unaryIsAccess(GroupItem unary);
     extern void         unMark(GroupItem bufField);
