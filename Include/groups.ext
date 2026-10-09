@@ -15,6 +15,7 @@ external Stylish
 external measure.h
 {
     extern GroupItem    addrOf(GroupItem field);
+    extern GroupItem    lastRefOf(GroupItem label);
     extern int          auditMissingRules(GroupItem registry);
     extern int          auditMissingTerms(GroupItem registry);
     extern GroupItem    auditRStuff(GroupItem argument);
