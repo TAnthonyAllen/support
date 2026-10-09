@@ -593,6 +593,8 @@ external GroupRules.h
     extern GroupItem    opGE(GroupItem argument,GroupItem target);
     extern GroupItem    opGT(GroupItem argument,GroupItem target);
     extern GroupItem    opIN(GroupItem argument,GroupItem target);
+    extern int          opIsAssignTier(GroupItem op);
+    extern int          opIsCompareTier(GroupItem op);
     extern int          opIsOR(GroupItem op);
     extern int          opIsShortCircuit(GroupItem op);
     extern GroupItem    opLastREF(GroupItem result);
@@ -640,6 +642,11 @@ external GroupRules.h
     extern GroupItem    ruleMethod(GroupItem group);
     extern GroupItem    runAction(GroupItem argument,GroupItem field);
     extern GroupItem    runOP(GroupItem op);
+    extern GroupItem    runOPdirect(GroupItem op,GroupItem target,GroupItem arg);
+    extern GroupItem    runOPslots(GroupItem op,GroupItem target,GroupItem arg);
+    extern GroupItem    opCall(GroupItem target,GroupItem arg);
+    extern int          callIsRule(GroupItem target);
+    extern int          isCallable(GroupItem target);
     extern GroupItem    parseOnFloor(GroupItem rule);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
     extern GroupItem    runShortCircuit(GroupItem field);
