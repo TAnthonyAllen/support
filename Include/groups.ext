@@ -486,7 +486,6 @@ external GroupRules.h
     extern GroupItem    aCTionSetBrackets(GroupItem group);
     extern GroupItem    aCTionShortcuT(GroupItem group);
     extern GroupItem    aCTionStatemenT(GroupItem input);
-    extern GroupItem    aCTionTokenXP(GroupItem xpress);
     extern GroupItem    aCTionTraiT(GroupItem group);
     extern GroupItem    aCTionTraiTdata(GroupItem input);
     extern GroupItem    aCTionWhilE(GroupItem input);
