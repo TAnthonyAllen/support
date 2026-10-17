@@ -528,7 +528,7 @@ external GroupRules.h
     extern GroupItem    jitEmitLT(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitNE(GroupItem argument,GroupItem target);
     extern int          jitEmitReturn();
-    extern int          jitEmitSelfCall(GroupItem argument,GroupItem action);
+    extern GroupItem    jitEmitSelfCall(GroupItem argument,GroupItem action);
     extern GroupItem    jitEmitSub(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitMul(GroupItem argument,GroupItem target);
     extern GroupItem    jitEmitter(GroupItem input);
