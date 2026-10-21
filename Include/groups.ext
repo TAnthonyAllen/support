@@ -481,7 +481,7 @@ external GroupRules.h
     extern GroupItem    aCTionCouT(GroupItem input);
     extern GroupItem    aCTionQuotE(GroupItem input);
     extern GroupItem    aCTionRunRulE(GroupItem input);
-    extern void         aCTionScopeXP(GroupItem input);
+    extern GroupItem    aCTionScopeXP(GroupItem input);
     extern GroupItem    aCTionSearch(GroupItem input);
     extern GroupItem    aCTionSetBrackets(GroupItem group);
     extern GroupItem    aCTionShortcuT(GroupItem group);
