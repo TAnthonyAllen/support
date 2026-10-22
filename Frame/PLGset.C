@@ -446,32 +446,6 @@ int 	i = 0;
 int 	count = 0;
 char 	*output = 0;
 Buffer 	*buffer = new Buffer();
-	if ( name )
-		{
-		buffer->appendString("Set: ",0,0);
-		buffer->appendString(name,0,0);
-		buffer->appendString("\n",0,0);
-		}
-	else {
-		buffer->appendString("No name set:",0,0);
-		buffer->appendString("\n",0,0);
-		}
-	if ( specs )
-		{
-		buffer->appendString("\t",0,0);
-		buffer->appendString("specs: ",0,0);
-		buffer->appendString(specs,0,0);
-		buffer->appendString("\n",0,0);
-		}
-	else {
-		buffer->appendString("\t",0,0);
-		buffer->appendString("No specs",0,0);
-		buffer->appendString("\n",0,0);
-		}
-	buffer->appendString("\t",0,0);
-	buffer->appendString("contents:",0,0);
-	buffer->appendString("\n",0,0);
-	buffer->appendString("\t",0,0);
 	for ( i = 0; i < 128; i++ )
 		if ( inSet[i] )
 			{
@@ -491,11 +465,6 @@ Buffer 	*buffer = new Buffer();
 			if ( i > 32 )
 				buffer->appendChar((char)i,0,0);
 			}
-	buffer->appendString("\n",0,0);
-	buffer->appendString("\t",0,0);
-	buffer->appendString("total ",0,0);
-	buffer->appendInt(count,0,0);
-	buffer->appendString("\n",0,0);
 	output = buffer->toString();
 	return output;
 }

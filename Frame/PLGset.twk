@@ -401,12 +401,6 @@ String toString()
 int     i, count;
 String  output;
 Buffer  buffer = new Buffer();
-
-    if name print(buffer) "Set: " name :;
-    else print "No name set:":;
-    if specs print `"specs: " specs:;
-    else print `"No specs":;
-    print `"contents:":`;
     for ( i = 0; i < 128; i++ )
         if inSet[i]
             {
@@ -417,7 +411,6 @@ Buffer  buffer = new Buffer();
             or i == 13  print "\\r";
             or i > 32   print (char)i;
             }
-    print :`"total " count:;
     output = buffer.toString();
     return output;
 }
