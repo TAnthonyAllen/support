@@ -41,6 +41,7 @@ external measure.h
     extern GroupItem    measureParseClass(GroupItem field);
     extern GroupItem    measureParseReturn(GroupItem field,GroupItem label);
     extern GroupItem    measureParseResult(GroupItem field,GroupItem result);
+    extern GroupItem    measureShortcutFire(GroupItem field);
     extern GroupItem    measureRuleDispatch(GroupItem op,GroupItem target,GroupItem arg);
     extern GroupItem    measureRuleDoor(GroupItem field,GroupItem rule);
     extern GroupItem    measureStopCaller(GroupItem caller);
