@@ -368,6 +368,7 @@ struct ParseActivation
     GroupItem       instance;
     int             isFloor;
     GroupItem       compileOwner;
+    GroupItem       nameOwner;
     GroupItem       label;
     ParseActivation *prev;
     String          failPoint;
@@ -453,6 +454,7 @@ struct ParseActivation
     String          checkSkip(String atContent);
     void            popInput();
     GroupItem       floorOwner();
+    GroupItem       floorNameOwner();
     int             inCompile();
     RuleStuff       stuffOf(ParseActivation *rec);
     int             pushInput(GroupItem source);
