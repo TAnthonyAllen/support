@@ -20,6 +20,7 @@ external measure.h
     extern int          auditMissingTerms(GroupItem registry);
     extern GroupItem    auditRStuff(GroupItem argument);
     extern int          auditSpurious(GroupItem registry);
+    extern GroupItem    branchKindOf(GroupItem argument);
     extern GroupItem    canonOf(GroupItem argument);
     extern GroupItem    chanReport(GroupItem input);
     extern GroupItem    measureAdoption(GroupItem field,GroupItem handed,GroupItem adopted);
