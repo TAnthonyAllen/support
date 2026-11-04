@@ -304,6 +304,7 @@ boolean GroupOptions {
     GroupItem       remove(String name);
     GroupItem       replace(GroupItem argument);
     String          resolvedTag();
+    GroupItem       runNotified(GroupItem notifier);
     void            setActions();
     void            setBuffer(Buffer b);
     void            setCharacter(char c);
