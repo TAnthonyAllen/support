@@ -493,6 +493,7 @@ external GroupRules.h
     extern GroupItem    aCTionStatemenT(GroupItem input);
     extern GroupItem    aCTionTraiT(GroupItem group);
     extern GroupItem    aCTionTraiTdata(GroupItem input);
+    extern GroupItem    aCTionTraiTref(GroupItem input);
     extern GroupItem    aCTionWhilE(GroupItem input);
     extern GroupItem    aCTionXpress(GroupItem input);
     extern GroupItem    appendGroup(GroupItem input,GroupItem FormaT,Buffer buffer);
