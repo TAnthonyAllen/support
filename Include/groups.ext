@@ -793,5 +793,6 @@ external Stylish.h
     extern Frame        indentFrame(Frame f,double b);
     extern void         setColor(GroupItem field);
     extern void         setFont(GroupItem field);
+    extern GroupItem    fontReport(GroupItem field);
     extern Stylish      makeStyleFor(GroupItem field);
 }
