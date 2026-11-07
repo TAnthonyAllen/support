@@ -563,6 +563,7 @@ external GroupRules.h
     extern GroupItem    jitFieldMethod(GroupItem field);
     extern GroupItem    jitShowRecord(GroupItem field);
     extern int          jitRunAction(GroupItem action);
+    extern GroupItem    jitterRule(GroupItem input);
     extern int          jitRunIfTest(GroupItem field);
     extern GroupItem    jitSeedField(GroupItem token);
     extern GroupItem    jitSeedLiteral(GroupItem token);
