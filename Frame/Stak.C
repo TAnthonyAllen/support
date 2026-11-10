@@ -4,6 +4,20 @@
 #include "Stak.h"
 
 /*****************************************************************************
+	The array is allocated with operator new, never calloc (GC stroke 2, R4,
+	SEQ 589). In Groups the global operator new is gcThreads.mm's: on the main
+	thread GC_malloc_uncollectable, so the array is a root the collector scans
+	and a node held only on a Stak stays alive. calloc'd, it was invisible.
+	Every other project gets the system allocator, as before.
+*****************************************************************************/
+static void **stakArray(int n)
+{
+	void **a = (void**)::operator new(n * sizeof(void*));
+	::memset(a,0,n * sizeof(void*));
+	return a;
+}
+
+/*****************************************************************************
 	Constructors
 *****************************************************************************/
 Stak::Stak()
@@ -12,7 +26,7 @@ Stak::Stak()
 	entry = 0;
 	length = 0;
 	size = 100;
-	fifo = start = (void**)::calloc(size,sizeof(void*));
+	fifo = start = stakArray(size);
 	end = start;
 }
 
@@ -22,7 +36,7 @@ Stak::Stak(int s)
 	entry = 0;
 	length = 0;
 	size = s;
-	fifo = start = (void**)::calloc(size,sizeof(void*));
+	fifo = start = stakArray(size);
 	end = start;
 }
 
@@ -118,8 +132,11 @@ void Stak::push(void *v)
 void Stak::resize()
 {
 long 	offset = fifo - start;
+void	**grown = stakArray(size * 2);
+	::memcpy(grown,start,size * sizeof(void*));
+	::operator delete(start);
 	size = size * 2;
-	start = (void**)::reallocf((void*)start,size * sizeof(void*));
+	start = grown;
 	fifo = start + offset;
 	end = start + length;
 	*end = (void*)0;
