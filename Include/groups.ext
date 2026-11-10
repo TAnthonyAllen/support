@@ -652,6 +652,7 @@ external GroupRules.h
     extern int          isCallable(GroupItem target);
     extern GroupItem    parseOnFloor(GroupItem rule);
     extern GroupItem    runRule(GroupItem field,GroupItem rule);
+    extern GroupItem    runSystem(GroupItem command);
     extern void         saveLocalFields(GroupItem action);
     extern int          setCompiledMethod(GroupItem block,String name);
     extern GroupItem    setParse(GroupItem field);
