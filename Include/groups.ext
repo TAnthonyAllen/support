@@ -140,7 +140,9 @@ boolean bools {
     hasNewParse
     parseWalked
     hasTraits
-    isAccessorProduct } flags;
+    isAccessorProduct
+    isHidden
+    noRoom } flags;
 
     GroupBody();
     GroupBody(String s);
