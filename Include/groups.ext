@@ -713,7 +713,7 @@ Stylish         style;
 Frame           frame;
     void    displayCell();
     void    displayImage();
-    void    drawSpans();
+    void    displayText();
     void    drawRect(Frame r);
     Layout  init(GroupItem field);
     Point   invertY(Point point);
