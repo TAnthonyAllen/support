@@ -620,6 +620,7 @@ external GroupRules.h
     extern GroupItem    opPlusPlus(GroupItem result);
     extern GroupItem    opPointer(GroupItem field);
     extern GroupItem    opPrint(GroupItem target,Buffer buffer);
+    extern GroupItem    opRemoveAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opReplaceAttribute(GroupItem argument,GroupItem target);
     extern GroupItem    opReplaceMember(GroupItem argument,GroupItem target);
     extern GroupItem    opRem(GroupItem argument,GroupItem target);
