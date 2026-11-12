@@ -332,6 +332,8 @@ boolean GroupOptions {
     void            sort(int &comparisor(GroupItem,GroupItem));
     void            updateContentFlags();
 	void			updateListeners();
+    GroupItem       takeListeners();
+    void            giveListeners(GroupItem list);
     GroupItem       walk(GroupItem item);
 	alias
             add                 addMember
